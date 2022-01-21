@@ -9,7 +9,7 @@ export default function Header() {
       borderBottom: "3px solid black",
       padding: "2em",
     }}>
-      <Link href="/" underline="none" variant="h3">TRUEFANS</Link>
+      <Link href="/" underline="none" variant="h3">SUPERTRUE</Link>
     </Box>
   );
 }
