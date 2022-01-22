@@ -18,7 +18,9 @@ async function mint({ provider, contractAddress }) {
   // console.log({ address })
 
   // the price is slowly increasing with each NFT so we need to get current price
-  const value = await forwardNFT.getCurrentPrice();
+  // const value = await forwardNFT.getCurrentPrice(); // TODO fix
+  // console.log(await forwardNFT.owner())
+  const value = 2500000000000000;
 
   // calling the smart contract function
   // first param is amount of NFTs, second is address where it should be mint into
