@@ -7,7 +7,7 @@ import Web3Modal from "web3modal";
 // You can get a key for free at https://infura.io/register
 const INFURA_ID = "053054e14de8436ca32b539867081440";
 
-const NETWORK = "ropsten";
+const NETWORK = "rinkeby";
 
 function useWeb3Modal(config = {}) {
   const [provider, setProvider] = useState();

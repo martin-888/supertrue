@@ -142,7 +142,7 @@ export default function NewArtist() {
               disabled={!instagramValid || !nameValid || loading}
               size="large"
               variant="contained"
-              onClick={createArtist}
+              onClick={!provider ? loadWeb3Modal : createArtist}
             >
               Create {name}
             </Button>

@@ -106,7 +106,7 @@ export default function Artist() {
       <Button
         size="large"
         variant="contained"
-        onClick={mintNFT}
+        onClick={!provider ? loadWeb3Modal : mintNFT}
         disabled={minting}
       >
         Mint
