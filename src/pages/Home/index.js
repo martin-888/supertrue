@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import millify from "millify";
-import { TextField, Typography, Button, Grid, Box, Divider, List, ListItem, Container, CircularProgress } from "@mui/material";
+import { TextField, Typography, Button, Grid, Box, List, ListItem, Container, CircularProgress } from "@mui/material";
 import { getArtists } from "../../api";
+import ArtistBlock from "components/ArtistBlock";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,6 +15,8 @@ export default function Home() {
   }), [])
 
   useEffect(() => {
+    console.warn("Artists: ", artists);
+
     if (searchQuery === '' || !searchQuery) {
       setFilteredArtists(artists);
       return;
@@ -71,22 +73,7 @@ export default function Home() {
       <List>
         {filteredArtists.map((artist, index) => (
           <ListItem key={artist.id}>
-              <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                {index !== 0 && <Box sx={{ m: 2 }} />}
-                <img width="100" height="100" src={`https://storage.googleapis.com/supertrue-5bc93.appspot.com/${artist.id}.jpg`} />
-                <Box sx={{ m: 1 }} />
-                <Typography variant="h3" component="h3">{artist.name}</Typography>
-                <Typography variant="subtitle1">Followers: {millify(artist.followers)}</Typography>
-                <Box sx={{ m: 1 }} />
-                <Button size="large" variant="contained" href={`/artist/${artist.id}`}>Mint</Button>
-                <Box sx={{ m: 2 }} />
-              </Grid>
-            {filteredArtists.length !== index + 1 && <Divider />}
+            <ArtistBlock artist={artist} />
           </ListItem>
         ))}
       </List>

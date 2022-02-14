@@ -1,0 +1,34 @@
+.artist-item{
+    margin-bottom:70px;
+    
+    .image{
+        width: 385px;
+        margin-right:50px;
+        img{
+            border: 2px solid #f4f3f3;
+            width: 100%;
+        }
+    }
+    .details{
+        min-width: 385px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .name{
+        text-transform: capitalize;
+    }
+    .actions{
+        margin-top: 10px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .artist-item{ 
+        justify-content: center; 
+        .image{
+            margin-right:0;
+        }
+    }
+}
+  

@@ -19,10 +19,10 @@ import { grey } from '@mui/material/colors';
 const theme = createTheme({
   palette: {
     primary: {
-      main: grey[900],
+      main: grey[900],  //Black
     },
     secondary: {
-      main: grey[50],
+      main: grey[50],   //White
     }
   }
 });
