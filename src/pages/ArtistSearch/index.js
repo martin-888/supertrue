@@ -67,23 +67,30 @@ export default function ArtistSeatch() {
           alignItems="center"
         >
           <Typography variant="h5" component="h3" align="center">
-            Sorry, we could not find "{searchQuery}".
+            Sorry we couldn’t find "{searchQuery}".
+            <br />
+            You can be the first!
           </Typography>
           <Box sx={{ m: 2 }} />
-          <Button variant="contained" size="large" href={`/artist/new?name=${searchQuery}`}>Add {searchQuery}</Button>
+          <Button variant="contained" size="large" href={`/artist/new?name=${searchQuery}`}>Mint #1 {searchQuery}</Button>
         </Grid>
       );
     }
 
     return (
-      <Grid container spacing={8}>
-        {filteredArtists.map((artist, index) => (
-          <Grid item key={artist.id} className="artist" xs={8} md={4}>
-            {/* <ArtistBlock artist={artist} /> */}
-            <ArtistNFT artist={artist} />
-          </Grid>
-        ))}
-      </Grid>
+      <>
+        <Typography maxWidth="md" variant="h5" className="explanation" sx={{my:6}}>
+          Mint your favorite new artist to receive a dated NFT with your disovery date and your supertrue follower count. Display your music finds in your gallery. Funds are held for the artist minus transaction fees. 
+        </Typography>
+        <Grid container spacing={8}>
+          {filteredArtists.map((artist, index) => (
+            <Grid item key={artist.id} className="artist" xs={8} md={4}>
+              {/* <ArtistBlock artist={artist} /> */}
+              <ArtistNFT artist={artist} />
+            </Grid>
+          ))}
+        </Grid>
+      </>
     );
   }
 
@@ -92,11 +99,10 @@ export default function ArtistSeatch() {
       <Container maxWidth="sm">
         <TextField autoFocus fullWidth id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
       </Container>
-      <Box sx={{ m: 8 }} />
-      <Container maxWidth="md">
+      
+      <Container maxWidth="md" sx={{ my: 8 }}>
         {getContent()}
       </Container>
-      <Box sx={{ m: 4 }} />
     </>
   );
 }
