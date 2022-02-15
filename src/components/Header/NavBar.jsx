@@ -211,6 +211,7 @@ const Logo = () => {
       href="/" 
       underline="none" 
       className="app-logo"
+      style={{fontFamily: 'DM Serif Display, serif', fontWeight:'600'}}
       >
         SUPERTRUE
       </Link>
