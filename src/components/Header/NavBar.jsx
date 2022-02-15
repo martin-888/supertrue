@@ -159,8 +159,8 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page.name} href={page.url} >
-                <Button key={page.name} onClick={handleCloseNavMenu} sx={{ mx:1, px:2, py: 1.5, display: 'block' }}>
+              <Link key={page.name} href={page.url} underline="none">
+                <Button key={page.name} onClick={handleCloseNavMenu} sx={{ mx:1, px:2, py: 1.5, display: 'block', }}>
                   {page.name}
                 </Button>
               </Link>
