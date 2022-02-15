@@ -19,7 +19,7 @@ import Button from '@mui/material/Button';
 // const pages = ['Products', 'Pricing', 'Blog'];
 const pages = [
   {name:'Me', url:'/me'}, 
-  {name:'Artists', url:'/'}, 
+  // {name:'Artists', url:'/'}, 
   // {name:'New Artist', url:'/artist/new'},
   {name:'Search', url:'/search'},
   {name:'Gallery', url:'/gallery'},

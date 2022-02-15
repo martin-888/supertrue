@@ -58,7 +58,8 @@ export default function App() {
               <Route path="/me" element={<Me />} />
               <Route path="/search" element={<ArtistSearch />} />
               <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
-              <Route path="/" element={<Home />} />
+              {/* <Route path="/" element={<Home />} /> */}
+              <Route path="/" element={<ArtistSearch />} />
             </Routes>
           </ThemeProvider>
       </div>
