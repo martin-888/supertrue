@@ -6,6 +6,7 @@ import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { abis } from "../../contracts";
 import { getArtist } from "../../api";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
+import __ from "helpers/__";
 
 async function mint({ provider, contractAddress }) {
   // creating connection to the smart contract
@@ -82,18 +83,19 @@ export default function Artist() {
       justifyContent="center"
       alignItems="center"
     >
-      <img width="400" height="400" src={`https://us-central1-supertrue-5bc93.cloudfunctions.net/api/artist/${artist.id}/image/${artist.minted}`} />
-      <Box sx={{ m: 4 }} />
-      <Typography variant="h5">Price: 0.02 ETH</Typography>
-      <Box sx={{ m: 4 }} />
+      <img width="400" height="400" src={__.getArtistNFTImage(artist)} />
+      <Box sx={{ mt: 6, mb:2 }}>
+        <Typography variant="h5">Price: 0.02 ETH</Typography>
+      </Box>
+
       {minting && (
-        <>
+        <Box sx={{ my: 4 }}>
           <CircularProgress />
-          <Box sx={{ m: 4 }} />
-        </>
+        </Box>
       )}
+
       {minted && (
-        <>
+        <Box sx={{ my: 4 }}>
           <Button
             variant="contained"
             color="success"
@@ -102,18 +104,19 @@ export default function Artist() {
           >
             Show On OpenSea
           </Button>
-          <Box sx={{ m: 4 }} />
-        </>
+        </Box>
       )}
-      <Button
-        size="large"
-        variant="contained"
-        onClick={!provider ? loadWeb3Modal : mintNFT}
-        disabled={minting}
-      >
-        Mint
-      </Button>
-      <Box sx={{ m: 4 }} />
+      
+      <Box sx={{ my: 4 }}>
+        <Button
+          size="large"
+          variant="contained"
+          onClick={!provider ? loadWeb3Modal : mintNFT}
+          disabled={minting}
+        >
+          Mint Fan #{artist.minted + 1}
+        </Button>
+      </Box>
     </Grid>
   );
 }
