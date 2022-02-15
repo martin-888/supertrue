@@ -9,7 +9,7 @@ import __ from "helpers/__";
 /**
  * Component: NFT Search Page
  */
-export default function ArtistSeatch() {
+export default function ArtistSearch() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [artists, setArtists] = useState([]);
@@ -32,6 +32,7 @@ export default function ArtistSeatch() {
 
     setFilteredArtists(artists.filter(artist => artist.name.toLowerCase().indexOf(search) !== -1));
   }, [searchQuery, artists])
+
 
   const getContent = () => {
     if (loading) {
