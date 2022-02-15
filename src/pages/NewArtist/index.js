@@ -26,7 +26,7 @@ export default function NewArtist() {
   const navigate = useNavigate();
   // eslint-disable-next-line no-restricted-globals
   const search = useMemo(() => queryString.parse(window.location.search), [location.search]);
-  const [name, setName] = useState(search.name || "?");
+  const [name, setName] = useState(search.name);
   const [instagram, setInstagram] = useState('');
   const [artistExists, setArtistExists] = useState(false);
   const [instagramTouched, setInstagramTouched] = useState(false);
