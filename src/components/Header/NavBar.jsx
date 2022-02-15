@@ -18,13 +18,15 @@ import Button from '@mui/material/Button';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 const pages = [
-  {name:'Me', url:'/me'}, 
   // {name:'Artists', url:'/'}, 
   // {name:'New Artist', url:'/artist/new'},
   {name:'Search', url:'/search'},
   {name:'Gallery', url:'/gallery'},
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [
+  {name:'Assets', url:'/me'}, 
+];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -144,7 +146,7 @@ const ResponsiveAppBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link key={page.name} href={page.url} >
+                  <Link key={page.name} href={page.url}>
                     <Typography textAlign="center">{page.name}</Typography>
                   </Link>
                 </MenuItem>
@@ -193,8 +195,8 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); window.location.href = setting.url; }}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
