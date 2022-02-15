@@ -27,7 +27,21 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: ['Space Mono', '"Montserrat"', 'Open Sans'].join(',')
+    fontFamily: ['Space Mono', '"Montserrat"', 'Open Sans'].join(','),
+
+    h1:{
+      fontFamily: 'DM Serif Display, serif',
+      fontSize: '2rem',
+      fontWeight: 'bold',
+    },
+    h2:{
+      fontFamily: 'DM Serif Display, serif',
+      fontSize: '1.6rem',
+      fontWeight: 'bold',
+    },
+    h6:{
+      fontSize: '1.1rem',
+    },
    }
 });
 
@@ -43,6 +57,7 @@ export default function App() {
               <Route path="/artist/:id" element={<Artist />} />
               <Route path="/me" element={<Me />} />
               <Route path="/search" element={<ArtistSearch />} />
+              <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
               <Route path="/" element={<Home />} />
             </Routes>
           </ThemeProvider>
