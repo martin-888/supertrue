@@ -90,7 +90,7 @@ export default function ArtistSeatch() {
   return (
     <>
       <Container maxWidth="sm">
-        <TextField autoFocus fullWidth id="standard-basic" label="Search Artist" variant="standard" onChange={e => setSearchQuery(e.target.value)} />
+        <TextField autoFocus fullWidth id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
       </Container>
       <Box sx={{ m: 8 }} />
       <Container maxWidth="md">

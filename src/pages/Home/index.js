@@ -83,7 +83,7 @@ export default function Home() {
   return (
     <>
       <Container maxWidth="sm">
-        <TextField autoFocus fullWidth id="standard-basic" label="Search Artist" variant="standard" onChange={e => setSearchQuery(e.target.value)} />
+        <TextField autoFocus fullWidth id="standard-basic" label="Search Artist" variant="TextField" onChange={e => setSearchQuery(e.target.value)} />
       </Container>
       <Box sx={{ m: 8 }} />
       <Container maxWidth="md">
