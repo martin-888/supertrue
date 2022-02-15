@@ -15,7 +15,7 @@ import './ArtistNFT.scss';
         </Box>
         <Box className="details">
           <Box className="actions">
-            <Button size="large" variant="outlined" href={`/artist/${artist.id}`}>Support</Button>
+            <Button size="large" variant="outlined" href={`/artist/${artist.id}`}>Mint #{artist.minted+1}</Button>
           </Box>
         </Box>
       </Grid>
