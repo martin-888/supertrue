@@ -4,8 +4,9 @@ import { Box, Link, Toolbar, Menu, MenuItem, Tooltip } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
+import { AccountCircle } from '@mui/icons-material';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 
 
@@ -19,8 +20,9 @@ import Button from '@mui/material/Button';
 const pages = [
   {name:'Me', url:'/me'}, 
   {name:'Artists', url:'/'}, 
-  {name:'New Artist', url:'/artist/new'},
+  // {name:'New Artist', url:'/artist/new'},
   {name:'Search', url:'/search'},
+  {name:'Gallery', url:'/gallery'},
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -88,7 +90,7 @@ const ResponsiveAppBar = () => {
   return (
     <AppBar position="static" color='transparent' style={{boxShadow:'none'}}>
       
-      <Container maxWidth="xl">
+      <Container maxWidth="md">
         <Toolbar disableGutters>
           <Typography
             variant="h3"
@@ -170,7 +172,8 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                <AccountCircle style={{width:'38px', height:'38px', color:'#111'}}/>
               </IconButton>
             </Tooltip>
             <Menu
