@@ -25,7 +25,10 @@ const theme = createTheme({
     secondary: {
       main: grey[50],   //White
     }
-  }
+  },
+  typography: {
+    fontFamily: ['Space Mono', '"Montserrat"', 'Open Sans'].join(',')
+   }
 });
 
 export default function App() {
