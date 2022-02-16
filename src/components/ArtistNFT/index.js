@@ -9,7 +9,7 @@ import './ArtistNFT.scss';
  export default function ArtistNFT(props) {
     const { artist } = props;
     return(
-      <Grid item className="artist-nft" style={{}}  >
+      <Grid item className="artist-nft">
         <Box className="image">
           <img src={__.getArtistNFTImage(artist)} />
         </Box>
