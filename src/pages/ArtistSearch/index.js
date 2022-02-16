@@ -92,7 +92,7 @@ export default function ArtistSearch({view}) {
 
         <Grid container spacing={8}>
           {filteredArtists.map((artist, index) => (
-            <Grid item key={artist.id} className="artist" xs={8} md={4}>
+            <Grid item key={artist.id} className="artist" xs={12} sm={6} md={4}>
               {/* <ArtistBlock artist={artist} /> */}
               <ArtistNFT artist={artist} />
             </Grid>
@@ -103,24 +103,21 @@ export default function ArtistSearch({view}) {
   }
 
   return (
-    <>
-      
+    <Container maxWidth="md" sx={{ my: 8 }}>
       {view!=='gallery' && 
-      <Container maxWidth="md">
-        <TextField autoFocus sx={{minWidth:'400px'}} id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
-      </Container>
+        <Grid item sm={6} md={4}>
+          <TextField autoFocus  sx={{width:'100%'}} id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
+        </Grid>
       }
-      <Container maxWidth="md" sx={{ my: 8 }}>
-        {view==='gallery' && 
-        <Box sx={{mb:6}}>
-          <Typography variant="h1" >NFT GALLERY</Typography>
-          <Typography variant="h6" className="explanation" sx={{my:2}}>
-            All your shiny finds are displayed here. <Link variant="text" href={`/artist/new`}>Mint a new artist</Link>
-          </Typography>
-        </Box>
-        }
-        {getContent()}
-      </Container>
-    </>
+      {view==='gallery' && 
+      <Box sx={{mb:6}}>
+        <Typography variant="h1" >NFT GALLERY</Typography>
+        <Typography variant="h6" className="explanation" sx={{my:2}}>
+          All your shiny finds are displayed here. <Link variant="text" href={`/artist/new`}>Mint a new artist</Link>
+        </Typography>
+      </Box>
+      }
+      {getContent()}
+    </Container>
   );
 }
