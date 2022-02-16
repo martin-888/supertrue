@@ -105,7 +105,7 @@ export default function ArtistSearch({view}) {
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
       {view!=='gallery' && 
-        <Grid item sm={6} md={4}>
+        <Grid item sm={6}>
           <TextField autoFocus  sx={{width:'100%'}} id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
         </Grid>
       }
