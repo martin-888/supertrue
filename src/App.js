@@ -6,7 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import Artist from "./pages/Artist";
 import NewArtist from "./pages/NewArtist";
 import Me from "./pages/Me";
