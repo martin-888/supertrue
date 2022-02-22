@@ -13,6 +13,7 @@ import Me from "./pages/Me";
 import ArtistSearch from "pages/ArtistSearch";
 
 import Header from "./components/Header";
+// import Footer from "./components/Footer";
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
@@ -61,6 +62,7 @@ export default function App() {
               {/* <Route path="/" element={<Home />} /> */}
               <Route path="/" element={<ArtistSearch />} />
             </Routes>
+            {/* <Footer>...</Footer> */}
           </ThemeProvider>
       </div>
     </Router>
