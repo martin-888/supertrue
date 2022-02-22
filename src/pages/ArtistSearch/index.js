@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, TextField, Typography, Button, Grid, Box, List, ListItem, Container, CircularProgress } from "@mui/material";
+import { Link, TextField, Typography, Button, Grid, Box, Container, CircularProgress } from "@mui/material";
 import { getArtists } from "../../api";
 // import ArtistBlock from "components/ArtistBlock";
 import ArtistNFT from "components/ArtistNFT";
