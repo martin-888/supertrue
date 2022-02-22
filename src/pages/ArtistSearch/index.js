@@ -73,7 +73,7 @@ export default function ArtistSearch({view}) {
             You can be the first!
           </Typography>
           <Box sx={{ m: 2 }} />
-          <Button variant="contained" size="large" href={`/artist/new?name=${searchQuery}`}>Mint #1 {searchQuery}</Button>
+          <Button variant="contained" size="large" href={`/artist/new?name=${searchQuery}`}>Add {searchQuery}</Button>
         </Grid>
       );
     }
@@ -85,7 +85,6 @@ export default function ArtistSearch({view}) {
           Mint your favorite new artist to receive a dated NFT with your disovery date and your supertrue follower count. Display your music finds in your gallery. Funds are held for the artist minus transaction fees. 
         </Typography>
         }
-        
         {view!=='gallery' && <Box key='h2' sx={{mb:3}}>
             <Typography variant="h2" >NEWLY MINTED</Typography>
           </Box>}
@@ -113,7 +112,7 @@ export default function ArtistSearch({view}) {
       <Box sx={{mb:6}}>
         <Typography variant="h1" >NFT GALLERY</Typography>
         <Typography variant="h6" className="explanation" sx={{my:2}}>
-          All your shiny finds are displayed here. <Link variant="text" href={`/artist/new`}>Mint a new artist</Link>
+          All your shiny finds are displayed here. <Link variant="text" href={`/artist/new`}>Add a new artist</Link>
         </Typography>
       </Box>
       }
