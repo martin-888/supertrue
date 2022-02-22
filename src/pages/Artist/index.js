@@ -15,14 +15,16 @@ export default function Artist() {
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
   const [contract, setContract] = useState();
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(0);
   const [owner, setOwner] = useState();
+  const [totalSupply, setTotalSupply] = useState(1);
   const { id } = useParams();
+  const waitTime = 2000;
 
   useEffect(() => getArtist({ id }).then(response => {
     setArtist(response.artist);
     setLoading(false);
-    console.warn("Artist() Data:", response.artist);
+    // console.warn("Artist() Data:", response.artist);
   }), []);
 
   useEffect(() => {
@@ -30,8 +32,15 @@ export default function Artist() {
       console.warn("Has Provider");
       if(artist) loadContractInstance(artist);
       else{
-        console.error("No Artist - Need to unload contract");
+        console.log("No Artist Data - Unload Contract");
+        setContract(null);  
       }
+    }
+    else if(artist){
+      console.log("Has Artist, but No Web3 Provider - Load From DB");
+        setPrice(artist.price);
+        setTotalSupply(artist.minted);
+        // setOwner(artist.owner);
     }
   }, [provider, artist]);
 
@@ -41,37 +50,43 @@ export default function Artist() {
       const contractInstance = new Contract(artist.contractAddress, abis.forwardNFT, provider.getSigner());
       setContract(contractInstance);
       // the price is slowly increasing with each NFT so we need to get current price
-      const contractPrice = await contractInstance.getCurrentPrice().then(res => Number(res._hex));
-      setPrice(contractPrice);
-      const contractOwner = await contractInstance.owner();
-      setOwner(contractOwner);
-      // console.warn("[TEST] ", {price:contractPrice, owner:contractOwner});
-      // console.warn("[TEST] ETH Price:" + contractPrice / 10**18 );
+      // const contractPrice = await 
+      contractInstance.getCurrentPrice().then(res => Number(res._hex)).then(res => setPrice(res));
+      contractInstance.owner().then(res => setOwner(res));
+      contractInstance.totalSupply().then(res => setTotalSupply(Number(res)));
     }
   }
 
   const mintNFT = async () => {
     setMinting(true);
     await mint({ provider, contractAddress: artist.contractAddress })
-      .then(({ tx, receipt }) => setTimeout(() => setMinted(true), 3000))
-      .catch(err => console.error("[CAUGHT] mint() Failed", err))
-      .finally(() => setTimeout(() => setMinting(false), 3000));
+      .then((ret) => {
+        // const { tx, receipt } = ret;
+        console.error("mint() Success", ret);
+        setTimeout(() => setMinted(true), waitTime);
+        //Reload Contract Data
+        loadContractInstance(artist);
+      })
+      .catch(err => {
+        if(err.code === 4001) console.error("[CAUGHT] Metamask rejected transaction");
+        else console.error("[CAUGHT] forwardNFT.mint() Failed", err);
+      })
+      .finally(() => {
+        setTimeout(() => setMinting(false), waitTime);
+      });
   };
     
-  async function mint({ provider, contractAddress }) {
-    // creating connection to the smart contract
-    // const forwardNFT = new Contract(contractAddress, abis.forwardNFT, provider.getSigner());
+  async function mint({ provider }) {
+    // The smart contract
     const forwardNFT = contract;
-
     // get connected metamask wallet address
     const address = await provider.getSigner().getAddress();
     // console.log({ address })
-
     // calling the smart contract function
     // first param is amount of NFTs, second is address where it should be mint into
     return forwardNFT.mint(1, address, { value: price })
       .then(tx => tx.wait().then(receipt => ({ tx, receipt })))
-      .catch(err => console.error("[CAUGHT] forwardNFT.mint() Failed", err))
+      // Error Handled on Caller
   }
 
   if (loading) {
@@ -124,7 +139,7 @@ export default function Artist() {
             variant="contained"
             color="success"
             target="_blank"
-            href={`https://testnets.opensea.io/assets/${artist.contractAddress}/${artist.minted + 1}`}
+            href={`https://testnets.opensea.io/assets/${artist.contractAddress}/${totalSupply + 1}`}
           >
             Show On OpenSea
           </Button>
@@ -138,7 +153,7 @@ export default function Artist() {
           onClick={!provider ? loadWeb3Modal : mintNFT}
           disabled={minting}
         >
-          Mint Fan #{artist.minted + 1}
+          Mint Fan #{totalSupply + 1}
         </Button>
       </Box>
     </Grid>
