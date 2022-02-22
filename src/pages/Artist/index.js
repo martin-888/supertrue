@@ -46,11 +46,10 @@ export default function Artist() {
 
   async function loadContractInstance(artist) {
     if(artist){
-      // creating connection to the smart contract
+      // Init smart contract Handle
       const contractInstance = new Contract(artist.contractAddress, abis.forwardNFT, provider.getSigner());
       setContract(contractInstance);
-      // the price is slowly increasing with each NFT so we need to get current price
-      // const contractPrice = await 
+      //Fetch On-Chain Data
       contractInstance.getCurrentPrice().then(res => Number(res._hex)).then(res => setPrice(res));
       contractInstance.owner().then(res => setOwner(res));
       contractInstance.totalSupply().then(res => setTotalSupply(Number(res)));
@@ -77,16 +76,13 @@ export default function Artist() {
   };
     
   async function mint({ provider }) {
-    // The smart contract
-    const forwardNFT = contract;
-    // get connected metamask wallet address
+    // get current metamask wallet address
     const address = await provider.getSigner().getAddress();
     // console.log({ address })
     // calling the smart contract function
     // first param is amount of NFTs, second is address where it should be mint into
-    return forwardNFT.mint(1, address, { value: price })
-      .then(tx => tx.wait().then(receipt => ({ tx, receipt })))
-      // Error Handled on Caller
+    return contract.mint(1, address, { value: price })
+      .then(tx => tx.wait().then(receipt => ({ tx, receipt }))) // Errors Handled by Caller
   }
 
   if (loading) {
@@ -122,7 +118,7 @@ export default function Artist() {
       justifyContent="center"
       alignItems="center"
     >
-      <img width="400" height="400" src={__.getArtistNFTImage(artist)} />
+      <img width="400" height="400" src={__.getArtistNFTImage(artist, `${(artist.minted >= totalSupply) ? (artist.minted+1) : (totalSupply+1)}`)} />
       <Box sx={{ mt: 6, mb:2 }}>
         <Typography variant="h5">Price: {price / 10**18} ETH</Typography>
       </Box>
