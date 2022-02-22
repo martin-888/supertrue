@@ -138,7 +138,7 @@ export default function Artist() {
             <label>Price:</label> {price / 10**18} ETH</Typography>
         </Box>
 
-        <Typography variant="subtitle1">Price goes up per each additional NFT created, Funds for unclaimed profiles are held for the artist minus service fees.</Typography>
+        <Typography variant="subtitle1">Price goes up per each additional NFT minted. Funds for unclaimed profiles are held for the artist minus service fees.</Typography>
 
         {minted && (
             <Box sx={{ my: 2 }}>
