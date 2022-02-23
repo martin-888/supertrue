@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 // import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 
+import useWeb3Modal from "../../hooks/useWeb3Modal";
 
 //SearchBar
 // import { styled, alpha } from '@mui/material/styles';
@@ -18,19 +19,20 @@ import Button from '@mui/material/Button';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 const pages = [
-  // {name:'Artists', url:'/'}, 
+  // {name:'Artists', url:'/'},
   // {name:'New Artist', url:'/artist/new'},
   {name:'Search', url:'/search'},
   {name:'Gallery', url:'/gallery'},
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const settings = [
-  {name:'Assets', url:'/me'}, 
+  {name:'Assets', url:'/me'},
 ];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [provider, loadWeb3Modal, logoutOfWeb3Modal, account] = useWeb3Modal();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -63,7 +65,7 @@ const ResponsiveAppBar = () => {
         width: 'auto',
         },
     }));
-    
+
     const SearchIconWrapper = styled('div')(({ theme }) => ({
         padding: theme.spacing(0, 2),
         height: '100%',
@@ -73,7 +75,7 @@ const ResponsiveAppBar = () => {
         alignItems: 'center',
         justifyContent: 'center',
     }));
-    
+
     const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: 'inherit',
         '& .MuiInputBase-input': {
@@ -88,10 +90,10 @@ const ResponsiveAppBar = () => {
         },
     }));
 */
-    
+
   return (
     <AppBar position="static" color='transparent' style={{boxShadow:'none'}}>
-      
+
       <Container maxWidth="md">
         <Toolbar disableGutters>
           <Typography
@@ -103,8 +105,8 @@ const ResponsiveAppBar = () => {
             <Logo />
           </Typography>
 
-          {/* 
-          <Search> 
+          {/*
+          <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -172,34 +174,43 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                <AccountCircle style={{width:'38px', height:'38px', color:'#111'}}/>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); window.location.href = setting.url; }}>
-                  <Typography textAlign="center">{setting.name}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            {!account ? (
+              <Button size="large" variant="contained" onClick={loadWeb3Modal}>Connect Wallet</Button>
+            ) : (
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                    <AccountCircle style={{width:'38px', height:'38px', color:'#111'}}/>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); window.location.href = setting.url; }}>
+                      <Typography textAlign="center">{setting.name}</Typography>
+                    </MenuItem>
+                  ))}
+                  <MenuItem onClick={logoutOfWeb3Modal}>
+                    <Typography textAlign="center">Disconnect Wallet</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+              )}
           </Box>
         </Toolbar>
       </Container>
@@ -211,10 +222,10 @@ export default ResponsiveAppBar;
 
 const Logo = () => {
   return(
-    <Link 
+    <Link
       // sx={{ color:'white' }}
-      href="/" 
-      underline="none" 
+      href="/"
+      underline="none"
       className="app-logo"
       style={{fontFamily: 'DM Serif Display, serif', fontWeight:'600'}}
       >

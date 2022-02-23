@@ -7,9 +7,11 @@ import Web3Modal from "web3modal";
 // You can get a key for free at https://infura.io/register
 const INFURA_ID = "053054e14de8436ca32b539867081440";
 
+// TODO load from env variable
 const NETWORK = "rinkeby";
 
 function useWeb3Modal(config = {}) {
+  const [account, setAccount] = useState();
   const [provider, setProvider] = useState();
   const [autoLoaded, setAutoLoaded] = useState(false);
   const { autoLoad = true, infuraId = INFURA_ID, network = NETWORK } = config;
@@ -33,13 +35,42 @@ function useWeb3Modal(config = {}) {
 
   // Open wallet selection modal.
   const loadWeb3Modal = useCallback(async () => {
-    const newProvider = await web3Modal.connect();
-    setProvider(new Web3Provider(newProvider));
+    const newProvider = await web3Modal.connect().catch(() => null);
+
+    if (!newProvider) {
+      return;
+    }
+
+    const signerProvider = new Web3Provider(newProvider);
+    setProvider(signerProvider);
+
+    const accounts = await signerProvider.listAccounts();
+    setAccount(accounts?.[0]);
+
+    newProvider.on("accountsChanged", (accounts) => {
+      console.log(`account changed!`, accounts?.[0]);
+      setAccount(accounts?.[0]);
+    });
+
+    newProvider.on("chainChanged", (chainId) => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+    });
+
+    newProvider.on("networkChanged", (networkId) => {
+      console.log(`network changed to ${networkId}! updating providers`);
+    });
+
+    // Subscribe to session disconnection
+    newProvider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
   }, [web3Modal]);
 
   const logoutOfWeb3Modal = useCallback(
     async function () {
       await web3Modal.clearCachedProvider();
+      setAccount(null);
       window.location.reload();
     },
     [web3Modal],
@@ -53,7 +84,7 @@ function useWeb3Modal(config = {}) {
     }
   }, [autoLoad, autoLoaded, loadWeb3Modal, setAutoLoaded, web3Modal.cachedProvider]);
 
-  return [provider, loadWeb3Modal, logoutOfWeb3Modal];
+  return [provider, loadWeb3Modal, logoutOfWeb3Modal, account];
 }
 
 export default useWeb3Modal;
