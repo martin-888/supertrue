@@ -10,21 +10,21 @@ import { abis } from "../../contracts";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import __ from "helpers/__";
 import './Artist.scss';
-
 // import ArtistBlock from "components/ArtistBlock";
 
-const COLLECTION_QUERY = gql`
-    {
-        collections {
-            id
-            minted
-            artistId
-            symbol
-            name
-            address
-            instagram
-            price
-        }
+//Single Artist Query
+const ARTIST_QUERY = gql`
+    query getArtist($artistId: Int) {
+      collections(where: {artistId: $artistId}) {
+        id
+        artistId
+        minted
+        name
+        symbol
+        instagram
+        address
+        price
+      }
     }
 `;
 
@@ -34,7 +34,11 @@ const COLLECTION_QUERY = gql`
 export default function Artist() {
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const { id } = useParams();
-  const { data, loading, error } = useQuery(COLLECTION_QUERY);
+  // const { data, loading, error } = useQuery(COLLECTION_QUERY);
+  const { data, loading, error } = useQuery(ARTIST_QUERY, {
+    variables: { artistId: Number(id) }
+  });
+
   const [minting, setMinting] = useState(false);
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
@@ -43,7 +47,10 @@ export default function Artist() {
   const waitTime = 2000;
 
   useEffect(() => {
-    setArtist(data?.collections?.find(col => col.artistId.toString() === id));
+    if(error) console.error("Failed to fetch Artist:"+id+" data: ", {data, loading, error});
+    // console.warn("Artist:"+id+" data: ", {data, loading, error});
+    // setArtist(data?.collections?.find(col => col.artistId.toString() === id));
+    setArtist(data?.collections?.[0]);
   }, [data]);
 
   async function loadContractInstance(artist) {
@@ -100,14 +107,11 @@ export default function Artist() {
 
   if (!artist) {
     return (
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography variant="h5">Artist Not Found</Typography>
+      <Container maxWidth="md">
+      <Grid>
+        <Typography variant="h5">Requested Artist Not Found</Typography>
       </Grid>
+      </Container>
     );
   };
 
@@ -133,17 +137,17 @@ export default function Artist() {
         <Typography variant="subtitle1">Price goes up per each additional NFT created.</Typography>
 
         {minted && (
-            <Box sx={{ my: 2 }}>
-              <Button
-                variant="contained"
-                color="success"
-                target="_blank"
-                href={`https://testnets.opensea.io/assets/${artist.address}/${artist.minted + 1}`}
-              >
-                Show On OpenSea
-              </Button>
-            </Box>
-          )}
+          <Box sx={{ my: 2 }}>
+            <Button
+              variant="contained"
+              color="success"
+              target="_blank"
+              href={`https://testnets.opensea.io/assets/${artist.address}/${artist.minted + 1}`}
+            >
+              Show On OpenSea
+            </Button>
+          </Box>
+        )}
 
         <Box className="actions">
           <Box>
@@ -179,7 +183,7 @@ export default function Artist() {
 
         <Typography variant="h4">WHAT HAPPENS WHEN AN ARTIST I BELIEVE IN GROWS</Typography>
         <Typography>
-        Congratulations! You’ve helped someone on their way up and now they’re on they’re on their way up. Supertrue saves your spot in time that you’ve backed that artist, and gives them the ability to reward their supertrue fans. How exactly they do it is up to them. We suggest to artist to give early access, exclusive shows, and special merch only available to their supertrue fans. 
+          Congratulations! You’ve helped someone on their way up and now they’re on they’re on their way up. Supertrue saves your spot in time that you’ve backed that artist, and gives them the ability to reward their supertrue fans. How exactly they do it is up to them. We suggest to artist to give early access, exclusive shows, and special merch only available to their supertrue fans. 
         </Typography>
 
         <Typography variant="h4">CAN I SELL OR TRADE MY SUPERTRUE NFT</Typography>
