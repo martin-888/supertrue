@@ -1,18 +1,15 @@
 import React from "react";
-import { Box, Link } from "@mui/material";
+import { Box, Link, Container } from "@mui/material";
 // import './Footer.scss';
 
 export default function Footer(props) {
   return (
-    <Box className="app-footer" sx={{
-      display: 'grid',
-      justifyContent: "space-around",
-      // borderTop: "3px solid black",
-      paddingTop: "2em",
-    }}>
+    <Container maxWidth="md">
+    <Box className="app-footer">
       <div className="inner">
         {props.children}
       </div>
     </Box>
+    </Container>
   );
 }

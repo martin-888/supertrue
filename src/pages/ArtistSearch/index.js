@@ -91,7 +91,7 @@ export default function ArtistSearch({view}) {
     return (
       <>
         {view!=='gallery' &&
-        <Typography maxWidth="md" variant="h5" className="explanation" sx={{mt:6, mb:10}}>
+        <Typography variant="subtitle1" className="explanation" sx={{mt:6, mb:10}}>
           Mint your favorite new artist to receive a dated NFT with your disovery date and your supertrue follower count. Display your music finds in your gallery. Funds are held for the artist minus transaction fees.
         </Typography>
         }

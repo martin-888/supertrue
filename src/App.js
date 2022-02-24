@@ -15,7 +15,9 @@ import Assets from "./pages/Assets";
 import ArtistSearch from "pages/ArtistSearch";
 
 import Header from "./components/Header";
-// import Footer from "./components/Footer";
+import Footer from "./components/Footer";
+
+import 'App.scss';
 
 const theme = createTheme({
   palette: {
@@ -30,16 +32,33 @@ const theme = createTheme({
     fontFamily: ['Space Mono', '"Montserrat"', 'Open Sans'].join(','),
 
     h1:{
-      fontFamily: 'DM Serif Display, serif',
-      fontSize: '2rem',
+      fontFamily: 'DM Serif Display, Open Sans',
       fontWeight: 'bold',
+      fontSize: '2rem',
     },
     h2:{
-      fontFamily: 'DM Serif Display, serif',
-      fontSize: '1.6rem',
+      fontFamily: 'DM Serif Display, Open Sans',
       fontWeight: 'bold',
+      fontSize: '1.8rem',
+    },
+    h3:{
+      fontFamily: 'DM Serif Display, Open Sans',
+      fontWeight: 'bold',
+      fontSize: '1.6rem',
+    },
+    h4:{
+      fontFamily: 'DM Serif Display, Open Sans',
+      fontWeight: 'bold',
+      fontSize: '1.4rem',
+    },
+    h5:{
+      fontFamily: 'DM Serif Display, Open Sans',
+      fontWeight: 'bold',
+      fontSize: '1.2rem',
     },
     h6:{
+      fontFamily: 'DM Serif Display, Open Sans',
+      fontWeight: 'bold',
       fontSize: '1.1rem',
     },
    }
@@ -51,7 +70,6 @@ export default function App() {
       <div className="app">
         <ThemeProvider theme={theme}>
             <Header />
-            <Box sx={{ m: 4 }} />
             <Routes>
               <Route path="/artist/new" element={<NewArtist />} />
               <Route path="/artist/:id" element={<Artist />} />
@@ -61,7 +79,9 @@ export default function App() {
               {/* <Route path="/" element={<Home />} /> */}
               <Route path="/" element={<ArtistSearch />} />
             </Routes>
-            {/* <Footer>...</Footer> */}
+            <Footer>
+              Created with 🖤 by the Supetrue Team . ✋🏿 hi@supertrue.com
+            </Footer>
           </ThemeProvider>
       </div>
     </Router>

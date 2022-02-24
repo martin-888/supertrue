@@ -1,0 +1,20 @@
+.title {
+    font-family: "DM Serif Display", serif;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+header.MuiPaper-root{
+    margin-bottom: 80px;
+}
+.app-footer{
+    margin-top: 60px;
+    padding: 2em 0;
+    // display: grid;
+    // justify-content: space-around;
+}
+
+@media only screen and (max-width: 900px) {
+    header.MuiPaper-root{
+        margin-bottom: 60px;
+    }
+}
