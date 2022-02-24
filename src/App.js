@@ -5,18 +5,17 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 // import Home from "./pages/Home";
 import Artist from "./pages/Artist";
 import NewArtist from "./pages/NewArtist";
-import Me from "./pages/Me";
+import Assets from "./pages/Assets";
 import ArtistSearch from "pages/ArtistSearch";
 
 import Header from "./components/Header";
 // import Footer from "./components/Footer";
-
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
@@ -56,7 +55,7 @@ export default function App() {
             <Routes>
               <Route path="/artist/new" element={<NewArtist />} />
               <Route path="/artist/:id" element={<Artist />} />
-              <Route path="/me" element={<Me />} />
+              <Route path="/assets" element={<Assets />} />
               <Route path="/search" element={<ArtistSearch />} />
               <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
               {/* <Route path="/" element={<Home />} /> */}
@@ -66,6 +65,6 @@ export default function App() {
           </ThemeProvider>
       </div>
     </Router>
-    
+
   );
 }

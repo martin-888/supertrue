@@ -1,11 +1,7 @@
 const endpoint = "https://us-central1-supertrue-5bc93.cloudfunctions.net/api";
 // const endpoint = "http://localhost:5003/supertrue-5bc93/us-central1/api";
 
-const getArtist = ({ id }) => {
-  return fetch(`${endpoint}/artist/${id}`).then(resp => resp.json());
-}
-
-const getArtists = () => {
+const getArtists = () => { // TODO replace with thegraph
   return fetch(`${endpoint}/artist`).then(resp => resp.json());
 }
 
@@ -23,7 +19,6 @@ const createArtist = ({ tx }) => {
 }
 
 export {
-  getArtist,
   getArtists,
   createArtist
 };

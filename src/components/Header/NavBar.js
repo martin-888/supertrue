@@ -26,7 +26,7 @@ const pages = [
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const settings = [
-  {name:'Assets', url:'/me'},
+  {name:'Assets', url:'/assets'},
 ];
 
 const ResponsiveAppBar = () => {
