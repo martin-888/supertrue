@@ -47,7 +47,7 @@ function useWeb3Modal(config = {}) {
     setProvider(signerProvider);
 
     //Set Current Chain ID
-    signerProvider.detectNetwork().then(res => setChainId(res?.chainId, 16));
+    signerProvider.detectNetwork().then(res => setChainId(res?.chainId));
     //Set Current Account
     signerProvider.listAccounts().then(accounts => setAccount(accounts?.[0]));
 
