@@ -22,7 +22,7 @@ async function create({ provider, instagram, name }) {
 }
 
 export default function NewArtist() {
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+  const { provider, loadWeb3Modal, logoutOfWeb3Modal } = useWeb3Modal();
   const navigate = useNavigate();
   // eslint-disable-next-line no-restricted-globals
   const search = useMemo(() => queryString.parse(window.location.search), [location.search]);

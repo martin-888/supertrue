@@ -32,7 +32,7 @@ const ARTIST_QUERY = gql`
  * Component: Single Artist Page
  */
 export default function Artist() {
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+  const { provider, loadWeb3Modal, account, chainId } = useWeb3Modal();
   const { id } = useParams();
   // const { data, loading, error } = useQuery(COLLECTION_QUERY);
   const { data, loading, error } = useQuery(ARTIST_QUERY, {
@@ -55,11 +55,11 @@ export default function Artist() {
 
   
   useEffect(() => {
-    console.warn("Loading Artist:"+id+" data: ", {data, loading, error, provider, signer:provider?.getSigner()});
+    console.warn("Loading Artist:"+id+" data: ", {data, loading, error, chainId,  provider, signer:provider?.getSigner()});
     //On Artist change, reload the contract
     if(artist) loadContractInstance(artist);
     else setContract();
-  }, [artist]);
+  }, [artist, chainId]);
 
   /**
    * Init Contract Instance
@@ -67,11 +67,14 @@ export default function Artist() {
    */
   async function loadContractInstance(artist) {
     if(artist){
-      // Init smart contract Handle
-      const contractInstance = new Contract(artist.address, abis.forwardNFT, provider.getSigner());
-      setContract(contractInstance);
-      //Fetch On-Chain Data
-      contractInstance.owner().then(res => setOwner(res));
+      if(provider?.getSigner()){
+        // Init smart contract Handle
+        const contractInstance = new Contract(artist.address, abis.forwardNFT, provider.getSigner());
+        setContract(contractInstance);
+        //Fetch On-Chain Data
+        // contractInstance.owner().then(res => setOwner(res));
+      }
+      else console.error("No Provider / Signer", {provider});
     }
   }
 
@@ -87,7 +90,8 @@ export default function Artist() {
       })
       .catch(err => {
         if(err.code === 4001) console.error("[CAUGHT] Metamask rejected transaction");
-        else console.error("[CAUGHT] forwardNFT.mint() Failed", {err, provider, signer:provider?.getSigner()});
+        else if(err.code === -32603) console.error("[CAUGHT] Insufficient funds");
+        else console.error("[CAUGHT] forwardNFT.mint() Failed", {err, chainId, account, provider, signer:provider?.getSigner()});
       })
       .finally(() => {
         setTimeout(() => setMinting(false), waitTime);
@@ -97,14 +101,16 @@ export default function Artist() {
   async function mint({ provider }) {
     // get current metamask wallet address
     const address = await provider.getSigner().getAddress();
-    // console.log({ address })
+    // console.log("Current Address:", { address })
 
-    if(!contract) console.error("Contract not available", { contract, address });
-
-    // calling the smart contract function
-    // first param is amount of NFTs, second is address where it should be mint into
-    return contract.mint(1, address, { value: artist.price })
-      .then(tx => tx.wait().then(receipt => ({ tx, receipt }))) // Errors Handled by Caller
+    //Validate
+    if(contract){
+      // calling the smart contract function
+      // first param is amount of NFTs, second is address where it should be mint into
+      return contract.mint(1, address, { value: artist.price })
+        .then(tx => tx.wait().then(receipt => ({ tx, receipt }))) // Errors Handled by Caller
+    }
+    else console.error("Contract not available", { contract, address, chainId });
   }
 
   if (loading) {

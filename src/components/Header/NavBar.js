@@ -32,7 +32,7 @@ const settings = [
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal, account] = useWeb3Modal();
+  const { provider, loadWeb3Modal, logoutOfWeb3Modal, account } = useWeb3Modal();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);

@@ -1,4 +1,4 @@
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";  //https://www.jsdocs.io/package/@ethersproject/providers
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Web3Modal from "web3modal";
@@ -13,6 +13,7 @@ const NETWORK = "rinkeby";
 function useWeb3Modal(config = {}) {
   const [account, setAccount] = useState();
   const [provider, setProvider] = useState();
+  const [chainId, setChainId] = useState();
   const [autoLoaded, setAutoLoaded] = useState(false);
   const { autoLoad = true, infuraId = INFURA_ID, network = NETWORK } = config;
 
@@ -38,27 +39,31 @@ function useWeb3Modal(config = {}) {
     const newProvider = await web3Modal.connect().catch(() => null);
 
     if (!newProvider) {
+      // console.error("useWeb3Modal() No Provider Found");
       return;
     }
 
     const signerProvider = new Web3Provider(newProvider);
     setProvider(signerProvider);
 
-    const accounts = await signerProvider.listAccounts();
-    setAccount(accounts?.[0]);
+    //Set Current Chain ID
+    signerProvider.detectNetwork().then(res => setChainId(res?.chainId, 16));
+    //Set Current Account
+    signerProvider.listAccounts().then(accounts => setAccount(accounts?.[0]));
 
     newProvider.on("accountsChanged", (accounts) => {
-      console.log(`account changed!`, accounts?.[0]);
+      console.log(`account changed to:`, accounts?.[0]);
       setAccount(accounts?.[0]);
     });
 
     newProvider.on("chainChanged", (chainId) => {
-      console.log(`chain changed to ${chainId}! updating providers`);
+      console.log(`chain changed to ${chainId}`);
+      setChainId(chainId);
     });
 
-    newProvider.on("networkChanged", (networkId) => {
-      console.log(`network changed to ${networkId}! updating providers`);
-    });
+    // newProvider.on("networkChanged", (networkId) => {
+    //   console.log(`network changed to ${networkId}! updating providers`);
+    // });
 
     // Subscribe to session disconnection
     newProvider.on("disconnect", (code, reason) => {
@@ -84,7 +89,7 @@ function useWeb3Modal(config = {}) {
     }
   }, [autoLoad, autoLoaded, loadWeb3Modal, setAutoLoaded, web3Modal.cachedProvider]);
 
-  return [provider, loadWeb3Modal, logoutOfWeb3Modal, account];
+  return { provider, loadWeb3Modal, logoutOfWeb3Modal, account, chainId };
 }
 
 export default useWeb3Modal;

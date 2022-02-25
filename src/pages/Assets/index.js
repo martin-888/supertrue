@@ -24,7 +24,7 @@ const MY_NFTS_QUERY = gql`
 `;
 
 export default function Me() {
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal, account] = useWeb3Modal();
+  const { account } = useWeb3Modal();
   const { data, loading, error } = useQuery(MY_NFTS_QUERY, {
     variables: { userId: (account || "").toLowerCase() }
   });
