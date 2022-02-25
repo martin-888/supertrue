@@ -53,6 +53,18 @@ export default function Artist() {
     setArtist(data?.collections?.[0]);
   }, [data]);
 
+  
+  useEffect(() => {
+    console.warn("Loading Artist:"+id+" data: ", {data, loading, error, provider, signer:provider?.getSigner()});
+    //On Artist change, reload the contract
+    if(artist) loadContractInstance(artist);
+    else setContract();
+  }, [artist]);
+
+  /**
+   * Init Contract Instance
+   * @param {*} artist 
+   */
   async function loadContractInstance(artist) {
     if(artist){
       // Init smart contract Handle
@@ -75,7 +87,7 @@ export default function Artist() {
       })
       .catch(err => {
         if(err.code === 4001) console.error("[CAUGHT] Metamask rejected transaction");
-        else console.error("[CAUGHT] forwardNFT.mint() Failed", err);
+        else console.error("[CAUGHT] forwardNFT.mint() Failed", {err, provider, signer:provider?.getSigner()});
       })
       .finally(() => {
         setTimeout(() => setMinting(false), waitTime);
@@ -86,6 +98,9 @@ export default function Artist() {
     // get current metamask wallet address
     const address = await provider.getSigner().getAddress();
     // console.log({ address })
+
+    if(!contract) console.error("Contract not available", { contract, address });
+
     // calling the smart contract function
     // first param is amount of NFTs, second is address where it should be mint into
     return contract.mint(1, address, { value: artist.price })
