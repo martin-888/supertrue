@@ -22,7 +22,7 @@ const pages = [
   // {name:'Artists', url:'/'},
   // {name:'New Artist', url:'/artist/new'},
   {name:'Search', url:'/search'},
-  {name:'Gallery', url:'/gallery'},
+  // {name:'Gallery', url:'/gallery'},
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const settings = [
