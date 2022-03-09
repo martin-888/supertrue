@@ -43,7 +43,7 @@ export default function Artist() {
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
   const [contract, setContract] = useState();
-  const [owner, setOwner] = useState();
+  // const [owner, setOwner] = useState();
   const waitTime = 2000;
 
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function Artist() {
     // console.warn("Artist:"+id+" data: ", {data, loading, error});
     // setArtist(data?.collections?.find(col => col.artistId.toString() === id));
     setArtist(data?.collections?.[0]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   
@@ -59,6 +60,7 @@ export default function Artist() {
     //On Artist change, reload the contract
     if(artist) loadContractInstance(artist);
     else setContract();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artist, chainId]);
 
   /**
@@ -141,7 +143,7 @@ export default function Artist() {
     <Grid container className="artist-single">
 
       <Grid item className="image" md={6}>
-        <img src={__.getNFTImage(artist.artistId, artist.minted+1)} />
+        <img src={__.getNFTImage(artist.artistId, artist.minted+1)} alt={artist.name} />
       </Grid>
       <Grid item className="details" md={6}>
 
