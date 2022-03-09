@@ -70,6 +70,7 @@ function useWeb3Modal(config = {}) {
       console.log(code, reason);
       logoutOfWeb3Modal();
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3Modal]);
 
   const logoutOfWeb3Modal = useCallback(

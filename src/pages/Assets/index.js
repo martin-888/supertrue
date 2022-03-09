@@ -25,6 +25,7 @@ const MY_NFTS_QUERY = gql`
 
 export default function Me() {
   const { account } = useWeb3Modal();
+  // eslint-disable-next-line no-unused-vars
   const { data, loading, error } = useQuery(MY_NFTS_QUERY, {
     variables: { userId: (account || "").toLowerCase() }
   });
@@ -72,7 +73,8 @@ export default function Me() {
         {data.user.nfts.map((nft) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
             <Box className="image">
-              <img src={__.getNFTImage(nft.artistId, nft.tokenId)} />
+              {console.warn("nft", nft)}
+              <img src={__.getNFTImage(nft.artistId, nft.tokenId)} alt={nft?.collection?.name}/>
             </Box>
           </Grid>
         ))}
