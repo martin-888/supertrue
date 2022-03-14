@@ -10,10 +10,10 @@ import useWeb3Modal from "../../hooks/useWeb3Modal";
 
 async function create({ provider, instagram, name }) {
   // creating connection to the smart contract
-  const forwardCreator = new Contract(addresses.forwardCreator, abis.forwardCreator, provider.getSigner());
+  const superTrueCreator = new Contract(addresses.superTrueCreator, abis.superTrueCreator, provider.getSigner());
 
   // calling the smart contract function
-  const tx = await forwardCreator.createArtist(name, instagram);
+  const tx = await superTrueCreator.createArtist(name, instagram, "0");
 
   // wait till the transaction is mint/confirmed
   const receipt = await tx.wait();

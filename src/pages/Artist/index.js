@@ -71,7 +71,7 @@ export default function Artist() {
     if(artist){
       if(provider?.getSigner()){
         // Init smart contract Handle
-        const contractInstance = new Contract(artist.address, abis.forwardNFT, provider.getSigner());
+        const contractInstance = new Contract(artist.address, abis.superTrueNFT, provider.getSigner());
         setContract(contractInstance);
         //Fetch On-Chain Data
         // contractInstance.owner().then(res => setOwner(res));
@@ -93,7 +93,7 @@ export default function Artist() {
       .catch(err => {
         if(err.code === 4001) console.error("[CAUGHT] Metamask rejected transaction");
         else if(err.code === -32603) console.error("[CAUGHT] Insufficient funds");
-        else console.error("[CAUGHT] forwardNFT.mint() Failed", {err, chainId, account, provider, signer:provider?.getSigner()});
+        else console.error("[CAUGHT] superTrueNFT.mint() Failed", {err, chainId, account, provider, signer:provider?.getSigner()});
       })
       .finally(() => {
         setTimeout(() => setMinting(false), waitTime);
@@ -109,7 +109,7 @@ export default function Artist() {
     if(contract){
       // calling the smart contract function
       // first param is amount of NFTs, second is address where it should be mint into
-      return contract.mint(1, address, { value: artist.price })
+      return contract.mint(address, { value: artist.price })
         .then(tx => tx.wait().then(receipt => ({ tx, receipt }))) // Errors Handled by Caller
     }
     else console.error("Contract not available", { contract, address, chainId });

@@ -1,9 +1,9 @@
-import forwardCreator from "./abis/ForwardCreator.json";
-import forwardNFT from "./abis/ForwardNFT.json";
+import superTrueCreator from "./abis/SuperTrueCreator.json";
+import superTrueNFT from "./abis/SuperTrueNFT.json";
 
 const abis = {
-  forwardCreator: forwardCreator.abi,
-  forwardNFT: forwardNFT.abi,
+  superTrueCreator,
+  superTrueNFT,
 };
 
 export default abis;
