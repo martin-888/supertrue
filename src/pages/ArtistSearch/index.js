@@ -11,6 +11,9 @@ const COLLECTIONS_QUERY = gql`
             artistId
             minted
             name
+            owner {
+                id
+            }
         }
     }
 `;

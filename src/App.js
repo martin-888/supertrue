@@ -11,13 +11,14 @@ import { grey } from '@mui/material/colors';
 // import Home from "./pages/Home";
 import Artist from "./pages/Artist";
 import NewArtist from "./pages/NewArtist";
-import Assets from "./pages/Assets";
+import Profile from "./pages/Profile";
 import ArtistSearch from "pages/ArtistSearch";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 import 'App.scss';
+import useWeb3Modal from "./hooks/useWeb3Modal";
 
 const theme = createTheme({
   palette: {
@@ -65,6 +66,8 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const { account } = useWeb3Modal();
+
   return (
     <Router>
       <div className="app">
@@ -73,7 +76,7 @@ export default function App() {
             <Routes>
               <Route path="/artist/new" element={<NewArtist />} />
               <Route path="/artist/:id" element={<Artist />} />
-              <Route path="/assets" element={<Assets />} />
+              <Route path="/profile" element={!account ? <ArtistSearch /> : <Profile />} />
               <Route path="/search" element={<ArtistSearch />} />
               <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
               {/* <Route path="/" element={<Home />} /> */}
