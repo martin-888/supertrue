@@ -13,6 +13,7 @@ const MY_PROFILE_QUERY = gql`
         user(id: $userId) {
             collection {
                 id
+                artistId
                 address
                 minted
                 name
@@ -257,6 +258,20 @@ export default function Profile() {
         {getAccountContent()}
         <Box sx={{mb:3}} />
       </Box>
+      {data?.user?.collection?.id && (
+        <Box sx={{mb:3}}>
+          <Box sx={{mb:3}}>
+            <Typography variant="h2">MY COLLECTION</Typography>
+          </Box>
+          <Grid container spacing={8}>
+            <Grid item className="artist" xs={12} sm={6} md={6}>
+              <Box className="image">
+                <img src={__.getNFTImage(data.user.collection.artistId, data.user.collection.minted)} />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
       <Box sx={{mb:3}}>
         <Typography variant="h2">MY ASSETS</Typography>
       </Box>
