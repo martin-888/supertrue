@@ -13,7 +13,7 @@ async function create({ provider, instagram, name }) {
   const superTrueCreator = new Contract(addresses.superTrueCreator, abis.superTrueCreator, provider.getSigner());
 
   // calling the smart contract function
-  const tx = await superTrueCreator.createArtist(name, instagram, "0");
+  const tx = await superTrueCreator.createArtist(name, instagram, instagram);
 
   // wait till the transaction is mint/confirmed
   const receipt = await tx.wait();
@@ -80,9 +80,9 @@ export default function NewArtist() {
       const { artist } = await api.createArtist({ tx: receipt.transactionHash });
       //Redirect to Artist Page
       setTimeout(() => {
-        if(artist && artist?.id) navigate(`/artist/${artist.id}`);
+        if (artist?.id) navigate(`/artist/${artist.id}`);
         else console.error("New Artist not Found", {artist, tx, receipt});
-      }, 2000);
+      }, 5000);
     }
     catch(error) {
       console.error("Failed to create Artist", error);

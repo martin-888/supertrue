@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { gql, useQuery, useApolloClient } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { Box, Button, CircularProgress, Container, Grid, Typography } from "@mui/material";
 import { Contract } from "@ethersproject/contracts";
 
@@ -8,7 +8,7 @@ import __ from "../../helpers/__";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import { abis } from "../../contracts";
 
-const MY_NFTS_QUERY = gql`
+const MY_PROFILE_QUERY = gql`
     query myNfts($userId: ID!) {
         user(id: $userId) {
             collection {
@@ -37,6 +37,18 @@ const appId = "4929016593851112";
 const redirectUrl = window.location.origin + "/profile";
 const connectLink = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${redirectUrl}&scope=user_profile&response_type=code`;
 
+const errorMessages = {
+  "auth-default": "Authorisation failed.",
+  "account-address-not-valid": "Account address in your instagram bio not found.",
+  "instagram-not-found": "Collection with your instagram handle not found.",
+  "instagram-handle-not-found": "Collection with your instagram handle not found.",
+  "auth-failed": "Authorisation failed.",
+  "artist-id-not-found": "Artist not found.",
+  "missing-params": "Authorisation failed - missing parameters.",
+  "artist-not-found": "Artist not found.",
+  "instagram-token-not-found": "Instagram token not found.",
+};
+
 async function claimTransaction({ provider, signature1, signature2, contractAddress }) {
   const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
   const tx = await nftContract.claim(signature1, signature2);
@@ -47,15 +59,16 @@ async function claimTransaction({ provider, signature1, signature2, contractAddr
 
 export default function Profile() {
   const [isAuth, setIsAuth] = useState(false);
-  const [isAuthError, setIsAuthError] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [isClaimTxSuccess, setIsClaimTxSuccess] = useState(false);
+  const [authError, setAuthError] = useState(false);
   const [signature1, setSignature1] = useState(null);
   const [signature2, setSignature2] = useState(null);
   const [claimedIgHandle, setClaimedIgHandle] = useState(null);
   const [contractAddress, setContractAddress] = useState(null);
 
-  const client = useApolloClient();
   const { account, provider } = useWeb3Modal();
-  const { data, loading, error } = useQuery(MY_NFTS_QUERY, {
+  const { data, loading, error } = useQuery(MY_PROFILE_QUERY, {
     variables: { userId: (account || "").toLowerCase() }
   });
 
@@ -67,6 +80,7 @@ export default function Profile() {
       return;
     }
 
+    // remove code param from url
     window.history.replaceState(null, null, window.location.pathname);
 
     setIsAuth(true);
@@ -75,24 +89,24 @@ export default function Profile() {
       const { errCode, success, artistId, contractAddress } = await api.auth({ code, redirectUrl });
 
       if (!success || !artistId || !contractAddress) {
-        setIsAuthError(true);
+        setAuthError(errorMessages[errCode]);
         setIsAuth(false);
         console.log("Auth error", errCode);
         return;
       }
 
-      const { signature: sign1, artist: artist1 } = await api.getAuthSignature1({ artistId });
-      const { signature: sign2, artist: artist2  } = await api.getAuthSignature2({ artistId });
+      const { signature: sign1, artist: artist1, errCode: errCode1 } = await api.getAuthSignature1({ artistId });
+      const { signature: sign2, artist: artist2, errCode: errCode2 } = await api.getAuthSignature2({ artistId });
 
-      if (!sign1 || !sign2) {
-        setIsAuthError(true);
+      if (!sign1 || !sign2 || errCode1 || errCode2) {
+        setAuthError(errorMessages[errCode1 || errCode1 || "auth-default"]);
         setIsAuth(false);
         return;
       }
 
       // should never happen but better to check
       if (artist1.account !== account || artist2.account !== account) {
-        setIsAuthError(true);
+        setAuthError(errorMessages["auth-default"]);
         setIsAuth(false);
         return;
       }
@@ -104,18 +118,21 @@ export default function Profile() {
     })();
   }, [account]);
 
-  const claim = async () =>
-    claimTransaction({ signature1, signature2, contractAddress, provider })
+  const claim = async () => {
+    setAuthError(null);
+    setIsClaiming(true);
+
+    return claimTransaction({signature1, signature2, contractAddress, provider})
       .then(() => {
-        console.log("success auth");
-        setIsAuth(false);
-        setTimeout(() => client.refetchQueries({ include: "active" }), 5000);
+        setIsClaimTxSuccess(true);
+        setTimeout(() => window.location.reload(), 60000);
       })
       .catch((error) => {
         console.log("Transaction error: ", error);
-        setIsAuth(false);
-        setIsAuthError(true);
-      })
+        setIsClaiming(false);
+        setAuthError(error);
+      });
+  }
 
   const getAssetContent = () => {
     if (!account) {
@@ -169,13 +186,42 @@ export default function Profile() {
   }
 
   const getAccountContent = () => {
+    if (isClaimTxSuccess) {
+      return (
+        <>
+          <Typography variant="subtitle1">
+            Claiming @{claimedIgHandle} has been successful.
+          </Typography>
+          <Typography variant="subtitle1">
+            Please wait 1min and refresh this page for seeing your claimed account.
+          </Typography>
+        </>
+      );
+    }
+
     if (signature1 && signature2) {
       return (
         <>
-          <Button variant="contained" disabled target="_blank">Connect Instagram</Button>
+          <Button
+            variant="contained"
+            disabled
+            target="_blank"
+          >
+            Connect Instagram
+          </Button>
           <Box sx={{mb:3}} />
-          <Button variant="contained" onClick={claim} target="_blank">Claim @{claimedIgHandle}</Button>
+          <Typography variant="subtitle1">
+            Add into your instagram bio (@{claimedIgHandle}) your account address {account} and click on Claim button below.
+          </Typography>
           <Box sx={{mb:3}} />
+          <Button
+            variant="contained"
+            onClick={claim}
+            target="_blank"
+            disabled={isClaiming}
+          >
+            {isClaiming ? "Claiming" : "Claim"} @{claimedIgHandle}
+          </Button>
         </>
       );
     }
@@ -202,13 +248,14 @@ export default function Profile() {
       <Box sx={{mb:3}}>
         <Typography variant="h2">CLAIM YOUR ACCOUNT</Typography>
         <Box sx={{mb:3}} />
-        {isAuthError && (
+        {authError && (
           <>
-            <Typography variant="h2">Authorisation failed.</Typography>
+            <Typography variant="h2">{authError}</Typography>
             <Box sx={{mb:3}} />
           </>
         )}
         {getAccountContent()}
+        <Box sx={{mb:3}} />
       </Box>
       <Box sx={{mb:3}}>
         <Typography variant="h2">MY ASSETS</Typography>
