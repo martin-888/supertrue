@@ -67,11 +67,25 @@ export default function Profile() {
   const [signature2, setSignature2] = useState(null);
   const [claimedIgHandle, setClaimedIgHandle] = useState(null);
   const [contractAddress, setContractAddress] = useState(null);
+  const [artist, setArtist] = useState(null);
 
   const { account, provider } = useWeb3Modal();
   const { data, loading, error } = useQuery(MY_PROFILE_QUERY, {
     variables: { userId: (account || "").toLowerCase() }
   });
+
+  useEffect(() => {
+    if (!data?.user?.collection?.artistId) {
+      return;
+    }
+
+    (async () => {
+      await api.getArtist(data.user.collection.artistId).then(resp => setArtist(resp.artist))
+        .catch(() => {
+          console.log(`Artist ${data.user.collection.artistId} not found`);
+        })
+    })();
+  }, [data]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -263,6 +277,18 @@ export default function Profile() {
           <Box sx={{mb:3}}>
             <Typography variant="h2">MY COLLECTION</Typography>
           </Box>
+          {artist && (
+            <>
+              <Box sx={{mb:3}}>
+                <Typography variant="h3">Collection Name</Typography>
+                <Typography>{artist.collectionName}</Typography>
+              </Box>
+              <Box sx={{mb:3}}>
+                <Typography variant="h3">Collection Description</Typography>
+                <Typography>{artist.collectionDescription}</Typography>
+              </Box>
+            </>
+          )}
           <Grid container spacing={8}>
             <Grid item className="artist" xs={12} sm={6} md={6}>
               <Box className="image">
