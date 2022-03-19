@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { Contract } from "@ethersproject/contracts";
+import { Contract } from "ethers";
 import { Container, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 // import millify from "millify";
 // import moment from 'moment';

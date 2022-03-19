@@ -43,11 +43,25 @@ const createArtist = ({ tx }) => {
   return fetch(`${endpoint}/artist`, options).then(resp => resp.json());
 }
 
+const updateArtist = ({ signature, description, name, artistId }) => {
+  const options = {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "PUT",
+    body: JSON.stringify({ signature, description, name })
+  };
+
+  return fetch(`${endpoint}/artist/${artistId}`, options).then(resp => resp.json());
+}
+
 export {
   getArtist,
+  createArtist,
+  updateArtist,
   getArtists,
   auth,
-  createArtist,
   getAuthSignature1,
   getAuthSignature2
 };

@@ -1,4 +1,4 @@
-import { Web3Provider } from "@ethersproject/providers";  //https://www.jsdocs.io/package/@ethersproject/providers
+import { providers } from "ethers";  //https://www.jsdocs.io/package/@ethersproject/providers
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Web3Modal from "web3modal";
@@ -43,7 +43,7 @@ function useWeb3Modal(config = {}) {
       return;
     }
 
-    const signerProvider = new Web3Provider(newProvider);
+    const signerProvider = new providers.Web3Provider(newProvider);
     setProvider(signerProvider);
 
     //Set Current Chain ID

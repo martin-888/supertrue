@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { Box, Button, CircularProgress, Container, Grid, Typography } from "@mui/material";
-import { Contract } from "@ethersproject/contracts";
+import { Box, Button, CircularProgress, Container, Grid, Typography, TextField } from "@mui/material";
+import { Contract } from "ethers";
 
 import * as api from "../../api";
 import __ from "../../helpers/__";
@@ -34,12 +34,16 @@ const MY_PROFILE_QUERY = gql`
     }
 `;
 
+const maxDescriptionLength = 1000;
+const maxNameLength = 50;
+const chainId = 4; // TODO change on production
+
 const appId = "4929016593851112";
 const redirectUrl = window.location.origin + "/profile";
 const connectLink = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${redirectUrl}&scope=user_profile&response_type=code`;
 
-const errorMessages = {
-  "auth-default": "Authorisation failed.",
+const errorMessagesAuth = {
+  "default": "Authorisation failed.",
   "account-address-not-valid": "Account address in your instagram bio not found.",
   "instagram-not-found": "Collection with your instagram handle not found.",
   "instagram-handle-not-found": "Collection with your instagram handle not found.",
@@ -50,6 +54,16 @@ const errorMessages = {
   "instagram-token-not-found": "Instagram token not found.",
 };
 
+const errorMessagesUpdate = {
+  "default": "Update failed.",
+  "missing-params": "Update failed - missing parameters.",
+  "empty-name": "Update failed - empty name.",
+  "not-found": "Artist not found.",
+  "artist-not-found": "Artist not found.",
+  "collection-not-claimed": "Collection is not claimed.",
+  "invalid-signature": "Invalid signature.",
+};
+
 async function claimTransaction({ provider, signature1, signature2, contractAddress }) {
   const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
   const tx = await nftContract.claim(signature1, signature2);
@@ -58,16 +72,22 @@ async function claimTransaction({ provider, signature1, signature2, contractAddr
   return { tx, receipt };
 }
 
+// https://dev.to/zemse/ethersjs-signing-eip712-typed-structs-2ph8
 export default function Profile() {
   const [isAuth, setIsAuth] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [isClaimTxSuccess, setIsClaimTxSuccess] = useState(false);
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState(null);
+  const [updateError, setUpdateError] = useState(null);
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   const [signature1, setSignature1] = useState(null);
   const [signature2, setSignature2] = useState(null);
   const [claimedIgHandle, setClaimedIgHandle] = useState(null);
   const [contractAddress, setContractAddress] = useState(null);
   const [artist, setArtist] = useState(null);
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const { account, provider } = useWeb3Modal();
   const { data, loading, error } = useQuery(MY_PROFILE_QUERY, {
@@ -79,8 +99,14 @@ export default function Profile() {
       return;
     }
 
+    setName(data.user.collection.name);
+
     (async () => {
-      await api.getArtist(data.user.collection.artistId).then(resp => setArtist(resp.artist))
+      await api.getArtist(data.user.collection.artistId)
+        .then(resp => {
+          setArtist(resp.artist);
+          setDescription(resp.artist.collectionDescription);
+        })
         .catch(() => {
           console.log(`Artist ${data.user.collection.artistId} not found`);
         })
@@ -104,7 +130,7 @@ export default function Profile() {
       const { errCode, success, artistId, contractAddress } = await api.auth({ code, redirectUrl });
 
       if (!success || !artistId || !contractAddress) {
-        setAuthError(errorMessages[errCode]);
+        setAuthError(errorMessagesAuth[errCode]);
         setIsAuth(false);
         console.log("Auth error", errCode);
         return;
@@ -114,14 +140,14 @@ export default function Profile() {
       const { signature: sign2, artist: artist2, errCode: errCode2 } = await api.getAuthSignature2({ artistId });
 
       if (!sign1 || !sign2 || errCode1 || errCode2) {
-        setAuthError(errorMessages[errCode1 || errCode1 || "auth-default"]);
+        setAuthError(errorMessagesAuth[errCode1 || errCode1 || "default"]);
         setIsAuth(false);
         return;
       }
 
       // should never happen but better to check
       if (artist1.account !== account || artist2.account !== account) {
-        setAuthError(errorMessages["auth-default"]);
+        setAuthError(errorMessagesAuth["default"]);
         setIsAuth(false);
         return;
       }
@@ -132,6 +158,58 @@ export default function Profile() {
       setContractAddress(contractAddress);
     })();
   }, [account]);
+
+  const save = async () => {
+    setSaving(true);
+    setUpdateError(null);
+
+    const domain = {
+      name: "SuperTrue",
+      version: "1",
+      chainId,
+    };
+
+    const types = {
+      Message: [
+        { name: 'artistId', type: 'uint256' },
+        { name: 'name', type: 'string' },
+        { name: 'description', type: 'string' },
+      ]
+    };
+
+    const artistId = data.user.collection.artistId;
+
+    const value = {
+      artistId,
+      name,
+      description,
+    };
+
+    const signature = await provider.getSigner()
+      ._signTypedData(domain, types, value)
+      .catch(() => null)
+
+    if (!signature) {
+      setUpdateError("Signing message failed.");
+      setSaving(false);
+      return;
+    }
+
+    const response = await api.updateArtist({ signature, description, name, artistId })
+      .catch((e) => {
+        console.log("Update failed", e);
+        return { errCode: "default" };
+      })
+
+    if (response.errCode) {
+      setUpdateError(errorMessagesUpdate[response.errCode]);
+    } else {
+      setIsUpdateSuccess(true);
+      setTimeout(() => setIsUpdateSuccess(false), 3000);
+    }
+
+    setSaving(false);
+  };
 
   const claim = async () => {
     setAuthError(null);
@@ -277,15 +355,47 @@ export default function Profile() {
           <Box sx={{mb:3}}>
             <Typography variant="h2">MY COLLECTION</Typography>
           </Box>
-          {artist && (
+          {!artist
+            ? <CircularProgress /> : (
             <>
               <Box sx={{mb:3}}>
                 <Typography variant="h3">Collection Name</Typography>
                 <Typography>{artist.collectionName}</Typography>
               </Box>
+              {/*<Box sx={{mb:3}}>*/}
+              {/*  <Typography variant="h3">Artist Name</Typography>*/}
+              {/*  <TextField*/}
+              {/*    disabled={saving}*/}
+              {/*    value={name}*/}
+              {/*    onChange={e => setName(e.target.value.slice(0,maxNameLength))}*/}
+              {/*  />*/}
+              {/*</Box>*/}
               <Box sx={{mb:3}}>
                 <Typography variant="h3">Collection Description</Typography>
-                <Typography>{artist.collectionDescription}</Typography>
+                <TextField
+                  disabled={saving}
+                  multiline
+                  fullWidth
+                  minRows={2}
+                  value={description}
+                  onChange={e => setDescription(e.target.value.slice(0,maxDescriptionLength))}
+                />
+                <Box sx={{mb:3}} />
+                {updateError && (
+                  <>
+                    <Typography variant="h2">{updateError}</Typography>
+                    <Box sx={{mb:3}} />
+                  </>
+                )}
+                <Button
+                  size="large"
+                  variant="contained"
+                  disabled={saving}
+                  onClick={save}
+                  color={isUpdateSuccess ? "success" : undefined}
+                >
+                  {saving ? "Saving" : (isUpdateSuccess ? "Saved" : "Save")}
+                </Button>
               </Box>
             </>
           )}

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { TextField, Typography, Button, Container, Box, Grid, CircularProgress } from "@mui/material";
-import { Contract } from "@ethersproject/contracts";
+import { Contract } from "ethers";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
 
