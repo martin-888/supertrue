@@ -8,12 +8,16 @@ import { addresses, abis } from "../../contracts";
 import * as api from "../../api";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 
+const price = 0.002; // TODO load from smart contract
+
 async function create({ provider, instagram, name }) {
   // creating connection to the smart contract
   const superTrueCreator = new Contract(addresses.superTrueCreator, abis.superTrueCreator, provider.getSigner());
 
+  const creationPrice = await superTrueCreator.getCreationPrice();
+
   // calling the smart contract function
-  const tx = await superTrueCreator.createArtist(name, instagram, instagram);
+  const tx = await superTrueCreator.createArtist(name, instagram, instagram, { value: creationPrice });
 
   // wait till the transaction is mint/confirmed
   const receipt = await tx.wait();
@@ -44,7 +48,7 @@ export default function NewArtist() {
 
   useEffect(() => {
     //Extract Instagram handle
-    const match = instagram.match(/instagram.com\/([\w-]+)/);
+    const match = instagram.match(/instagram.com\/([\w._]+)/);
     setInstagramValid(!!match);
 
     //Check if Artist Already Exists
@@ -71,24 +75,30 @@ export default function NewArtist() {
   const createArtist = async () => {
     setLoading(true);
 
-    try{
+    // TODO check if account has enough funds
+
+    try {
       //Create Artist on Chain
       const { receipt, tx } = await create({ provider, instagram: instagramHandle, name });
       //Log
       console.log({ receipt, tx });
       //Create Artist in DB
-      const { artist } = await api.createArtist({ tx: receipt.transactionHash });
-      //Redirect to Artist Page
-      setTimeout(() => {
-        if (artist?.id) navigate(`/artist/${artist.id}`);
-        else console.error("New Artist not Found", {artist, tx, receipt});
-      }, 5000);
+      const { artist, errCode } = await api.createArtist({ tx: receipt.transactionHash });
+
+      if (errCode || !artist?.id) {
+        console.error("New Artist not Found", {artist, tx, receipt});
+        setLoading(false);
+      } else {
+        // TODO show success message and ask for waiting
+        //Redirect to Artist Page
+        setTimeout(() => navigate(`/artist/${artist.id}`), 30000);
+      }
     }
     catch(error) {
       console.error("Failed to create Artist", error);
+      setLoading(false);
       // TODO handle errors / show the user an error message
     }
-    setLoading(false);
   };
 
   return (
@@ -105,7 +115,7 @@ export default function NewArtist() {
             <br />
             <span style={{textTransform:'uppercase'}}>{name || "?"}</span>
           </Typography>
-          
+
           <Box sx={{ m: 2 }}>
             <TextField
               autoFocus
@@ -152,17 +162,21 @@ export default function NewArtist() {
                 Open {artists.find(artist => artist.id === existingArtistID).name}
               </Button>
               ) : (
-              <Button
-                disabled={!instagramValid || !nameValid || loading}
-                size="large"
-                variant="contained"
-                onClick={!provider ? loadWeb3Modal : createArtist}
-              >
-                Create {name}
-              </Button>
+                <Box textAlign="center">
+                  <Typography><label>Price:</label> {price} ETH</Typography>
+                  <Box sx={{ m: 2 }} />
+                  <Button
+                    disabled={!instagramValid || !nameValid || loading}
+                    size="large"
+                    variant="contained"
+                    onClick={!provider ? loadWeb3Modal : createArtist}
+                  >
+                    Create {name}
+                  </Button>
+                </Box>
             )}
           </Box>
-          
+
         </Grid>
       </Container>
     </>

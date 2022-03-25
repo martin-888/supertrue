@@ -81,6 +81,8 @@ export default function Artist() {
   }
 
   const mintNFT = async () => {
+    // TODO check if account has enough funds
+
     setMinting(true);
     await mint({ provider, contractAddress: artist.address })
       .then((ret) => {

@@ -1,5 +1,5 @@
 const addresses = {
-  superTrueCreator: "0x152aD2f8b5dAC3ac97AAB3c3A9Be74c7759428f7",
+  superTrueCreator: "0xBeFdb9718bfdE98A509a4455EB92eA45DA38123e",
 };
 
 export default addresses;
