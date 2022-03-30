@@ -4,13 +4,15 @@ import { Link, TextField, Typography, Button, Grid, Box, Container, CircularProg
 // import ArtistBlock from "components/ArtistBlock";
 import ArtistNFT from "components/ArtistNFT";
 
+// TODO add search param to collections
 const COLLECTIONS_QUERY = gql`
     {
-        collections(first: 10) {
+        collections(first: 100) {
             id
             artistId
             minted
             name
+            instagram
             owner {
                 id
             }
@@ -27,21 +29,24 @@ export default function ArtistSearch({view}) {
   const { data, loading, error } = useQuery(COLLECTIONS_QUERY);
 
   useEffect(() => {
-    console.warn("Artists: ", data?.collections);
+    console.info("Artists: ", data?.collections);
 
     if (!data?.collections?.length) {
       setFilteredArtists([]);
       return;
     }
 
-    if (searchQuery === '' || !searchQuery) {
+    if (searchQuery === '') {
       setFilteredArtists(data.collections);
       return;
     }
 
     const search = searchQuery.toLowerCase().trim();
 
-    setFilteredArtists(data.collections.filter(artist => artist.name.toLowerCase().indexOf(search) !== -1));
+    const artists = data.collections
+      .filter(artist => artist.name.toLowerCase().indexOf(search) !== -1 || artist.instagram.toLowerCase().indexOf(search) !== -1)
+
+    setFilteredArtists(artists);
   }, [searchQuery, data])
 
   const getContent = () => {
@@ -115,7 +120,14 @@ export default function ArtistSearch({view}) {
     <Container maxWidth="md" sx={{ my: 8 }}>
       {view!=='gallery' &&
         <Grid item sm={6}>
-          <TextField autoFocus  sx={{width:'100%'}} id="standard-basic" label="Search Artist" variant="filled" onChange={e => setSearchQuery(e.target.value)} />
+          <TextField
+            autoFocus
+            sx={{width:'100%'}}
+            id="standard-basic"
+            label="Search Artist"
+            variant="filled"
+            onChange={e => setSearchQuery(e.target.value)}
+          />
         </Grid>
       }
       {view==='gallery' &&

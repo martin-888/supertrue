@@ -3,12 +3,29 @@ import { TextField, Typography, Button, Container, Box, Grid, CircularProgress }
 import { Contract } from "ethers";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
 
 import { addresses, abis } from "../../contracts";
 import * as api from "../../api";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 
 const price = 0.002; // TODO load from smart contract
+
+// TODO add search param to collections
+const COLLECTIONS_QUERY = gql`
+    {
+        collections(first: 100) {
+            id
+            artistId
+            minted
+            name
+            instagram
+            owner {
+                id
+            }
+        }
+    }
+`;
 
 async function create({ provider, instagram, name }) {
   // creating connection to the smart contract
@@ -38,36 +55,33 @@ export default function NewArtist() {
   const [instagramHandle, setInstagramHandle] = useState("");
   const [nameValid, setNameValid] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [artists, setArtists] = useState([]);
   const [existingArtistID, setExistingArtistID] = useState(null);
-
-  useEffect(() => {
-    //Fetch Artists
-    api.getArtists().then(resp => setArtists(resp.artists));
-  }, []);
+  const collectionsQuery = useQuery(COLLECTIONS_QUERY);
 
   useEffect(() => {
     //Extract Instagram handle
     const match = instagram.match(/instagram.com\/([\w._]+)/);
     setInstagramValid(!!match);
 
+    const igHandle = match?.[1];
+
     //Check if Artist Already Exists
-    const artist = artists?.find(artist => artist.igHandle === match?.[1])
+    const artist = collectionsQuery.data?.collections?.find(artist => artist.instagram === igHandle)
     setExistingArtistID(artist?.id);
 
-    const exists = !!match?.[1] && !!artists.find(artist => artist.igHandle === match?.[1]);
+    const exists = !!igHandle && collectionsQuery.data?.collections?.find(artist => artist.instagram === igHandle);
     setArtistExists(exists);
 
     if (exists) {
       setInstagramValid(false);
     }
 
-    setInstagramHandle(match?.[1]);
+    setInstagramHandle(igHandle);
   }, [instagram]);
 
   useEffect(() => {
     const value = name || "";
-    const match = value.match(/^([\w -]+)$/);
+    const match = value.match(/^([\w ._-]+)$/);
     setNameValid(!!match && value.trim().length > 0);
     setName(match?.[1]);
   }, [name]);
@@ -146,7 +160,7 @@ export default function NewArtist() {
             />
           </Box>
 
-          {loading && (
+          {loading || collectionsQuery.loading && (
             <Box sx={{ m: 4 }}>
               <CircularProgress />
             </Box>
@@ -159,7 +173,7 @@ export default function NewArtist() {
                 variant="contained"
                 href={`/artist/${existingArtistID}`}
               >
-                Open {artists.find(artist => artist.id === existingArtistID).name}
+                Open {collectionsQuery.data.collections.find(artist => artist.artistId === existingArtistID).name}
               </Button>
               ) : (
                 <Box textAlign="center">

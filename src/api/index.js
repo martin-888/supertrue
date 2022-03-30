@@ -5,10 +5,6 @@ const getArtist = (id) => {
   return fetch(`${endpoint}/artist/${id}`).then(resp => resp.json());
 }
 
-const getArtists = () => { // TODO replace with thegraph
-  return fetch(`${endpoint}/artist`).then(resp => resp.json());
-}
-
 const auth = ({ code, redirectUrl }) => {
   const options = {
     headers: {
@@ -60,7 +56,6 @@ export {
   getArtist,
   createArtist,
   updateArtist,
-  getArtists,
   auth,
   getAuthSignature1,
   getAuthSignature2
