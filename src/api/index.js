@@ -5,6 +5,10 @@ const getArtist = (id) => {
   return fetch(`${endpoint}/artist/${id}`).then(resp => resp.json());
 }
 
+const getInstagramData = (instagram) => {
+  return fetch(`${endpoint}/artist/instagram/${instagram}`).then(resp => resp.json());
+}
+
 const auth = ({ code, redirectUrl }) => {
   const options = {
     headers: {
@@ -54,6 +58,7 @@ const updateArtist = ({ signature, description, name, artistId }) => {
 
 export {
   getArtist,
+  getInstagramData,
   createArtist,
   updateArtist,
   auth,

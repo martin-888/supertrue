@@ -119,7 +119,7 @@ export default function ArtistSearch({view}) {
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
       {view!=='gallery' &&
-        <Grid item sm={6}>
+        <Grid item sm={6} sx={{mb:4}}>
           <TextField
             autoFocus
             sx={{width:'100%'}}
@@ -131,7 +131,7 @@ export default function ArtistSearch({view}) {
         </Grid>
       }
       {view==='gallery' &&
-      <Box sx={{mb:6}}>
+      <Box sx={{mb:4}}>
         <Typography variant="h1" >NFT GALLERY</Typography>
         <Typography variant="h6" className="explanation" sx={{my:2}}>
           All your shiny finds are displayed here. <Link variant="text" href={`/artist/new`}>Add a new artist</Link>
