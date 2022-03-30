@@ -34,17 +34,14 @@ export default function ArtistSearch({view}) {
       return;
     }
 
-    // TODO delete on production
-    const filterBrokenCollections = (collection) => collection.filter(col => ![7,4].includes(col.artistId))
-
     if (searchQuery === '' || !searchQuery) {
-      setFilteredArtists(filterBrokenCollections(data.collections));
+      setFilteredArtists(data.collections);
       return;
     }
 
-    const search = searchQuery.toLowerCase();
+    const search = searchQuery.toLowerCase().trim();
 
-    setFilteredArtists(filterBrokenCollections(data.collections).filter(artist => artist.name.toLowerCase().indexOf(search) !== -1));
+    setFilteredArtists(data.collections.filter(artist => artist.name.toLowerCase().indexOf(search) !== -1));
   }, [searchQuery, data])
 
   const getContent = () => {
