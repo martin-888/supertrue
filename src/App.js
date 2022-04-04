@@ -83,7 +83,7 @@ export default function App() {
               <Route path="/" element={<ArtistSearch />} />
             </Routes>
             <Footer>
-              Created with 🖤 by the Supetrue Team . ✋🏿 hi@supertrue.com
+              Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
             </Footer>
           </ThemeProvider>
       </div>

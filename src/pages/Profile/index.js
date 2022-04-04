@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { Box, Button, CircularProgress, Container, Grid, Typography, TextField } from "@mui/material";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 
 import * as api from "../../api";
 import __ from "../../helpers/__";
@@ -18,6 +18,7 @@ const MY_PROFILE_QUERY = gql`
                 minted
                 name
                 instagram
+                pendingFunds
             }
             nfts {
                 id
@@ -52,6 +53,7 @@ const errorMessagesAuth = {
   "missing-params": "Authorisation failed - missing parameters.",
   "artist-not-found": "Artist not found.",
   "instagram-token-not-found": "Instagram token not found.",
+  "accounts-no-match": "Account in your instagram bio doesn't match with connected account.",
 };
 
 const errorMessagesUpdate = {
@@ -67,6 +69,14 @@ const errorMessagesUpdate = {
 async function claimTransaction({ provider, signature1, signature2, contractAddress }) {
   const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
   const tx = await nftContract.claim(signature1, signature2);
+  const receipt = await tx.wait();
+
+  return { tx, receipt };
+}
+
+async function withdrawTransaction({ provider, contractAddress }) {
+  const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
+  const tx = await nftContract.withdrawArtist();
   const receipt = await tx.wait();
 
   return { tx, receipt };
@@ -88,6 +98,9 @@ export default function Profile() {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [pendingFunds, setPendingFunds] = useState(BigInt(0));
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [isWithdrawSuccess, setIsWithdrawSuccess] = useState(false);
 
   const { account, provider } = useWeb3Modal();
   const { data, loading, error } = useQuery(MY_PROFILE_QUERY, {
@@ -100,6 +113,8 @@ export default function Profile() {
     }
 
     setName(data.user.collection.name);
+    setContractAddress(data.user.collection.address);
+    setPendingFunds(BigInt(data.user.collection.pendingFunds));
 
     (async () => {
       await api.getArtist(data.user.collection.artistId)
@@ -147,7 +162,7 @@ export default function Profile() {
 
       // should never happen but better to check
       if (artist1.account !== account || artist2.account !== account) {
-        setAuthError(errorMessagesAuth["default"]);
+        setAuthError(errorMessagesAuth["accounts-no-match"]);
         setIsAuth(false);
         return;
       }
@@ -158,6 +173,23 @@ export default function Profile() {
       setContractAddress(contractAddress);
     })();
   }, [account]);
+
+  const withdraw = async () => {
+    setWithdrawing(true);
+    setIsWithdrawSuccess(false);
+
+    return withdrawTransaction({contractAddress, provider})
+      .then(() => {
+        setPendingFunds(BigInt(0));
+        setWithdrawing(false);
+        setIsWithdrawSuccess(true);
+      })
+      .catch((error) => {
+        console.log("Withdraw Transaction error: ", error);
+        setWithdrawing(false);
+        setIsWithdrawSuccess(false);
+      });
+  }
 
   const save = async () => {
     setSaving(true);
@@ -302,11 +334,11 @@ export default function Profile() {
           >
             Connect Instagram
           </Button>
-          <Box sx={{mb:3}} />
+          <Box sx={{mb:4}} />
           <Typography variant="subtitle1">
             Add into your instagram bio (@{claimedIgHandle}) your account address {account} and click on Claim button below.
           </Typography>
-          <Box sx={{mb:3}} />
+          <Box sx={{mb:4}} />
           <Button
             variant="contained"
             onClick={claim}
@@ -338,31 +370,50 @@ export default function Profile() {
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
-      <Box sx={{mb:3}}>
+      <Box sx={{mb:4}}>
         <Typography variant="h2">CLAIM YOUR ACCOUNT</Typography>
-        <Box sx={{mb:3}} />
+        <Box sx={{mb:4}} />
         {authError && (
           <>
             <Typography variant="h2">{authError}</Typography>
-            <Box sx={{mb:3}} />
+            <Box sx={{mb:4}} />
           </>
         )}
         {getAccountContent()}
-        <Box sx={{mb:3}} />
+        <Box sx={{mb:4}} />
       </Box>
       {data?.user?.collection?.id && (
-        <Box sx={{mb:3}}>
-          <Box sx={{mb:3}}>
+        <Box sx={{mb:4}}>
+          <Box sx={{mb:4}}>
             <Typography variant="h2">MY COLLECTION</Typography>
           </Box>
           {!artist
             ? <CircularProgress /> : (
             <>
-              <Box sx={{mb:3}}>
+              <Box sx={{mb:4}}>
                 <Typography variant="h3">Collection Name</Typography>
                 <Typography>{artist.collectionName}</Typography>
               </Box>
-              {/*<Box sx={{mb:3}}>*/}
+              <Box sx={{mb:4}}>
+                <Typography variant="h3">Pending Funds</Typography>
+                <Typography>{pendingFunds === BigInt(0) ? 0 : utils.formatEther(pendingFunds)} ETH</Typography>
+                <Box sx={{mb:2}} />
+                {isWithdrawSuccess && (
+                  <Box sx={{mb:2}}>
+                    <Typography variant="h2">All funds have been withdrawn.</Typography>
+                  </Box>
+                )}
+                <Button
+                  size="large"
+                  variant="contained"
+                  disabled={withdrawing || isWithdrawSuccess || pendingFunds === BigInt(0)}
+                  onClick={withdraw}
+                  color={isWithdrawSuccess ? "success" : undefined}
+                >
+                  {withdrawing ? "Withdrawing" : (isWithdrawSuccess ? "Withdrawn" : "Withdraw")}
+                </Button>
+              </Box>
+              {/*<Box sx={{mb:4}}>*/}
               {/*  <Typography variant="h3">Artist Name</Typography>*/}
               {/*  <TextField*/}
               {/*    disabled={saving}*/}
@@ -370,7 +421,7 @@ export default function Profile() {
               {/*    onChange={e => setName(e.target.value.slice(0,maxNameLength))}*/}
               {/*  />*/}
               {/*</Box>*/}
-              <Box sx={{mb:3}}>
+              <Box sx={{mb:4}}>
                 <Typography variant="h3">Collection Description</Typography>
                 <TextField
                   disabled={saving}
@@ -380,12 +431,11 @@ export default function Profile() {
                   value={description}
                   onChange={e => setDescription(e.target.value.slice(0,maxDescriptionLength))}
                 />
-                <Box sx={{mb:3}} />
+                <Box sx={{mb:2}} />
                 {updateError && (
-                  <>
+                  <Box sx={{mb:2}}>
                     <Typography variant="h2">{updateError}</Typography>
-                    <Box sx={{mb:3}} />
-                  </>
+                  </Box>
                 )}
                 <Button
                   size="large"
@@ -408,7 +458,7 @@ export default function Profile() {
           </Grid>
         </Box>
       )}
-      <Box sx={{mb:3}}>
+      <Box sx={{mb:4}}>
         <Typography variant="h2">MY ASSETS</Typography>
       </Box>
       {getAssetContent()}

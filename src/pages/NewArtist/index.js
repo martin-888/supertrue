@@ -95,10 +95,6 @@ export default function NewArtist() {
     }
 
     setInstagramHandle(igHandle || '');
-
-    if (!igHandle) {
-      return;
-    }
   }, [instagram]);
 
   useEffect(() => {

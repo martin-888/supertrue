@@ -86,8 +86,7 @@ export default function Artist() {
     setMinting(true);
     await mint({ provider, contractAddress: artist.address })
       .then((ret) => {
-        // const { tx, receipt } = ret;
-        console.error("mint() Success", ret);
+        console.log("mint() Success", ret);
         setTimeout(() => setMinted(true), waitTime);
         //Reload Contract Data
         loadContractInstance(artist);
