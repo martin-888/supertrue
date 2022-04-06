@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import { Container, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 // import millify from "millify";
 // import moment from 'moment';
@@ -10,6 +10,7 @@ import { abis } from "../../contracts";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import __ from "helpers/__";
 import './Artist.scss';
+import useAccountBalance from "../../hooks/useAccountBalance";
 // import ArtistBlock from "components/ArtistBlock";
 
 //Single Artist Query
@@ -33,6 +34,7 @@ const ARTIST_QUERY = gql`
  */
 export default function Artist() {
   const { provider, loadWeb3Modal, account, chainId } = useWeb3Modal();
+  const balance = useAccountBalance();
   const { id } = useParams();
   // const { data, loading, error } = useQuery(COLLECTION_QUERY);
   const { data, loading, error } = useQuery(ARTIST_QUERY, {
@@ -81,7 +83,10 @@ export default function Artist() {
   }
 
   const mintNFT = async () => {
-    // TODO check if account has enough funds
+    if (balance < utils.parseUnits(artist?.price, "wei").toBigInt()) {
+      alert("Not enough funds in your wallet.");
+      return;
+    }
 
     setMinting(true);
     await mint({ provider, contractAddress: artist.address })

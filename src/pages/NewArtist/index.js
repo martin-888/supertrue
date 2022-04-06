@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { TextField, Typography, Button, Container, Box, Grid, CircularProgress } from "@mui/material";
-import { Contract } from "ethers";
+import { Contract, utils } from "ethers";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
@@ -10,8 +10,10 @@ import { useDebounce } from 'use-debounce';
 import { addresses, abis } from "../../contracts";
 import * as api from "../../api";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
+import useAccountBalance from "../../hooks/useAccountBalance";
 
 const price = 0.002; // TODO load from smart contract
+const priceInWei = utils.parseEther(price.toString(10)).toBigInt();
 const maxFollowers = 200000;
 
 // TODO add search param to collections
@@ -53,7 +55,8 @@ async function create({ provider, instagram, name }) {
 }
 
 export default function NewArtist() {
-  const { provider, loadWeb3Modal } = useWeb3Modal(); //, logoutOfWeb3Modal
+  const { provider, loadWeb3Modal } = useWeb3Modal();
+  const balance = useAccountBalance();
   const navigate = useNavigate();
   // eslint-disable-next-line no-restricted-globals
   const search = useMemo(() => queryString.parse(window.location.search), [location.search]);
@@ -133,9 +136,12 @@ export default function NewArtist() {
   }, [name]);
 
   const createArtist = async () => {
-    setLoading(true);
+    if (balance < priceInWei) {
+      alert("Not enough funds in your wallet.");
+      return;
+    }
 
-    // TODO check if account has enough funds
+    setLoading(true);
 
     //Create Artist on Chain
     const { receipt, tx } = await create({ provider, instagram: instagramHandle, name })
