@@ -69,10 +69,7 @@ export default function Artist() {
 
     setMinting(true);
     await mint({ provider, contractAddress: artist.address, price: artist.price })
-      .then((ret) => {
-        console.log("mint() Success", ret);
-        setTimeout(() => setMinted(true), waitTime);
-      })
+      .then(() => setTimeout(() => setMinted(true), waitTime))
       .catch(err => console.error(err.message))
       .finally(() => setTimeout(() => setMinting(false), waitTime));
   };
@@ -107,12 +104,9 @@ export default function Artist() {
       <Grid item className="image" md={6}>
         <img src={__.getNFTImage(artist.artistId, artist.minted+1)} alt={artist.name} />
       </Grid>
-      <Grid item className="details" md={6}>
 
+      <Grid item className="details" md={6}>
         <Typography variant="h2" className="title">Mint {artist.name}</Typography>
-        {/* <Typography variant="subtitle1">Followers: {millify(artist.followers)}</Typography> */}
-        {/* <Typography variant="subtitle1">Date of Discovery: {moment(artist.created).format('MM.DD.YYYY')}</Typography> */}
-        {/* <Typography variant="subtitle1">Supertrue #{artist.minted}</Typography> */}
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h5" className="price">
