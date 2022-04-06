@@ -3,17 +3,14 @@ import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Contract, utils } from "ethers";
 import { Container, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
-// import millify from "millify";
-// import moment from 'moment';
 
 import { abis } from "../../contracts";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import __ from "helpers/__";
-import './Artist.scss';
 import useAccountBalance from "../../hooks/useAccountBalance";
-// import ArtistBlock from "components/ArtistBlock";
 
-//Single Artist Query
+import './Artist.scss';
+
 const ARTIST_QUERY = gql`
     query getArtist($artistId: Int) {
       collections(where: {artistId: $artistId}) {
@@ -29,14 +26,25 @@ const ARTIST_QUERY = gql`
     }
 `;
 
+async function mint({ provider, contractAddress, price }) {
+  const superTrueNFT = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
+
+  const address = provider.getSigner().getAddress();
+
+  const tx = await superTrueNFT.mint(address, { value: price });
+
+  const receipt = await tx.wait();
+
+  return { tx, receipt };
+}
+
 /**
  * Component: Single Artist Page
  */
 export default function Artist() {
-  const { provider, loadWeb3Modal, account, chainId } = useWeb3Modal();
+  const { provider, loadWeb3Modal } = useWeb3Modal();
   const balance = useAccountBalance();
   const { id } = useParams();
-  // const { data, loading, error } = useQuery(COLLECTION_QUERY);
   const { data, loading, error } = useQuery(ARTIST_QUERY, {
     variables: { artistId: Number(id) }
   });
@@ -44,43 +52,14 @@ export default function Artist() {
   const [minting, setMinting] = useState(false);
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
-  const [contract, setContract] = useState();
-  // const [owner, setOwner] = useState();
   const waitTime = 2000;
 
   useEffect(() => {
-    if(error) console.error("Failed to fetch Artist:"+id+" data: ", {data, loading, error});
-    // console.warn("Artist:"+id+" data: ", {data, loading, error});
-    // setArtist(data?.collections?.find(col => col.artistId.toString() === id));
-    setArtist(data?.collections?.[0]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  
-  useEffect(() => {
-    console.warn("Loading Artist:"+id+" data: ", {data, loading, error, chainId,  provider, signer:provider?.getSigner()});
-    //On Artist change, reload the contract
-    if(artist) loadContractInstance(artist);
-    else setContract();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artist, chainId]);
-
-  /**
-   * Init Contract Instance
-   * @param {*} artist 
-   */
-  async function loadContractInstance(artist) {
-    if(artist){
-      if(provider?.getSigner()){
-        // Init smart contract Handle
-        const contractInstance = new Contract(artist.address, abis.superTrueNFT, provider.getSigner());
-        setContract(contractInstance);
-        //Fetch On-Chain Data
-        // contractInstance.owner().then(res => setOwner(res));
-      }
-      else console.error("No Provider / Signer", {provider});
+    if(error) {
+      console.error("Failed to fetch Artist:" + id + " data: ", {data, error});
     }
-  }
+    setArtist(data?.collections?.[0]);
+  }, [data]);
 
   const mintNFT = async () => {
     if (balance < utils.parseUnits(artist?.price, "wei").toBigInt()) {
@@ -89,37 +68,14 @@ export default function Artist() {
     }
 
     setMinting(true);
-    await mint({ provider, contractAddress: artist.address })
+    await mint({ provider, contractAddress: artist.address, price: artist.price })
       .then((ret) => {
         console.log("mint() Success", ret);
         setTimeout(() => setMinted(true), waitTime);
-        //Reload Contract Data
-        loadContractInstance(artist);
       })
-      .catch(err => {
-        if(err.code === 4001) console.error("[CAUGHT] Metamask rejected transaction");
-        else if(err.code === -32603) console.error("[CAUGHT] Insufficient funds");
-        else console.error("[CAUGHT] superTrueNFT.mint() Failed", {err, chainId, account, provider, signer:provider?.getSigner()});
-      })
-      .finally(() => {
-        setTimeout(() => setMinting(false), waitTime);
-      });
+      .catch(err => console.error(err.message))
+      .finally(() => setTimeout(() => setMinting(false), waitTime));
   };
-
-  async function mint({ provider }) {
-    // get current metamask wallet address
-    const address = await provider.getSigner().getAddress();
-    // console.log("Current Address:", { address })
-
-    //Validate
-    if(contract){
-      // calling the smart contract function
-      // first param is amount of NFTs, second is address where it should be mint into
-      return contract.mint(address, { value: artist.price })
-        .then(tx => tx.wait().then(receipt => ({ tx, receipt }))) // Errors Handled by Caller
-    }
-    else console.error("Contract not available", { contract, address, chainId });
-  }
 
   if (loading) {
     return (
@@ -142,7 +98,7 @@ export default function Artist() {
       </Grid>
       </Container>
     );
-  };
+  }
 
   return (
     <Container maxWidth="md">
@@ -196,7 +152,7 @@ export default function Artist() {
          </Box>
 
         </Box>
-        
+
       </Grid>
 
       <Box sx={{ my: 3 }} className="additional-details">
@@ -207,12 +163,12 @@ export default function Artist() {
 
         <Typography variant="h4">WHAT’S IN IT FOR THE ARTIST</Typography>
         <Typography>
-          We built this with the artists in mind. Funds are held for the artist to claim minus our service fee. When an artist sets out to build an instagram following they get nothing. When an artist sets out to build a supertrue following and reaches 1,000 fans, they have 8k USD to master their album. At 10,000 fans they have 100,000 USD to go on tour. All the while you benefit by getting credit you deserve of supporting them when they needed it the most. 
+          We built this with the artists in mind. Funds are held for the artist to claim minus our service fee. When an artist sets out to build an instagram following they get nothing. When an artist sets out to build a supertrue following and reaches 1,000 fans, they have 8k USD to master their album. At 10,000 fans they have 100,000 USD to go on tour. All the while you benefit by getting credit you deserve of supporting them when they needed it the most.
         </Typography>
 
         <Typography variant="h4">WHAT HAPPENS WHEN AN ARTIST I BELIEVE IN GROWS</Typography>
         <Typography>
-          Congratulations! You’ve helped someone on their way up and now they’re on they’re on their way up. Supertrue saves your spot in time that you’ve backed that artist, and gives them the ability to reward their supertrue fans. How exactly they do it is up to them. We suggest to artist to give early access, exclusive shows, and special merch only available to their supertrue fans. 
+          Congratulations! You’ve helped someone on their way up and now they’re on they’re on their way up. Supertrue saves your spot in time that you’ve backed that artist, and gives them the ability to reward their supertrue fans. How exactly they do it is up to them. We suggest to artist to give early access, exclusive shows, and special merch only available to their supertrue fans.
         </Typography>
 
         <Typography variant="h4">CAN I SELL OR TRADE MY SUPERTRUE NFT</Typography>
