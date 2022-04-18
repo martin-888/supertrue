@@ -11,6 +11,8 @@ import Button from '@mui/material/Button';
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 
+import logo from "./logo.png";
+
 //SearchBar
 // import { styled, alpha } from '@mui/material/styles';
 // import SearchIcon from '@mui/icons-material/Search';
@@ -28,6 +30,22 @@ const pages = [
 const settings = [
   {name:'Profile', url:'/profile'},
 ];
+
+const Logo = () => {
+  return (
+    <Link
+      href="/"
+      underline="none"
+      sx={{
+        width: 180,
+        height: 20,
+        display: "inline-block",
+        background: `url(${logo})`,
+        backgroundSize: "contain"
+      }}
+    />
+  );
+}
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -92,16 +110,17 @@ const ResponsiveAppBar = () => {
 */
 
   return (
-    <AppBar position="static" color='transparent' style={{boxShadow:'none'}}>
-
+    <AppBar position="static" color='transparent' style={{boxShadow:'none', paddingTop: 5}}>
       <Container maxWidth="md">
         <Toolbar disableGutters>
           <Typography
             variant="h3"
             noWrap
             component="div"
-            sx={{ mr: 6, display: { xs: 'none', md: 'flex', 
-            fontSize: '3rem' }, }}
+            sx={{
+              mr: 12,
+              display: { xs: 'none', md: 'flex', fontSize: '3rem' }
+            }}
           >
             <Logo />
           </Typography>
@@ -218,19 +237,5 @@ const ResponsiveAppBar = () => {
     </AppBar>
   );
 };
+
 export default ResponsiveAppBar;
-
-
-const Logo = () => {
-  return(
-    <Link
-      // sx={{ color:'white' }}
-      href="/"
-      underline="none"
-      className="app-logo"
-      style={{fontFamily: 'DM Serif Display, serif', fontWeight:'600'}}
-      >
-        SUPERTRUE
-      </Link>
-  );
-}
