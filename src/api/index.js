@@ -1,5 +1,5 @@
-// const endpoint = "https://us-central1-supertrue-5bc93.cloudfunctions.net/api";
-const endpoint = "http://localhost:5005/supertrue-5bc93/us-central1/api";
+const endpoint = "https://us-central1-supertrue-5bc93.cloudfunctions.net/api";
+// const endpoint = "http://localhost:5005/supertrue-5bc93/us-central1/api";
 
 const getArtist = (id) => {
   return fetch(`${endpoint}/artist/${id}`).then(resp => resp.json());
