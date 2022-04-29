@@ -1,11 +1,11 @@
 import React from "react";
-// import { Box } from "@mui/material";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
 } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Typography } from "@mui/material";
 import { grey } from '@mui/material/colors';
 
 // import Home from "./pages/Home";
@@ -65,6 +65,32 @@ const theme = createTheme({
    }
 });
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    // logErrorToMyService(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <Typography variant="h1">Something went wrong.</Typography>;
+    }
+
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const { account } = useWeb3Modal();
 
@@ -73,15 +99,17 @@ export default function App() {
       <div className="app">
         <ThemeProvider theme={theme}>
             <Header />
-            <Routes>
-              <Route path="/artist/new" element={<NewArtist />} />
-              <Route path="/artist/:id" element={<Artist />} />
-              <Route path="/profile" element={!account ? <ArtistSearch /> : <Profile />} />
-              <Route path="/search" element={<ArtistSearch />} />
-              <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
-              {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/" element={<ArtistSearch />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/artist/new" element={<NewArtist />} />
+                <Route path="/artist/:id" element={<Artist />} />
+                <Route path="/profile" element={!account ? <ArtistSearch /> : <Profile />} />
+                <Route path="/search" element={<ArtistSearch />} />
+                <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
+                {/* <Route path="/" element={<Home />} /> */}
+                <Route path="/" element={<ArtistSearch />} />
+              </Routes>
+            </ErrorBoundary>
             <Footer>
               Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
             </Footer>
