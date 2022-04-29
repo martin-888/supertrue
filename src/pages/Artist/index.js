@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Contract, utils } from "ethers";
-import { Container, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { Container, Box, Button, CircularProgress, Grid, Typography, Link } from "@mui/material";
 
 import { abis } from "../../contracts";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
@@ -107,6 +107,12 @@ export default function Artist() {
 
       <Grid item className="details" md={6}>
         <Typography variant="h2" className="title">Mint {artist.name}</Typography>
+
+        <Typography variant="subtitle1" className="title">
+          <Link target="_blank" href={`https://www.instagram.com/${artist.instagram}`}>
+            @{artist.instagram}
+          </Link>
+        </Typography>
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h5" className="price">
