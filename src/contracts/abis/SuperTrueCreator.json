@@ -46,6 +46,12 @@
         "type": "string"
       },
       {
+        "indexed": false,
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
+      },
+      {
         "indexed": true,
         "internalType": "address",
         "name": "artistAddress",
@@ -59,6 +65,31 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "artistId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "instagram",
+        "type": "string"
+      }
+    ],
+    "name": "ArtistUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "beacon",
@@ -66,6 +97,19 @@
       }
     ],
     "name": "BeaconUpgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "config",
+        "type": "address"
+      }
+    ],
+    "name": "ConfigAddressChanged",
     "type": "event"
   },
   {
@@ -101,19 +145,6 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "beaconAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
@@ -122,29 +153,58 @@
       },
       {
         "internalType": "string",
-        "name": "instagram",
+        "name": "instagramId",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "guid",
+        "name": "instagram",
         "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature1",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature2",
+        "type": "bytes"
       }
     ],
     "name": "createArtist",
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "artistContractAddress",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "artistId",
         "type": "uint256"
       }
     ],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
+      }
+    ],
+    "name": "getArtistContract",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -169,12 +229,25 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
+      }
+    ],
+    "name": "getArtistId",
+    "outputs": [
+      {
         "internalType": "uint256",
-        "name": "artistId",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "getArtistContractByGUID",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBeacon",
     "outputs": [
       {
         "internalType": "address",
@@ -214,8 +287,42 @@
   {
     "inputs": [
       {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "signer",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "instagram",
+        "type": "string"
+      }
+    ],
+    "name": "getSigner",
+    "outputs": [
+      {
         "internalType": "address",
-        "name": "config",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "config_",
         "type": "address"
       },
       {
@@ -285,7 +392,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_config",
+        "name": "config_",
         "type": "address"
       }
     ],
@@ -303,6 +410,39 @@
       }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "artistId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "instagram",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature1",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature2",
+        "type": "bytes"
+      }
+    ],
+    "name": "updateArtist",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -349,6 +489,19 @@
     "name": "upgradeToAndCall",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "version",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

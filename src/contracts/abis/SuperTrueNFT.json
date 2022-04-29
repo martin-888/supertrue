@@ -190,39 +190,6 @@
   },
   {
     "inputs": [],
-    "name": "artist",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "instagram",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "blocked",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "artistPendingFunds",
     "outputs": [
       {
@@ -317,6 +284,51 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getArtist",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "instagramId",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "instagram",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "blocked",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct ISupertrueNFT.Artist",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes",
@@ -373,6 +385,11 @@
       {
         "internalType": "string",
         "name": "artistInstagram_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "artistInstagramId_",
         "type": "string"
       },
       {
@@ -608,37 +625,6 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_instagram",
-        "type": "string"
-      }
-    ],
-    "name": "setArtist",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "setArtistAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
         "name": "uri_",
         "type": "string"
       }
@@ -764,6 +750,24 @@
   {
     "inputs": [],
     "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_instagram",
+        "type": "string"
+      }
+    ],
+    "name": "updateArtist",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

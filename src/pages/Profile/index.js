@@ -46,11 +46,7 @@ export default function Profile() {
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
-      <ClaimAccount
-        collection={data?.user?.collection}
-        contractAddress={contractAddress}
-        setContractAddress={address => setContractAddress(address)}
-      />
+      <ClaimAccount collection={data?.user?.collection} />
       <Box sx={{ mb:4 }} />
       <Collection collection={data?.user?.collection} contractAddress={contractAddress} />
       <Box sx={{ mb:4 }} />

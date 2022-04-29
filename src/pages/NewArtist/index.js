@@ -39,14 +39,21 @@ const errorMessagesInstagram = {
   "followers-over-limit": `Artist can't have more than 200k followers.`,
 };
 
-async function create({ provider, instagram, name }) {
+async function create({ provider, name, instagram, instagramId, signature1, signature2 }) {
   // creating connection to the smart contract
   const superTrueCreator = new Contract(addresses.superTrueCreator, abis.superTrueCreator, provider.getSigner());
 
   const creationPrice = await superTrueCreator.getCreationPrice();
 
   // calling the smart contract function
-  const tx = await superTrueCreator.createArtist(name, instagram, instagram, { value: creationPrice });
+  const tx = await superTrueCreator.createArtist(
+    name,
+    instagramId,
+    instagram,
+    signature1,
+    signature2,
+    { value: creationPrice }
+  );
 
   // wait till the transaction is mint/confirmed
   const receipt = await tx.wait();
@@ -143,10 +150,35 @@ export default function NewArtist() {
 
     setLoading(true);
 
-    //Create Artist on Chain
-    const { receipt, tx } = await create({ provider, instagram: instagramHandle, name })
+    const signature1 = await api.getCreateSignature1({ instagram: instagramHandle })
       .catch(error => {
-        console.error("Failed to create Artist", error);
+        console.error("Failed to get create signature 1", error);
+        return null;
+      });
+
+    const signature2 = await api.getCreateSignature2({ instagram: instagramHandle })
+      .catch(error => {
+        console.error("Failed to get create signature 2", error);
+        return null;
+      });
+
+    if (!signature1?.signature || !signature2?.signature) {
+      setError("Getting artist creation signature failed.");
+      setLoading(false);
+      return;
+    }
+
+    //Create Artist on Chain
+    const { receipt, tx } = await create({
+      provider,
+      instagram: instagramHandle,
+      instagramId: signature1.artist.id,
+      name,
+      signature1: signature1.signature,
+      signature2: signature2.signature
+    })
+      .catch(error => {
+        console.error("Failed to create artist", error);
         return {};
       })
 
