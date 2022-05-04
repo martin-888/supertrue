@@ -28,7 +28,7 @@ const errorMessages = {
   "instagram-handle-not-match": "Instagram handle doesn't match.",
   "instagram-id-not-match": "Instagram ID doesn't match.",
   "account-address-not-valid": "Copy & paste text from above not found in your instagram bio.",
-  "accounts-not-match": "Account addresses doesn't match.",
+  "account-not-match": "Account address doesn't match.",
 };
 
 async function claimTransaction({ provider, signature1, signature2, contractAddress }) {
@@ -71,8 +71,9 @@ const ClaimAccount = ({ collection }) => {
     }
 
     // should never happen but better to check
-    if (artist1.account !== account || artist2.account !== account) {
-      setClaimingError(errorMessages["accounts-not-match"]);
+    if (artist1.account.toLowerCase() !== account.toLowerCase() ||
+        artist2.account.toLowerCase() !== account.toLowerCase()) {
+      setClaimingError(errorMessages["account-not-match"]);
       setIsClaiming(false);
       return;
     }
