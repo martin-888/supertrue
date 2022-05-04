@@ -219,9 +219,7 @@ export default function NewArtist() {
           alignItems="center"
         >
           <Typography variant="h3" component="h3" sx={{ opacity: artistExists ? "0.3" : "1", textAlign:'center' }}>
-            Register Artist:
-            <br />
-            <span style={{textTransform:'uppercase'}}>{name || "?"}</span>
+            Add <span style={{textTransform:'uppercase'}}>{name || "?"}</span>
           </Typography>
 
           <Box sx={{ mb: 4 }} />

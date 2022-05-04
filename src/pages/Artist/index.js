@@ -116,10 +116,11 @@ export default function Artist() {
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h5" className="price">
-            <label>Price:</label> {artist.price / 10**18} ETH</Typography>
+            <label>Price:</label> </Typography> <Typography>{artist.price / 10**18} ETH </Typography> 
+			<br /> 
+        <Typography variant="subtitle2">Price goes up per each additional NFT created.</Typography>
+			
         </Box>
-
-        <Typography variant="subtitle1">Price goes up per each additional NFT created.</Typography>
 
         {minted && (
           <Box sx={{ my: 2 }}>

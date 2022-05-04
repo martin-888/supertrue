@@ -84,7 +84,7 @@ export default function ArtistSearch({view}) {
         >
           <Typography variant="h5" component="h3" align="center">
             Sorry we couldn’t find "{searchQuery}".
-            <br />
+            <br /><br />
             You can be the first!
           </Typography>
           <Box sx={{ m: 2 }} />
@@ -101,7 +101,7 @@ export default function ArtistSearch({view}) {
         </Typography>
         }
         {view!=='gallery' && <Box key='h2' sx={{mb:3}}>
-            <Typography variant="h2" >NEWLY MINTED</Typography>
+            <Typography variant="h2" >Featured Artists</Typography>
           </Box>}
 
         <Grid container spacing={8}>

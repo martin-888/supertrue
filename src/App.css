@@ -23,6 +23,11 @@
   }
 }
 
+.price label {
+    font-size: 8px;
+    font-weight: normal;
+
+}
 
 .App-link {
   color: #61dafb;
