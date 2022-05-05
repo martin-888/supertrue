@@ -41,6 +41,7 @@ const Logo = () => {
         height: 20,
         display: "inline-block",
         background: `url(${logo})`,
+		  textDecoration: 'none',
         backgroundSize: "contain"
       }}
     />
@@ -195,7 +196,7 @@ const ResponsiveAppBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {!account ? (
-              <Button size="large" variant="contained" onClick={loadWeb3Modal}>Connect Wallet</Button>
+              <Button size="small" variant="contained" onClick={loadWeb3Modal}>Connect Wallet</Button>
             ) : (
               <>
                 <Tooltip title="Open settings">

@@ -101,7 +101,7 @@ export default function ArtistSearch({view}) {
         </Typography>
         }
         {view!=='gallery' && <Box key='h2' sx={{mb:3}}>
-            <Typography variant="h2" >Featured Artists</Typography>
+            <Typography variant="h2" >FEATURED ARTISTS</Typography>
           </Box>}
 
         <Grid container spacing={8}>
