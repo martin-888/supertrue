@@ -6,7 +6,7 @@ const getArtist = (id) => {
 }
 
 const getInstagramData = (instagram) => {
-  return fetch(`${endpoint}/artist/instagram/${instagram}`).then(resp => resp.json());
+  return fetch(`${endpoint}/instagram/${instagram}`).then(resp => resp.json());
 }
 
 const getCreateSignature1 = ({ instagram }) => {
