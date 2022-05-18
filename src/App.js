@@ -94,6 +94,10 @@ class ErrorBoundary extends React.Component {
 export default function App() {
   const { account } = useWeb3Modal();
 
+  if (DEV && window.location.pathname === "/demo") {
+    return <Demo />;
+  }
+
   return (
     <Router>
       <div className="app">
