@@ -1,4 +1,4 @@
-import superTrueCreator from "./abi/SupertrueCreator.json";
+import superTrueCreator from "./abi/SupertrueHub.json";
 import superTrueNFT from "./abi/SupertrueNFT.json";
 
 const abis = {

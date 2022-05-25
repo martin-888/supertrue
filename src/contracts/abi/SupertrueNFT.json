@@ -1,5 +1,54 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "x",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMathUD60x18__FromUintOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "x",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMathUD60x18__LogInputTooSmall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "prod1",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMath__MulDivFixedPointOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "prod1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "denominator",
+        "type": "uint256"
+      }
+    ],
+    "name": "PRBMath__MulDivOverflow",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -393,6 +442,11 @@
         "type": "string"
       },
       {
+        "internalType": "address",
+        "name": "artistAccount_",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "name_",
         "type": "string"
@@ -527,12 +581,31 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "priceTokenId",
+    "outputs": [
+      {
+        "internalType": "uint256",
         "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "salePrice",
+        "name": "_salePrice",
         "type": "uint256"
       }
     ],
@@ -540,12 +613,12 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "receiver",
+        "name": "",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "royaltyAmount",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -637,9 +710,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint96",
         "name": "royaltyBPS",
-        "type": "uint256"
+        "type": "uint96"
       }
     ],
     "name": "setRoyalties",

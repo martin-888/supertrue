@@ -191,6 +191,55 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "instagram",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature1",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature2",
+        "type": "bytes"
+      }
+    ],
+    "name": "createArtistRelay",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "artistContractAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "artistId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "instagramId",
         "type": "string"
@@ -297,6 +346,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "instagramId",
         "type": "string"
@@ -319,6 +373,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getTokenPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -329,6 +396,11 @@
         "internalType": "address",
         "name": "nftContract",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPrice",
+        "type": "uint256"
       }
     ],
     "name": "initialize",
@@ -397,6 +469,19 @@
       }
     ],
     "name": "setConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "cents",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTokenPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

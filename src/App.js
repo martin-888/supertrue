@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,18 +7,22 @@ import {
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Typography } from "@mui/material";
 import { grey } from '@mui/material/colors';
+import appContext from './context/AppContext';
 
 // import Home from "./pages/Home";
 import Artist from "./pages/Artist";
 import NewArtist from "./pages/NewArtist";
 import Profile from "./pages/Profile";
 import ArtistSearch from "pages/ArtistSearch";
+import Demo from "pages/Demo";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 import 'App.scss';
 import useWeb3Modal from "./hooks/useWeb3Modal";
+
+const DEV = process.env.NODE_ENV === "development";
 
 const theme = createTheme({
   palette: {
@@ -93,30 +97,40 @@ class ErrorBoundary extends React.Component {
 
 export default function App() {
   const { account } = useWeb3Modal();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  if (DEV && window.location.pathname === "/demo") {
-    return <Demo />;
+  // if (DEV && window.location.pathname.startsWith("/demo")) {
+  if (window.location.pathname.startsWith("/demo")) {
+    return (
+      <div className="app">
+        <ThemeProvider theme={theme}>
+          <Demo />
+        </ThemeProvider>
+      </div>
+    );
   }
 
   return (
     <Router>
       <div className="app">
         <ThemeProvider theme={theme}>
-            <Header />
-            <ErrorBoundary>
-              <Routes>
-                <Route path="/artist/new" element={<NewArtist />} />
-                <Route path="/artist/:id" element={<Artist />} />
-                <Route path="/profile" element={!account ? <ArtistSearch /> : <Profile />} />
-                <Route path="/search" element={<ArtistSearch />} />
-                <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
-                {/* <Route path="/" element={<Home />} /> */}
-                <Route path="/" element={<ArtistSearch />} />
-              </Routes>
-            </ErrorBoundary>
-            <Footer>
-              Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
-            </Footer>
+            <appContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+              <Header setIsLoggedIn={setIsLoggedIn} />
+              <ErrorBoundary>
+                <Routes>
+                  <Route path="/artist/new" element={<NewArtist />} />
+                  <Route path="/artist/:id" element={<Artist />} />
+                  <Route path="/profile" element={!account || !isLoggedIn ? <ArtistSearch /> : <Profile />} />
+                  <Route path="/search" element={<ArtistSearch />} />
+                  <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
+                  {/* <Route path="/" element={<Home />} /> */}
+                  <Route path="/" element={<ArtistSearch />} />
+                </Routes>
+              </ErrorBoundary>
+              <Footer>
+                Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
+              </Footer>
+            </appContext.Provider>
           </ThemeProvider>
       </div>
     </Router>

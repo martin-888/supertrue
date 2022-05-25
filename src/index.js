@@ -3,16 +3,37 @@ import ReactDOM from 'react-dom';
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider
+  ApolloProvider,
+  createHttpLink
 } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 
 import './index.css';
 // import './style/style.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const httpLink = createHttpLink({
+  uri: 'https://supertrue-api.herokuapp.com/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('token');
+
+  if (!token?.length) {
+    return headers;
+  }
+
+  return {
+    headers: {
+      ...headers,
+      authorization: `Bearer ${token}`,
+    }
+  }
+});
+
 const client = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/emetrop/super-true',
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 });
 
