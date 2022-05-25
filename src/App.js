@@ -7,7 +7,6 @@ import {
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Typography } from "@mui/material";
 import { grey } from '@mui/material/colors';
-import appContext from './context/AppContext';
 
 // import Home from "./pages/Home";
 import Artist from "./pages/Artist";
@@ -114,23 +113,21 @@ export default function App() {
     <Router>
       <div className="app">
         <ThemeProvider theme={theme}>
-            <appContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-              <Header setIsLoggedIn={setIsLoggedIn} />
-              <ErrorBoundary>
-                <Routes>
-                  <Route path="/artist/new" element={<NewArtist />} />
-                  <Route path="/artist/:id" element={<Artist />} />
-                  <Route path="/profile" element={!account || !isLoggedIn ? <ArtistSearch /> : <Profile />} />
-                  <Route path="/search" element={<ArtistSearch />} />
-                  <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
-                  {/* <Route path="/" element={<Home />} /> */}
-                  <Route path="/" element={<ArtistSearch />} />
-                </Routes>
-              </ErrorBoundary>
-              <Footer>
-                Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
-              </Footer>
-            </appContext.Provider>
+            <Header setIsLoggedIn={setIsLoggedIn} />
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/artist/new" element={<NewArtist />} />
+                <Route path="/artist/:id" element={<Artist />} />
+                <Route path="/profile" element={!account || !isLoggedIn ? <ArtistSearch /> : <Profile />} />
+                <Route path="/search" element={<ArtistSearch />} />
+                <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
+                {/* <Route path="/" element={<Home />} /> */}
+                <Route path="/" element={<ArtistSearch />} />
+              </Routes>
+            </ErrorBoundary>
+            <Footer>
+              Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
+            </Footer>
           </ThemeProvider>
       </div>
     </Router>
