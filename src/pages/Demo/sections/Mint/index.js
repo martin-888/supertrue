@@ -71,6 +71,7 @@ export default function Mint({ provider }) {
       <h3>Mint</h3>
       {!data?.dbMe && <p>You've to be login for minting</p>}
       {isPurchaseTabOpened && <p>Finish your purchase in opened tab.</p>}
+      {createLinkError && <p>{createLinkError}</p>}
       <button disabled={!data?.me?.collection || waiting} onClick={mint}>Mint my NFT</button>
     </div>
   );
