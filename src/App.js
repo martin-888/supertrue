@@ -14,6 +14,7 @@ import NewArtist from "./pages/NewArtist";
 import Profile from "./pages/Profile";
 import ArtistSearch from "pages/ArtistSearch";
 import Demo from "pages/Demo";
+import ArtistPost from "pages/ArtistPost";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -119,6 +120,7 @@ export default function App() {
                 <Route path="/artist/new" element={<NewArtist />} />
                 <Route path="/artist/:id" element={<Artist />} />
                 <Route path="/profile" element={!account || !isLoggedIn ? <ArtistSearch /> : <Profile />} />
+                {true && <Route path="/artist/post" element={<ArtistPost />} />}
                 <Route path="/search" element={<ArtistSearch />} />
                 <Route path="/gallery" element={<ArtistSearch view="gallery"/>} />
                 {/* <Route path="/" element={<Home />} /> */}
