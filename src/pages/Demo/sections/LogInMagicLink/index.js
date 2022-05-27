@@ -5,7 +5,7 @@ import { Routes } from "react-router-dom";
 import Callback from './Callback';
 import LoggedIn from './LoggedIn';
 
-export default function LogIn({ magic }) {
+export default function LogInMagicLink({ magic }) {
   return (
     <section>
       <h3>Log In</h3>

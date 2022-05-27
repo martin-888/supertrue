@@ -1,14 +1,10 @@
-import { providers } from "ethers";  //https://www.jsdocs.io/package/@ethersproject/providers
+import { providers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Web3Modal from "web3modal";
 
-// Enter a valid infura key here to avoid being rate limited
-// You can get a key for free at https://infura.io/register
-const INFURA_ID = "053054e14de8436ca32b539867081440";
-
-// TODO load from env variable
-const NETWORK = "rinkeby";
+const INFURA_ID = process.env.REACT_APP_INFURA_KEY;
+const NETWORK = process.env.REACT_APP_NETWORK;
 
 function useWeb3Modal(config = {}) {
   const [account, setAccount] = useState();
@@ -49,11 +45,11 @@ function useWeb3Modal(config = {}) {
     //Set Current Chain ID
     signerProvider.detectNetwork().then(res => setChainId(res?.chainId));
     //Set Current Account
-    signerProvider.listAccounts().then(accounts => setAccount(accounts?.[0]));
+    signerProvider.listAccounts().then(accounts => setAccount(accounts?.[0]?.toLowerCase()));
 
     newProvider.on("accountsChanged", (accounts) => {
       console.log(`account changed to:`, accounts?.[0]);
-      setAccount(accounts?.[0]);
+      setAccount(accounts?.[0]?.toLowerCase());
     });
 
     newProvider.on("chainChanged", (chainId) => {

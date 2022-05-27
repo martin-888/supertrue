@@ -10,7 +10,7 @@ import useWeb3Modal from "../../../hooks/useWeb3Modal";
 const maxDescriptionLength = 1000;
 const maxNameLength = 50;
 
-const chainId = 4; // TODO change on production
+const chainId = Number.parseInt(process.env.REACT_APP_CHAIN_ID || 0, 10);
 
 const errorMessagesUpdate = {
   "default": "Update failed.",
