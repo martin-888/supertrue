@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 import {
   Button,
   Container,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
+import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
   title: { marginBottom: "10px" },
@@ -133,8 +133,10 @@ export default function CreateArtist({ provider }) {
   if (loading) {
     return (
       <Container maxWidth="md">
-        <h3>Create Artist</h3>
-        Loading...
+        <Typography variant="h2" sx={styles.title}>
+          CREATE ARTIST PROFILE
+        </Typography>
+        <Typography>Loading...</Typography>
       </Container>
     );
   }
