@@ -10,6 +10,7 @@ function useWeb3Modal(config = {}) {
   const [account, setAccount] = useState();
   const [provider, setProvider] = useState();
   const [chainId, setChainId] = useState();
+  const [loadWeb3ModalError, setLoadWeb3ModalError] = useState();
   const [autoLoaded, setAutoLoaded] = useState(false);
   const { autoLoad = true, infuraId = INFURA_ID, network = NETWORK } = config;
 
@@ -32,7 +33,9 @@ function useWeb3Modal(config = {}) {
 
   // Open wallet selection modal.
   const loadWeb3Modal = useCallback(async () => {
-    const newProvider = await web3Modal.connect().catch(() => null);
+    const newProvider = await web3Modal
+      .connect()
+      .catch((e) => setLoadWeb3ModalError(e?.message));
 
     if (!newProvider) {
       // console.error("useWeb3Modal() No Provider Found");
@@ -43,9 +46,11 @@ function useWeb3Modal(config = {}) {
     setProvider(signerProvider);
 
     //Set Current Chain ID
-    signerProvider.detectNetwork().then(res => setChainId(res?.chainId));
+    signerProvider.detectNetwork().then((res) => setChainId(res?.chainId));
     //Set Current Account
-    signerProvider.listAccounts().then(accounts => setAccount(accounts?.[0]?.toLowerCase()));
+    signerProvider
+      .listAccounts()
+      .then((accounts) => setAccount(accounts?.[0]?.toLowerCase()));
 
     newProvider.on("accountsChanged", (accounts) => {
       console.log(`account changed to:`, accounts?.[0]);
@@ -63,10 +68,11 @@ function useWeb3Modal(config = {}) {
 
     // Subscribe to session disconnection
     newProvider.on("disconnect", (code, reason) => {
+      console.log("disconnect");
       console.log(code, reason);
       logoutOfWeb3Modal();
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3Modal]);
 
   const logoutOfWeb3Modal = useCallback(
@@ -75,7 +81,7 @@ function useWeb3Modal(config = {}) {
       setAccount(null);
       window.location.reload();
     },
-    [web3Modal],
+    [web3Modal]
   );
 
   // If autoLoad is enabled and the the wallet had been loaded before, load it automatically now.
@@ -84,9 +90,22 @@ function useWeb3Modal(config = {}) {
       loadWeb3Modal();
       setAutoLoaded(true);
     }
-  }, [autoLoad, autoLoaded, loadWeb3Modal, setAutoLoaded, web3Modal.cachedProvider]);
+  }, [
+    autoLoad,
+    autoLoaded,
+    loadWeb3Modal,
+    setAutoLoaded,
+    web3Modal.cachedProvider,
+  ]);
 
-  return { provider, loadWeb3Modal, logoutOfWeb3Modal, account, chainId };
+  return {
+    provider,
+    loadWeb3Modal,
+    logoutOfWeb3Modal,
+    account,
+    chainId,
+    loadWeb3ModalError,
+  };
 }
 
 export default useWeb3Modal;

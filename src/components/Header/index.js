@@ -1,12 +1,23 @@
-import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import { Box, Link, Toolbar, Menu, MenuItem, Tooltip, IconButton, Typography, Container, Button } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import { AccountCircle } from '@mui/icons-material';
-
+import React from "react";
+import AppBar from "@mui/material/AppBar";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
+import {
+  Box,
+  Link,
+  Toolbar,
+  Menu,
+  MenuItem,
+  Tooltip,
+  IconButton,
+  Typography,
+  Container,
+  Button,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { AccountCircle } from "@mui/icons-material";
 
 import logo from "./logo.png";
+import LogInWallet from "pages/Demo/sections/LogInWallet";
 
 //SearchBar
 // import { styled, alpha } from '@mui/material/styles';
@@ -20,9 +31,7 @@ const pages = [
   // {name:'Gallery', url:'/gallery'},
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const settings = [
-  {name:'Profile', url:'/profile'},
-];
+const settings = [{ name: "Profile", url: "/profile" }];
 
 const Logo = () => {
   return (
@@ -34,17 +43,17 @@ const Logo = () => {
         height: 20,
         display: "inline-block",
         background: `url(${logo})`,
-        textDecoration: 'none',
-        backgroundSize: "contain"
+        textDecoration: "none",
+        backgroundSize: "contain",
       }}
     />
   );
-}
+};
 
 const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { loadWeb3Modal, logoutOfWeb3Modal, account } = useWeb3Modal();
+  const { account } = useWeb3Modal();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -58,8 +67,6 @@ const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-
 
   /* Possible Search Stuff   https://mui.com/components/app-bar/
     const Search = styled('div')(({ theme }) => ({
@@ -104,7 +111,11 @@ const Header = () => {
 */
 
   return (
-    <AppBar position="static" color='transparent' style={{boxShadow:'none', paddingTop: 5}}>
+    <AppBar
+      position="static"
+      color="transparent"
+      style={{ boxShadow: "none", paddingTop: 5 }}
+    >
       <Container maxWidth="md">
         <Toolbar disableGutters>
           <Typography
@@ -113,7 +124,7 @@ const Header = () => {
             component="div"
             sx={{
               mr: 12,
-              display: { xs: 'none', md: 'flex', fontSize: '3rem' }
+              display: { xs: "none", md: "flex", fontSize: "3rem" },
             }}
           >
             <Logo />
@@ -131,7 +142,7 @@ const Header = () => {
           </Search>
           */}
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -146,18 +157,18 @@ const Header = () => {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: "block", md: "none" },
               }}
             >
               {pages.map((page) => (
@@ -173,14 +184,18 @@ const Header = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
             <Logo />
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Link key={page.name} href={page.url} underline="none">
-                <Button key={page.name} onClick={handleCloseNavMenu} sx={{ mx:1, px:2, py: 1.5, display: 'block', }}>
+                <Button
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  sx={{ mx: 1, px: 2, py: 1.5, display: "block" }}
+                >
                   {page.name}
                 </Button>
               </Link>
@@ -189,38 +204,49 @@ const Header = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {!account ? (
-              <Button size="small" variant="contained" onClick={loadWeb3Modal}>Connect Wallet</Button>
+              <>
+                <p>{account}</p>
+                <LogInWallet />
+              </>
             ) : (
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                    <AccountCircle style={{width:'38px', height:'38px', color:'#111'}}/>
+                    <AccountCircle
+                      style={{ width: "38px", height: "38px", color: "#111" }}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={{ mt: "45px" }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                   keepMounted
                   transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); window.location.href = setting.url; }}>
+                    <MenuItem
+                      key={setting.name}
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        window.location.href = setting.url;
+                      }}
+                    >
                       <Typography textAlign="center">{setting.name}</Typography>
                     </MenuItem>
                   ))}
-                  <MenuItem onClick={logoutOfWeb3Modal}>
-                    <Typography textAlign="center">Disconnect Wallet</Typography>
+                  <MenuItem>
+                    <LogInWallet />
                   </MenuItem>
                 </Menu>
               </>
