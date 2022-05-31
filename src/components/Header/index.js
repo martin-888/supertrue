@@ -17,7 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { AccountCircle } from "@mui/icons-material";
 
 import logo from "./logo.png";
-import LogInWallet from "pages/Demo/sections/LogInWallet";
+import LogInWallet from "../LogInWallet";
 
 //SearchBar
 // import { styled, alpha } from '@mui/material/styles';
