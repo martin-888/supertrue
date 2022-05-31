@@ -41,12 +41,12 @@ const errorMessagesInstagram = {
 
 async function create({ provider, name, instagram, instagramId, signature1, signature2 }) {
   // creating connection to the smart contract
-  const superTrueCreator = new Contract(addresses.superTrueCreator, abis.superTrueCreator, provider.getSigner());
+  const supertrueHub = new Contract(addresses.supertrueHub, abis.supertrueHub, provider.getSigner());
 
-  const creationPrice = await superTrueCreator.getCreationPrice();
+  const creationPrice = await supertrueHub.getCreationPrice();
 
   // calling the smart contract function
-  const tx = await superTrueCreator.createArtist(
+  const tx = await supertrueHub.createArtist(
     name,
     instagramId,
     instagram,
