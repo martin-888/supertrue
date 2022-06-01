@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 const chainId = Number.parseInt(process.env.REACT_APP_CHAIN_ID || 0, 10);
 
@@ -162,9 +162,7 @@ export default function LogInWallet() {
           Connect Wallet
         </Button>
       ) : (
-        <Button size="small" variant="contained" onClick={logout}>
-          Logout
-        </Button>
+        <Typography onClick={logout}>Logout</Typography>
       )}
       <p>{loadWeb3ModalError}</p>
     </>
