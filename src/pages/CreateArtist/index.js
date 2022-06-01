@@ -30,6 +30,11 @@ const styles = {
     fontSize: "0.7rem",
     marginRight: "15px",
   },
+  verifySentence: {
+    overflow: "hidden",
+    whiteSpace: "wrap",
+    textOverflow: "ellipsis",
+  },
 };
 
 const ME_QUERY = gql`
@@ -141,6 +146,8 @@ export default function CreateArtist({ provider }) {
     );
   }
 
+  const VERIFY_SENTENCE = `Verifying my Supertrue.com:${me?.address || "?"}`;
+
   return (
     <>
       <Container maxWidth="md">
@@ -211,18 +218,20 @@ export default function CreateArtist({ provider }) {
                 immideately afterwards.)
               </Typography>
             </Box>
+            <Box>
+              <Typography sx={styles.verifySentence}>
+                {VERIFY_SENTENCE}
+              </Typography>
+            </Box>
             <Button
-              fullWidth
-              multi
-              variant="outlined"
+              size="large"
               startIcon={<ContentCopyIcon />}
               onClick={(e) => {
-                navigator.clipboard.writeText(e.target.value);
+                navigator.clipboard.writeText(VERIFY_SENTENCE);
               }}
               value={`Verifying my Supertrue.com:${me?.address || "?"}`}
             >
-              <span style={styles.verifyButtonPrefix}>CLICK TO Copy</span>
-              Verifying my Supertrue.com:{me?.address.slice(0, 6) || "?"}...
+              <span style={styles.verifyButtonPrefix}>click to copy</span>
             </Button>
           </>
         )}
