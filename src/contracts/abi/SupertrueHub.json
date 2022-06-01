@@ -240,9 +240,9 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "instagramId",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "artistId",
+        "type": "uint256"
       }
     ],
     "name": "getArtistContract",
@@ -259,12 +259,12 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "artistId",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "instagramId",
+        "type": "string"
       }
     ],
-    "name": "getArtistContract",
+    "name": "getArtistContractByInstagramId",
     "outputs": [
       {
         "internalType": "address",

@@ -27,11 +27,11 @@ const ARTIST_QUERY = gql`
 `;
 
 async function mint({ provider, contractAddress, price }) {
-  const superTrueNFT = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
+  const supertrueNFT = new Contract(contractAddress, abis.supertrueNFT, provider.getSigner());
 
   const address = provider.getSigner().getAddress();
 
-  const tx = await superTrueNFT.mint(address, { value: price });
+  const tx = await supertrueNFT.mint(address, { value: price });
 
   const receipt = await tx.wait();
 
@@ -116,10 +116,10 @@ export default function Artist() {
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h5" className="price">
-            <label>Price:</label> </Typography> <Typography>{artist.price / 10**18} ETH </Typography> 
-			<br /> 
+            <label>Price:</label> </Typography> <Typography>{artist.price / 10**18} ETH </Typography>
+			<br />
         <Typography variant="subtitle2">Price goes up per each additional NFT created.</Typography>
-			
+
         </Box>
 
         {minted && (

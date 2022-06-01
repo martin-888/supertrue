@@ -46,7 +46,9 @@ export default function LogInWallet() {
   const [loginOnceAccountIsAvailable, setLoginOnceAccountIsAvailable] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loginError, setLoginError] = useState(null);
-  const { account, provider, loadWeb3Modal, logoutOfWeb3Modal } = useWeb3Modal();
+  const { account, provider, loadWeb3Modal, logoutOfWeb3Modal, ...others } = useWeb3Modal();
+
+  const currentChainId = others.chainId;
 
   const { data } = useQuery(SIGNING_MESSAGE_QUERY);
 
@@ -133,6 +135,14 @@ export default function LogInWallet() {
       await loadWeb3Modal();
       setLoginOnceAccountIsAvailable(true);
     }
+    // TODO ask to switch to rinkeby/polygon chain if it's not currently used
+    // possibly add new method for it to useWeb3Modal.js
+    // @see https://docs.metamask.io/guide/rpc-api.html#wallet-addethereumchain
+    // @see https://docs.metamask.io/guide/rpc-api.html#wallet-switchethereumchain
+    // if (chainId !== currentChainId && provider) {
+      // await provider.send('wallet_switchEthereumChain', [0x3]);
+      // return;
+    // }
     if (account && provider) {
       await createLoginNonceMutation({ variables: { input: { address: account } } });
     }
