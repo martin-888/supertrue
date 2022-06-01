@@ -23,7 +23,7 @@ const errorMessagesUpdate = {
 };
 
 async function withdrawTransaction({ provider, contractAddress }) {
-  const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
+  const nftContract = new Contract(contractAddress, abis.supertrueNFT, provider.getSigner());
   const tx = await nftContract.withdrawArtist();
   const receipt = await tx.wait();
 

@@ -32,7 +32,7 @@ const errorMessages = {
 };
 
 async function claimTransaction({ provider, signature1, signature2, contractAddress }) {
-  const nftContract = new Contract(contractAddress, abis.superTrueNFT, provider.getSigner());
+  const nftContract = new Contract(contractAddress, abis.supertrueNFT, provider.getSigner());
   const tx = await nftContract.claim(signature1, signature2);
   const receipt = await tx.wait();
 

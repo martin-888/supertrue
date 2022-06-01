@@ -133,7 +133,7 @@ export default function MyProfile({ provider }) {
     );
   }
 
-  const hasMinimumFunds = me?.collection?.pendingFunds < minimumWithdraw;
+  const hasMinimumFunds = me?.collection?.pendingFunds > minimumWithdraw;
 
   return (
     <div>

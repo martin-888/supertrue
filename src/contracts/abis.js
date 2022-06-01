@@ -1,9 +1,9 @@
-import superTrueCreator from "./abi/SupertrueHub.json";
-import superTrueNFT from "./abi/SupertrueNFT.json";
+import supertrueHub from "./abi/SupertrueHub.json";
+import supertrueNFT from "./abi/SupertrueNFT.json";
 
 const abis = {
-  superTrueCreator,
-  superTrueNFT,
+  supertrueHub,
+  supertrueNFT,
 };
 
 export default abis;
