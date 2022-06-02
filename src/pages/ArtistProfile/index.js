@@ -170,10 +170,10 @@ export default function ArtistProfile() {
   const CURRENY_OF_WITHDRAWAL = "$/USD";
   const EXCHANGE_RATE_MATIC_TO_USD = 0.61;
   const funds = !me.pendingFunds
-    ? 10
+    ? 0
     : ethers.utils.formatEther(me.pendingFunds);
 
-  const minimumWithdraw = 8;
+  const minimumWithdraw = 100;
   const hasMinimumFunds = funds > minimumWithdraw;
 
   return (
