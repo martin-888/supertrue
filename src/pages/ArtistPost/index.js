@@ -75,13 +75,17 @@ export default function ArtistPost() {
 
   return (
     <Container maxWidth="md">
-      {!data?.dbMe && <p>You've to be login for posting</p>}
+      {!data?.dbMe && (
+        <Typography mb={2}>You've to be login for posting.</Typography>
+      )}
       {!data?.me?.collection && (
-        <p>You've to create collection first for posting</p>
+        <Typography mb={6}>
+          You've to create collection first for posting.
+        </Typography>
       )}
       <CreatePost collection={data?.me?.collection} />
       {!me?.collection?.posts?.length ? (
-        <p>No posts</p>
+        <Typography>No posts exist.</Typography>
       ) : loadingPosts ? (
         <Box sx={styles.loadingSpinner}>
           <CircularProgress />
