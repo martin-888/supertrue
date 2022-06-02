@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import useWeb3Modal from "../../hooks/useWeb3Modal";
 import {
   Button,
   Container,
@@ -70,6 +71,7 @@ const CREATE_COLLECTION_MUTATION = gql`
 `;
 
 export default function CreateArtist({ provider }) {
+  const { account } = useWeb3Modal();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
@@ -147,6 +149,16 @@ export default function CreateArtist({ provider }) {
   }
 
   const VERIFY_SENTENCE = `Verifying my Supertrue.com:${me?.address || "?"}`;
+
+  if (!account) {
+    return (
+      <Container maxWidth="md">
+        <Typography mb={2}>
+          You've to be login with your wallet first.
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <>
