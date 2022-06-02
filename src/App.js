@@ -18,6 +18,7 @@ import Footer from "./components/Footer";
 
 import "App.scss";
 import useWeb3Modal from "./hooks/useWeb3Modal";
+import ArtistProfile from "pages/ArtistProfile";
 
 const DEV = process.env.NODE_ENV === "development";
 
@@ -126,6 +127,7 @@ export default function App() {
                 <Route path="/artist/post" element={<ArtistPost />} />
               )}
               <Route path="/create-artist" element={<CreateArtist />} />
+              <Route path="/artist/profile" element={<ArtistProfile />} />
               <Route path="/search" element={<ArtistSearch />} />
               <Route
                 path="/gallery"

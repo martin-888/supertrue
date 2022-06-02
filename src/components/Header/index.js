@@ -43,7 +43,7 @@ const pages = [
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const settings = [
-  { name: "Artist Profile", url: "/profile" },
+  { name: "Artist Profile", url: "/artist/profile" },
   { name: "Post", url: "/artist/post" },
 ];
 
