@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { gql, useQuery } from "@apollo/client";
 import AppBar from "@mui/material/AppBar";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import {
@@ -19,6 +20,16 @@ import { AccountCircle } from "@mui/icons-material";
 import logo from "./logo.png";
 import LogInWallet from "../LogInWallet";
 
+const ME_QUERY = gql`
+  query me($address: ID!) {
+    me: user(id: $address) {
+      collection {
+        name
+      }
+    }
+  }
+`;
+
 //SearchBar
 // import { styled, alpha } from '@mui/material/styles';
 // import SearchIcon from '@mui/icons-material/Search';
@@ -31,7 +42,10 @@ const pages = [
   // {name:'Gallery', url:'/gallery'},
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const settings = [{ name: "Profile", url: "/profile" }];
+const settings = [
+  { name: "Artist Profile", url: "/profile" },
+  { name: "Post", url: "/artist/post" },
+];
 
 const Logo = () => {
   return (
@@ -54,6 +68,19 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { account } = useWeb3Modal();
+
+  const address = localStorage.getItem("address");
+  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
+    variables: { address },
+    skip: !address,
+  });
+
+  const me = useMemo(
+    () => ({
+      ...data?.me,
+    }),
+    [data]
+  );
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -124,7 +151,11 @@ const Header = () => {
             component="div"
             sx={{
               mr: 12,
-              display: { xs: "none", md: "flex", fontSize: "3rem" },
+              display: {
+                xs: "none",
+                md: "flex",
+                fontSize: "3rem",
+              },
             }}
           >
             <Logo />
@@ -205,9 +236,12 @@ const Header = () => {
           <Box sx={{ flexGrow: 0 }}>
             {!account ? (
               <>
-                <p>{account}</p>
                 <LogInWallet />
               </>
+            ) : !me?.collection ? (
+              <Button size="large" href={"/create-artist"}>
+                Artist Sign Up
+              </Button>
             ) : (
               <>
                 <Tooltip title="Open settings">
@@ -219,7 +253,7 @@ const Header = () => {
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: "45px" }}
+                  sx={{ mt: "45px", justifyContent: "flex-end" }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -234,6 +268,19 @@ const Header = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  <Typography
+                    textTransform="uppercase"
+                    sx={{
+                      fontWeight: "bold",
+                      textDecoration: "underline",
+                      pl: "16px",
+                      pr: "16px",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    {me?.collection?.name}
+                  </Typography>
                   {settings.map((setting) => (
                     <MenuItem
                       key={setting.name}
@@ -241,11 +288,23 @@ const Header = () => {
                         handleCloseUserMenu();
                         window.location.href = setting.url;
                       }}
+                      sx={{ display: "flex", justifyContent: "flex-end" }}
                     >
-                      <Typography textAlign="center">{setting.name}</Typography>
+                      <Typography
+                        textTransform="uppercase"
+                        sx={{
+                          textAlign: "center",
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        {setting.name}
+                      </Typography>
                     </MenuItem>
                   ))}
-                  <MenuItem>
+                  <MenuItem
+                    sx={{ display: "flex", justifyContent: "flex-end" }}
+                  >
                     <LogInWallet />
                   </MenuItem>
                 </Menu>

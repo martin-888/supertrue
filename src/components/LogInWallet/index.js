@@ -151,10 +151,9 @@ export default function LogInWallet() {
 
   return (
     <>
-      {loginError && <p>{loginError}</p>}
       {!isLoggedIn ? (
         <Button
-          size="small"
+          size={"large"}
           variant="contained"
           onClick={login}
           disabled={loggingIn && !loginError}
@@ -162,9 +161,15 @@ export default function LogInWallet() {
           Connect Wallet
         </Button>
       ) : (
-        <Typography onClick={logout}>Logout</Typography>
+        <Typography onClick={logout} textTransform="uppercase">
+          Logout
+        </Typography>
       )}
-      <p>{loadWeb3ModalError}</p>
+      {loginError && (
+        <Typography color="red" sx={{ position: "absolute", right: 0 }}>
+          {loginError}
+        </Typography>
+      )}
     </>
   );
 }
