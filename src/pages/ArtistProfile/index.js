@@ -119,10 +119,15 @@ export default function ArtistProfile() {
     setTimeout(refetch, 5000);
   }, [data, refetching]);
 
+  const updateCollection = () => {
+    setUpdating(true);
+    updateCollectionMutation();
+  };
+
   const [updateCollectionMutation] = useMutation(UPDATE_COLLECTION_MUTATION, {
     variables: { input: { description } },
     onCompleted: () => {
-      setTimeout(() => setUpdating(false), 2000);
+      setTimeout(() => setUpdating(false), 1500);
     },
     onError: (e) => {
       console.log(e.message);
@@ -197,8 +202,8 @@ export default function ArtistProfile() {
       />
       <Button
         variant="contained"
-        onClick={updateCollectionMutation}
-        disabled={!me?.collection}
+        onClick={updateCollection}
+        disabled={!me?.collection || updating}
       >
         Update
       </Button>
