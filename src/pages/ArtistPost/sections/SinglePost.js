@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import humanizeDuration from "humanize-duration";
 import {
   Box,
   Typography,
@@ -10,6 +11,8 @@ import {
 } from "@mui/material";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import __ from "helpers/__";
+import noArtistImage from "assets/img/no-user-image.png";
 
 const styles = {
   postBox: {
@@ -80,35 +83,32 @@ const styles = {
   },
 };
 
-export default function SinglePost({ post }) {
-  const [message, setMessage] = useState(post.message);
+export default function SinglePost({ post, artistName, artistId, instagram }) {
+  const [message, setMessage] = useState(post.content);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // NOTE skeleton handler functions for edit and delete a post
-  const editPost = () => {
-    setIsEditing(true);
-    console.log("changed");
-  };
-
-  const saveChanges = () => {
-    console.log({ message });
-    setLoading(true);
-    setTimeout(submitChanges, 3000);
-  };
+  const artistImage = __.getArtistImage(artistId) && noArtistImage;
 
   const submitChanges = () => {
     setLoading(false);
     setIsEditing(false);
-    setMessage(post.message);
+    setMessage(post.content);
   };
 
+  // NOTE skeleton handler functions for edit and delete a post
+  const editPost = () => {
+    setIsEditing(true);
+  };
   const resetChanges = () => {
     setIsEditing(false);
-    setMessage(post.message);
+    setMessage(post.content);
   };
-
+  const saveChanges = () => {
+    setLoading(true);
+    setTimeout(submitChanges, 3000);
+  };
   const deletePost = () => {
     if (isDeleting) {
       console.log("will delete post for sure");
@@ -119,35 +119,38 @@ export default function SinglePost({ post }) {
     }
   };
 
+  const humanizedCreatedAtTime = humanizeDuration(
+    new Date().getTime() - Date.parse(post.createdAt),
+    { largest: 1, maxDecimalPoints: 0 }
+  );
+
   return (
     <Box
-      key={post.id}
+      key={post.createdAt}
       sx={{ ...styles.postBox, boxShadow: isEditing || isDeleting ? 2 : null }}
     >
       <Box sx={styles.postTop}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
             <img
-              src={post.authorImageURl}
+              src={artistImage}
               alt="Author Profile"
               style={styles.profileImage}
             />
             <Box sx={styles.authorText}>
-              <Typography sx={styles.authorName}>{post.authorName}</Typography>
-              <Typography sx={styles.socialMediaHandle}>
-                {post.socialMediaHandle}
-              </Typography>
+              <Typography sx={styles.authorName}>{artistName}</Typography>
+              <Typography
+                sx={styles.socialMediaHandle}
+              >{`@${instagram}`}</Typography>
             </Box>
           </Box>
           <Box sx={styles.infoTextbox}>
             <Typography
               sx={styles.infoText}
-            >{`Posted for ${post.fanReachLabel}`}</Typography>
-            <Typography
-              sx={styles.infoText}
-              fontWeight={"bold"}
-              pl={2.5}
-            >{`${post.pastTimeLabel}`}</Typography>
+            >{`Posted for 1 - ${post.lastNftID}`}</Typography>
+            <Typography sx={styles.infoText} fontWeight={"bold"} pl={2.5}>
+              {`${humanizedCreatedAtTime} ago`}
+            </Typography>
           </Box>
         </Box>
         <Box sx={styles.postMessageBox}>

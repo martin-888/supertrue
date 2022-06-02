@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
 import {
   Box,
   Grid,
@@ -17,29 +18,25 @@ import {
 import MessageIcon from "@mui/icons-material/Message";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 
-// NOTE placeholder to dynamically render MenuItems
-const predefinedPostReaches = [
-  {
-    label: "All",
-    start: 0,
-    end: 1000,
-  },
-  {
-    label: "0 - 10",
-    start: 0,
-    end: 10,
-  },
-  {
-    label: "0 - 100",
-    start: 0,
-    end: 100,
-  },
-  {
-    label: "0 - 1000",
-    start: 0,
-    end: 1000,
-  },
-];
+// TODO Add option for "All"
+const predefinedPostReaches = [10, 100, 1000];
+
+const CREATE_POST_MUTATION = gql`
+  mutation createPost($input: CreatePostInput!) {
+    CreatePost(input: $input) {
+      collection {
+        id
+        address
+        posts {
+          id
+          lastNftID
+          content
+          createdAt
+        }
+      }
+    }
+  }
+`;
 
 const styles = {
   postBox: {
@@ -91,32 +88,47 @@ const styles = {
   icons: {
     fontSize: "1.1rem",
   },
+  customReachSelector: {
+    display: "flex",
+    alignItems: "center",
+    paddingRight: 1,
+  },
+  customReachItem: { paddingRight: 1 },
+  customReachItemHidden: { display: "none" },
+  customReachInput: { width: "80px", padding: "2px 5px" },
 };
 
-export default function CreatePost() {
-  const [message, setMessage] = useState("");
-  const [postReach, setPostReach] = useState(predefinedPostReaches[0]);
-  const [loading, setLoading] = useState(false);
+export default function CreatePost({ collection }) {
+  const [content, setContent] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [lastNftID, setLastNftID] = useState(predefinedPostReaches[1]);
+  const [createPostError, setCreatePostError] = useState(null);
+
+  const [createPostMutation] = useMutation(CREATE_POST_MUTATION, {
+    variables: { input: { content, lastNftID } },
+    onCompleted: () => {
+      setLastNftID(100);
+      setContent("");
+      setCreating(false);
+    },
+    onError: (e) => {
+      setCreatePostError(e.message);
+      setCreating(false);
+    },
+  });
 
   const handleChangeMessage = (event) => {
-    setMessage(event.target.value);
+    setContent(event.target.value);
   };
 
   const handleChangeReach = (event: SelectChangeEvent) => {
-    setPostReach(event.target.value);
+    setLastNftID(event.target.value);
   };
 
-  const resetFields = () => {
-    setLoading(false);
-    setMessage("");
-    setPostReach(predefinedPostReaches[0]);
-  };
-
-  // NOTE skeleton function to submit a post
   const submitPost = () => {
-    console.log(message, postReach);
-    setLoading(true);
-    setTimeout(resetFields, 3000);
+    setCreating(true);
+    setCreatePostError(null);
+    createPostMutation();
   };
 
   return (
@@ -124,7 +136,7 @@ export default function CreatePost() {
       component="form"
       noValidate
       autoComplete="off"
-      sx={{ ...styles.postBox, boxShadow: message ? 2 : null }}
+      sx={{ ...styles.postBox, boxShadow: content ? 2 : null }}
     >
       <Grid container direction="column" sx={styles.postContainer}>
         <Grid item md={12}>
@@ -134,15 +146,15 @@ export default function CreatePost() {
               variant="outlined"
               multiline
               fullWidth
-              value={message}
+              value={content}
               onChange={handleChangeMessage}
-              disabled={loading}
+              disabled={!collection || creating}
             />
           </Box>
         </Grid>
         <Grid item md={12} sx={styles.postButtonBar}>
           <Box sx={styles.postAdditionSettings}>
-            <Tooltip title="Feature is comming soon...">
+            <Tooltip title="Add an Image (Feature is comming soon)">
               <IconButton color="primary">
                 <AddPhotoAlternateOutlinedIcon sx={styles.icons} />
               </IconButton>
@@ -155,23 +167,43 @@ export default function CreatePost() {
             <FormControl sx={styles.postReachForm}>
               <InputLabel>Selection</InputLabel>
               <Select
-                value={postReach}
+                value={lastNftID}
                 label="Selection"
                 onChange={handleChangeReach}
                 size="small"
-                disabled={loading}
+                disabled={!collection || creating}
               >
                 {predefinedPostReaches.map((reach) => (
-                  <MenuItem key={reach.label} value={reach}>
-                    {reach.label}
+                  <MenuItem key={reach} value={reach}>
+                    {`1 - ${reach}`}
                   </MenuItem>
                 ))}
-                <MenuItem disabled={true} value={""}>
-                  Custom
-                </MenuItem>
+                <MenuItem
+                  value={lastNftID}
+                  sx={styles.customReachItemHidden}
+                >{`1 - ${lastNftID}`}</MenuItem>
+                <Box sx={styles.customReachSelector}>
+                  <MenuItem value={lastNftID} sx={styles.customReachItem}>
+                    1 -
+                  </MenuItem>
+                  <TextField
+                    type="number"
+                    onClick={(event) => event.stopPropagation()}
+                    value={lastNftID}
+                    size="small"
+                    sx={styles.customReachInput}
+                    onChange={(e) =>
+                      setLastNftID(
+                        e.target.value < 1
+                          ? 1
+                          : Math.floor(Number(e.target.value))
+                      )
+                    }
+                  />
+                </Box>
               </Select>
             </FormControl>
-            {loading ? (
+            {creating ? (
               <Box textAlign="center">
                 <CircularProgress />
               </Box>
@@ -181,12 +213,15 @@ export default function CreatePost() {
                 variant="contained"
                 size="large"
                 startIcon={<MessageIcon />}
-                disabled={!message || !postReach}
+                disabled={!content || !collection || creating}
                 sx={styles.postSubmitButton}
                 onClick={submitPost}
               >
                 Post
               </Button>
+            )}
+            {createPostError && (
+              <Typography color="red">{createPostError}</Typography>
             )}
           </Box>
         </Grid>
