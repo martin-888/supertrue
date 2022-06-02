@@ -4,7 +4,7 @@ import { Box, Container, Typography } from "@mui/material";
 import footerImage from "../../assets/img/myCanvas-inverted_1000x350px.png";
 
 const styles = {
-  bgImageContainer: { height: "350px", marginTop: "60px" },
+  bgImageContainer: { height: "350px" },
   bgImageOverlay: {
     height: "350px",
     width: "100%",
