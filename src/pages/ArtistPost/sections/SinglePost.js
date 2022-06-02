@@ -12,7 +12,7 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import __ from "helpers/__";
-import noArtistImage from "assets/img/no-user-image.png";
+import placeholderArtistImage from "assets/img/no-user-image.png";
 
 const styles = {
   postBox: {
@@ -89,7 +89,7 @@ export default function SinglePost({ post, artistName, artistId, instagram }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const artistImage = __.getArtistImage(artistId) && noArtistImage;
+  const artistImage = __.getArtistImage(artistId);
 
   const submitChanges = () => {
     setLoading(false);
@@ -134,6 +134,9 @@ export default function SinglePost({ post, artistName, artistId, instagram }) {
           <Box sx={styles.authorBox}>
             <img
               src={artistImage}
+              onError={(e) => {
+                e.target.src = placeholderArtistImage;
+              }}
               alt="Author Profile"
               style={styles.profileImage}
             />
