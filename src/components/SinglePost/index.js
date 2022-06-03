@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import humanizeDuration from "humanize-duration";
+import { loremIpsum } from "lorem-ipsum";
 import {
   Box,
   Typography,
@@ -12,11 +13,14 @@ import {
 } from "@mui/material";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import LockIcon from "@mui/icons-material/Lock";
 import __ from "helpers/__";
 import placeholderArtistImage from "assets/img/no-user-image.png";
+import brandOverlay from "assets/img/myCanvas-inverted_1000x350px.png";
 
 const styles = {
   postBox: {
+    position: "relative",
     border: 1,
     borderColor: "grey.400",
     borderRadius: "0.7rem",
@@ -81,6 +85,35 @@ const styles = {
   },
   icons: {
     fontSize: "1.1rem",
+  },
+  hiddenLayerFirst: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 15,
+  },
+  hiddenLayerSecond: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundImage: `url(${brandOverlay})`,
+    opacity: "0.1",
+    zIndex: 10,
+  },
+  hiddenLayerThird: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backdropFilter: "blur(2.5px)",
+    borderRadius: "0.7rem",
+    zIndex: 5,
+  },
+  lockerIcon: {
+    fontSize: "45px",
+    marginRight: "10px",
   },
 };
 
@@ -161,11 +194,32 @@ export default function SinglePost({
     },
   });
 
+  const CONTENT = content || loremIpsum();
+
+  console.log({ CONTENT });
+
   return (
     <Box
       key={post.createdAt}
-      sx={{ ...styles.postBox, boxShadow: isEditing || isDeleting ? 2 : null }}
+      sx={{
+        ...styles.postBox,
+        boxShadow: isEditing || isDeleting ? 2 : null,
+      }}
     >
+      {!content && (
+        <>
+          <Box sx={styles.hiddenLayerFirst}>
+            <LockIcon color="primary" opacity={0.8} sx={styles.lockerIcon} />
+            <Typography>
+              {`Posted only for 1 - ${post.lastNftID}.`}
+              <br />
+              {" >"}Get your Supertrue NFT
+            </Typography>
+          </Box>
+          <Box sx={styles.hiddenLayerSecond} />
+          <Box sx={styles.hiddenLayerThird} />
+        </>
+      )}
       <Box sx={styles.postTop}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
@@ -187,7 +241,7 @@ export default function SinglePost({
           <Box sx={styles.infoTextbox}>
             <Typography
               sx={styles.infoText}
-            >{`Posted for 1 - ${post.lastNftID}`}</Typography>
+            >{`Posted for 1-${post.lastNftID}`}</Typography>
             <Typography sx={styles.infoText} fontWeight={"bold"} pl={2.5}>
               {`${humanizedCreatedAtTime} ago`}
             </Typography>
@@ -230,7 +284,7 @@ export default function SinglePost({
               </Box>
             </Box>
           ) : (
-            <Typography sx={styles.postContent}>{content}</Typography>
+            <Typography sx={styles.postContent}>{CONTENT}</Typography>
           )}
         </Box>
       </Box>
