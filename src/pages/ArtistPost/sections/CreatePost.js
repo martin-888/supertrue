@@ -60,12 +60,9 @@ const styles = {
   },
   postButtonBar: {
     display: "flex",
+    justifyContent: "flex-end",
     flexDirection: { xs: "column", sm: "row" },
     justifyContent: { sm: "space-between" },
-  },
-  postAdditionSettings: {
-    paddingLeft: { xs: 1, md: 2 },
-    marginBottom: { xs: 1, sm: 0 },
   },
   postPrimaryButtons: {
     flexDirection: { xs: "column", sm: "row" },
@@ -153,13 +150,6 @@ export default function CreatePost({ collection }) {
           </Box>
         </Grid>
         <Grid item md={12} sx={styles.postButtonBar}>
-          <Box sx={styles.postAdditionSettings}>
-            <Tooltip title="Add an Image (Feature is comming soon)">
-              <IconButton color="primary">
-                <AddPhotoAlternateOutlinedIcon sx={styles.icons} />
-              </IconButton>
-            </Tooltip>
-          </Box>
           <Box display="flex" sx={styles.postPrimaryButtons}>
             <Typography sx={styles.postReachTitle}>
               POST TO NFT HOLDERS
