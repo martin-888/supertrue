@@ -212,7 +212,7 @@ export default function SinglePost({
                   onClick={resetChanges}
                   disabled={updating}
                 >
-                  Reset
+                  Cancel
                 </Button>
                 {updating ? (
                   <Box textAlign="center">
@@ -260,12 +260,13 @@ export default function SinglePost({
               <>
                 <Button
                   size="small"
+                  variant="contained"
                   sx={{ marginRight: 2 }}
                   onClick={() => setIsDeleting(false)}
                 >
                   No, don't delete
                 </Button>
-                <Button variant="contained" size="small" onClick={deletePost}>
+                <Button size="small" onClick={deletePost}>
                   Yes, I'm sure!
                 </Button>
               </>
