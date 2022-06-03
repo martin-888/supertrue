@@ -11,12 +11,9 @@ import {
   SelectChangeEvent,
   MenuItem,
   Typography,
-  IconButton,
   CircularProgress,
-  Tooltip,
 } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
-import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 
 // TODO Add option for "All"
 const predefinedPostReaches = [10, 100, 1000];
@@ -62,7 +59,6 @@ const styles = {
     display: "flex",
     justifyContent: "flex-end",
     flexDirection: { xs: "column", sm: "row" },
-    justifyContent: { sm: "space-between" },
   },
   postPrimaryButtons: {
     flexDirection: { xs: "column", sm: "row" },
