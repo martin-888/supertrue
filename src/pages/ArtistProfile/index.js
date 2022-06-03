@@ -253,15 +253,22 @@ export default function ArtistProfile() {
       {withdrawError && (
         <Typography sx={styles.error}>{withdrawError}</Typography>
       )}
-      <Typography variant="h4" sx={styles.subtitle}>
-        SHARING KIT
-      </Typography>
-      <Typography>This is an image you can share on your instagram </Typography>
-      <img
-        alt="Starting Kit Material"
-        style={styles.startingKit}
-        src={placeholderImage}
-      />
+
+      {me?.collection?.artistId && (
+        <>
+          <Typography variant="h4" sx={styles.subtitle}>
+            SHARING KIT
+          </Typography>
+          <Typography>
+            This is an image you can share on your instagram{" "}
+          </Typography>
+          <img
+            alt="Starting Kit Material"
+            style={styles.startingKit}
+            src={`https://supertrue-api.herokuapp.com/api/artist/${me.collection.artistId}/share`}
+          />
+        </>
+      )}
     </Container>
   );
 }
