@@ -111,7 +111,6 @@ export default function ArtistSearch({ view }) {
         </Grid>
       );
     }
-    console.log({ filteredArtists });
 
     return (
       <>
@@ -159,17 +158,17 @@ export default function ArtistSearch({ view }) {
           />
         </Grid>
       )}
-      {view === "gallery" && (
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h1">NFT GALLERY</Typography>
-          <Typography variant="h6" className="explanation" sx={{ my: 2 }}>
-            All your shiny finds are displayed here.{" "}
-            <Link variant="text" href={`/artist/new`}>
-              Add a new artist
-            </Link>
-          </Typography>
-        </Box>
-      )}
+      {/*{view === "gallery" && (*/}
+      {/*  <Box sx={{ mb: 4 }}>*/}
+      {/*    <Typography variant="h1">NFT GALLERY</Typography>*/}
+      {/*    <Typography variant="h6" className="explanation" sx={{ my: 2 }}>*/}
+      {/*      All your shiny finds are displayed here.{" "}*/}
+      {/*      <Link variant="text" href={`/artist/new`}>*/}
+      {/*        Add a new artist*/}
+      {/*      </Link>*/}
+      {/*    </Typography>*/}
+      {/*  </Box>*/}
+      {/*)}*/}
       {getContent()}
     </Container>
   );

@@ -8,7 +8,6 @@ import {
   Toolbar,
   Menu,
   MenuItem,
-  Tooltip,
   IconButton,
   Typography,
   Container,
@@ -22,6 +21,10 @@ import LogInWallet from "../LogInWallet";
 
 const ME_QUERY = gql`
   query me($address: ID!) {
+    dbMe {
+        id
+        address
+    }
     me: user(id: $address) {
       collection {
         name
@@ -43,8 +46,8 @@ const pages = [
 ];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const settings = [
-  { name: "Artist Profile", url: "/artist/profile" },
-  { name: "Post", url: "/artist/post" },
+  { name: "Artist Profile", url: "/profile" },
+  { name: "Post", url: "/post" },
 ];
 
 const Logo = () => {
@@ -67,7 +70,7 @@ const Logo = () => {
 const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { account } = useWeb3Modal();
+  const { account, logoutOfWeb3Modal } = useWeb3Modal();
 
   const address = localStorage.getItem("address");
   const { data, loading, error, refetch } = useQuery(ME_QUERY, {
@@ -77,10 +80,13 @@ const Header = () => {
 
   const me = useMemo(
     () => ({
+      ...data?.dbMe,
       ...data?.me,
     }),
     [data]
   );
+
+  const isLoggedIn = address && me?.address && address === me.address;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -136,6 +142,12 @@ const Header = () => {
         },
     }));
 */
+
+  const logout = async () => {
+    await logoutOfWeb3Modal();
+    localStorage.removeItem("token");
+    localStorage.removeItem("address");
+  }
 
   return (
     <AppBar
@@ -234,24 +246,23 @@ const Header = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {!account ? (
-              <>
-                <LogInWallet />
-              </>
+            {!isLoggedIn ? (
+              <LogInWallet />
             ) : !me?.collection ? (
-              <Button size="large" href={"/create-artist"}>
-                Artist Sign Up
-              </Button>
+              <>
+                <Button size="large" href={"/new-artist"}>
+                  Artist Sign Up
+                </Button>
+                {/*TODO show menu with logout button*/}
+              </>
             ) : (
               <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                    <AccountCircle
-                      style={{ width: "38px", height: "38px", color: "#111" }}
-                    />
-                  </IconButton>
-                </Tooltip>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                  <AccountCircle
+                    style={{ width: "38px", height: "38px", color: "#111" }}
+                  />
+                </IconButton>
                 <Menu
                   sx={{ mt: "45px", justifyContent: "flex-end" }}
                   id="menu-appbar"
@@ -305,7 +316,17 @@ const Header = () => {
                   <MenuItem
                     sx={{ display: "flex", justifyContent: "flex-end" }}
                   >
-                    <LogInWallet />
+                    <Typography
+                      onClick={logout}
+                      textTransform="uppercase"
+                      sx={{
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      Logout
+                    </Typography>
                   </MenuItem>
                 </Menu>
               </>

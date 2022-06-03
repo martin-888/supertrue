@@ -1,26 +1,34 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { gql, useQuery } from "@apollo/client";
 
-// import Home from "./pages/Home";
 import Artist from "./pages/Artist";
-import NewArtist from "./pages/NewArtist";
-import Profile from "./pages/Profile";
-import ArtistSearch from "pages/ArtistSearch";
-import Demo from "pages/Demo";
-import ArtistPost from "pages/ArtistPost";
-import CreateArtist from "pages/CreateArtist";
+import ArtistSearch from "./pages/ArtistSearch";
+import Demo from "./pages/Demo";
+import ArtistPost from "./pages/ArtistPost";
+import CreateArtist from "./pages/CreateArtist";
+import ArtistProfile from "./pages/ArtistProfile";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import "App.scss";
 import useWeb3Modal from "./hooks/useWeb3Modal";
-import ArtistProfile from "pages/ArtistProfile";
+
+import "App.scss";
 
 const DEV = process.env.NODE_ENV === "development";
+
+const ME_QUERY = gql`
+    query {
+        dbMe {
+            id
+            address
+        }
+    }
+`;
 
 const theme = createTheme({
   palette: {
@@ -67,6 +75,13 @@ const theme = createTheme({
   },
 });
 
+const styles = {
+  loadingSpinner: {
+    display: "flex",
+    justifyContent: "center",
+  },
+};
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -95,7 +110,9 @@ class ErrorBoundary extends React.Component {
 
 export default function App() {
   const { account } = useWeb3Modal();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data, loading } = useQuery(ME_QUERY);
+
+  const isLoggedIn = account && data?.dbMe?.address && account === data?.dbMe?.address;
 
   // if (DEV && window.location.pathname.startsWith("/demo")) {
   if (window.location.pathname.startsWith("/demo")) {
@@ -112,34 +129,26 @@ export default function App() {
     <Router>
       <div className="app">
         <ThemeProvider theme={theme}>
-          <Header setIsLoggedIn={setIsLoggedIn} />
-          <ErrorBoundary>
-            <Routes>
-              <Route path="/artist/new" element={<NewArtist />} />
-              <Route path="/artist/:id" element={<Artist />} />
-              <Route
-                path="/profile"
-                element={
-                  !account || !isLoggedIn ? <ArtistSearch /> : <Profile />
-                }
-              />
-              {(!account || !isLoggedIn) && (
-                <Route path="/artist/post" element={<ArtistPost />} />
+          <Header />
+            <ErrorBoundary>
+              {loading ? (
+                  <Container maxWidth="md">
+                    <Box sx={styles.loadingSpinner}>
+                      <CircularProgress />
+                    </Box>
+                  </Container>
+                ) : (
+                  <Routes>
+                    <Route path="/s/:id" element={<Artist />}/>
+                    <Route path="/post" element={isLoggedIn ? <ArtistPost/> : <Navigate to="/" />}/>
+                    <Route path="/new-artist" element={isLoggedIn ? <CreateArtist/> : <Navigate to="/" />}/>
+                    <Route path="/profile" element={isLoggedIn ? <ArtistProfile/> : <Navigate to="/" />}/>
+                    <Route path="/" element={<ArtistSearch/>}/>
+                    <Route path="*" element={<Navigate to="/" />}/>
+                  </Routes>
               )}
-              <Route path="/create-artist" element={<CreateArtist />} />
-              <Route path="/artist/profile" element={<ArtistProfile />} />
-              <Route path="/search" element={<ArtistSearch />} />
-              <Route
-                path="/gallery"
-                element={<ArtistSearch view="gallery" />}
-              />
-              {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/" element={<ArtistSearch />} />
-            </Routes>
-          </ErrorBoundary>
-          <Footer>
-            Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
-          </Footer>
+            </ErrorBoundary>
+          <Footer />
         </ThemeProvider>
       </div>
     </Router>

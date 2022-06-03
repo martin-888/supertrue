@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-// import './Footer.scss';
+
 import footerImage from "../../assets/img/myCanvas-inverted_1000x350px.png";
 
 const styles = {
@@ -25,7 +25,7 @@ const styles = {
   },
 };
 
-export default function Footer(props) {
+export default function Footer() {
   return (
     <>
       <Box fullWidth sx={styles.bgImageContainer}>
@@ -35,7 +35,7 @@ export default function Footer(props) {
       <Container maxWidth="md">
         <Box className="app-footer">
           <Typography className="inner" textAlign="center" pb={2}>
-            {props.children}
+            Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
           </Typography>
         </Box>
       </Container>
