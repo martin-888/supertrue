@@ -2,10 +2,10 @@
   margin-bottom: 50px;
   .image {
     width: 385px;
-    height: 385px;
-    border: 2px solid #f4f3f3;
+    max-height: 385px;
     img {
       width: 100%;
+      border: 2px solid #f4f3f3;
     }
   }
   .details {
@@ -26,11 +26,15 @@
 }
 .about {
   margin-top: 40px;
-  margin-bottom: 32px;
   padding: 10px 20px;
   border: 1px solid black;
-  width: 100%;
   box-shadow: 2.5px 2.5px #979797;
+}
+.pagination-bar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
 }
 .faqs {
   margin-top: 8px;
@@ -56,5 +60,6 @@
 @media only screen and (max-width: 900px) {
   .artist-single .details {
     padding-top: 50px;
+    width: 100%;
   }
 }
