@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 import CreatePost from "./sections/CreatePost";
-import SinglePost from "./sections/SinglePost";
+import SinglePost from "../../components/SinglePost";
 
 const ME_QUERY = gql`
   query me($address: ID!) {
@@ -97,6 +97,7 @@ export default function ArtistPost() {
             artistName={me?.collection?.name}
             artistId={me?.collection?.artistId}
             instagram={me?.collection?.instagram}
+            hasEditingRights={true}
           />
         ))
       )}
