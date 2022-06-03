@@ -5,6 +5,8 @@ import { Contract } from "ethers";
 import useWeb3Modal from "../../../../hooks/useWeb3Modal";
 import { abis } from "../../../../contracts";
 
+const requestedChainId = Number.parseInt(process.env.REACT_APP_CHAIN_ID || 0, 10);
+
 const ME_QUERY = gql`
     query ($address: ID!) {
         currentAddress
@@ -47,7 +49,7 @@ export default function Mint() {
   const [minting, setMinting] = useState(false);
   const [mintingError, setMintingError] = useState(null);
   const address = localStorage.getItem("address");
-  const { account, provider } = useWeb3Modal();
+  const { account, provider, chainId } = useWeb3Modal();
 
   const { data, loading, error, refetch } = useQuery(ME_QUERY, {
     variables: { address },
@@ -69,7 +71,12 @@ export default function Mint() {
   }, [data, refetching]);
 
   const mint = async () => {
-    // TODO check that current network === rinkeby(polygon) and if not ask user to switch
+    if (chainId !== requestedChainId) {
+      const hexChainId = `0x${requestedChainId.toString(16)}`;
+
+      await provider.send('wallet_switchEthereumChain', [{chainId: hexChainId}]);
+    }
+
     setMinting(true);
     setMintingError(null);
 

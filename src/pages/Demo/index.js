@@ -16,7 +16,7 @@ const NETWORK = process.env.REACT_APP_NETWORK;
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
 
 // const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, { network: NETWORK });
-const provider = new ethers.providers.InfuraWebSocketProvider(NETWORK, INFURA_KEY);
+const provider = new ethers.providers.InfuraProvider(NETWORK, INFURA_KEY);
 
 export default function Demo() {
   return (

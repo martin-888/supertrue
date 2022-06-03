@@ -60,7 +60,7 @@ function useWeb3Modal(config = {}) {
 
     newProvider.on("chainChanged", (chainId) => {
       console.log(`chain changed to ${chainId}`);
-      setChainId(chainId);
+      setChainId(parseInt(chainId, 16));
     });
 
     // newProvider.on("networkChanged", (networkId) => {

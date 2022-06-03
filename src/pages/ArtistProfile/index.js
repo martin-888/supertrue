@@ -60,7 +60,7 @@ const WITHDRAW_MUTATION = gql`
 
 const NETWORK = process.env.REACT_APP_NETWORK;
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
-const provider = new ethers.providers.InfuraWebSocketProvider(
+const provider = new ethers.providers.InfuraProvider(
   NETWORK,
   INFURA_KEY
 );

@@ -23,6 +23,10 @@ import useAccountBalance from "../../hooks/useAccountBalance";
 
 import "./Artist.scss";
 
+const NETWORK = process.env.REACT_APP_NETWORK;
+const NETWORK_RPC_URL = process.env.REACT_APP_NETWORK_RPC_URL;
+const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID, 10);
+
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
     collections(where: { artistId: $artistId }) {
@@ -59,7 +63,7 @@ async function mint({ provider, contractAddress, price }) {
  * Component: Single Artist Page
  */
 export default function Artist() {
-  const { provider, loadWeb3Modal } = useWeb3Modal();
+  const { provider, loadWeb3Modal, chainId } = useWeb3Modal();
   const balance = useAccountBalance();
   const { id } = useParams();
   const { data, loading, error } = useQuery(ARTIST_QUERY, {
@@ -82,6 +86,35 @@ export default function Artist() {
   }, [data]);
 
   const mintNFT = async () => {
+    if (chainId !== CHAIN_ID) {
+      alert(`To mint NFT first you need to switch to ${NETWORK.toUpperCase()} network.`);
+
+      const hexChainId = `0x${CHAIN_ID.toString(16)}`;
+
+      let error;
+
+      await provider.send('wallet_switchEthereumChain', [{chainId: hexChainId}])
+        .catch(err => {
+          if (err.code !== 4902) {
+            error = `wallet_switchEthereumChain error ${err}`
+            return;
+          }
+
+          return provider.send('wallet_addEthereumChain',
+            [{ chainId: hexChainId, rpcUrls: [NETWORK_RPC_URL] }]
+          )
+            .catch(addErr => {
+              error = `wallet_addEthereumChain error ${addErr}`
+            })
+        })
+
+      if (error) {
+        // TODO show to user
+        console.error(error);
+        return;
+      }
+    }
+
     if (balance < utils.parseUnits(artist?.price, "wei").toBigInt()) {
       alert("Not enough funds in your wallet.");
       return;
