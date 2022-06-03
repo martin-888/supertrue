@@ -2,19 +2,6 @@ import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import useWeb3Modal from "../../../../hooks/useWeb3Modal";
 
-const chainId = Number.parseInt(process.env.REACT_APP_CHAIN_ID || 0, 10);
-
-const types = {
-  EIP712Domain: [
-    { name: 'name', type: 'string' },
-    { name: 'version', type: 'string' },
-    { name: 'chainId', type: 'uint256' },
-  ],
-  Message: [
-    { name: 'message', type: 'string' }
-  ]
-};
-
 const SIGNING_MESSAGE_QUERY = gql`
     query {
         signingMessage
@@ -87,20 +74,8 @@ export default function LogInWallet() {
       .replace("***ADDRESS***", account)
       .replace("***NONCE***", nonce);
 
-    const typedData = {
-      types,
-      primaryType: "Message",
-      domain: {
-        name: "Supertrue",
-        version: "1",
-        chainId,
-      },
-      message: {
-        message,
-      }
-    };
-
-    const signature = await provider.send("eth_signTypedData_v4", [account, JSON.stringify(typedData)])
+    const signature = await provider
+      .send("personal_sign", [message, account])
       .catch(e => {
         setLoginError(e.message);
         logout();
