@@ -7,11 +7,12 @@ import {
   createHttpLink
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
+// import * as Sentry from '@sentry/react';
 
-import './index.css';
-// import './style/style.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+import './index.css';
 
 const httpLink = createHttpLink({
   uri: 'https://supertrue-api.herokuapp.com/graphql',

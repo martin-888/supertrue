@@ -1,38 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import useWeb3Modal from "../../hooks/useWeb3Modal";
-import { Button } from "@mui/material";
+import useWeb3Modal from "./useWeb3Modal";
 
 const SIGNING_MESSAGE_QUERY = gql`
-  query {
-    signingMessage
-  }
+    query {
+        signingMessage
+    }
 `;
 
 const CREATE_LOGIN_NONCE_MUTATION = gql`
-  mutation logInSignature($input: CreateLogInNonceInput!) {
-    CreateLogInNonce(input: $input) {
-      nonce
+    mutation logInSignature($input: CreateLogInNonceInput!) {
+        CreateLogInNonce(input: $input) {
+            nonce
+        }
     }
-  }
 `;
 
 const LOGIN_SIGNATURE_MUTATION = gql`
-  mutation logInSignature($input: LogInSignatureInput!) {
-    LogInSignature(input: $input) {
-      token
-      dbMe {
-          id
-          address
-          description
-          username
-          email
-      }
+    mutation logInSignature($input: LogInSignatureInput!) {
+        LogInSignature(input: $input) {
+            token
+            dbMe {
+                id
+                address
+                description
+                username
+                email
+            }
+        }
     }
-  }
 `;
 
-export default function LogInWallet() {
+export default function useLogInWallet() {
   const [loggingIn, setLoggingIn] = useState(false);
   const [loginOnceAccountIsAvailable, setLoginOnceAccountIsAvailable] =
     useState(false);
@@ -132,18 +131,11 @@ export default function LogInWallet() {
 
   const isLoggedIn = token?.length && account;
 
-  // TODO handle loginError (show modal?)
-
-  return isLoggedIn
-    ? null
-    : (
-      <Button
-        size={"large"}
-        variant="contained"
-        onClick={login}
-        disabled={loggingIn && !loginError}
-      >
-        Connect Wallet
-      </Button>
-    );
+  return {
+    login,
+    logout,
+    isLoggedIn,
+    loggingIn,
+    loginError
+  };
 }

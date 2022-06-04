@@ -1,9 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { gql, useQuery } from "@apollo/client";
 
 import Artist from "./pages/Artist";
 import ArtistSearch from "./pages/ArtistSearch";
@@ -15,18 +14,8 @@ import ArtistProfile from "./pages/ArtistProfile";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import useWeb3Modal from "./hooks/useWeb3Modal";
+import useLogInWallet from "./hooks/useLogInWallet";
 
-const DEV = process.env.NODE_ENV === "development";
-
-const ME_QUERY = gql`
-    query {
-        dbMe {
-            id
-            address
-        }
-    }
-`;
 const LinkRouter = React.forwardRef((props, ref) => {
   const { href, ...other } = props;
   // Map href (MUI) -> to (react-router)
@@ -90,13 +79,6 @@ const theme = createTheme({
   },
 });
 
-const styles = {
-  loadingSpinner: {
-    display: "flex",
-    justifyContent: "center",
-  },
-};
-
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -124,15 +106,7 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
-  const { account } = useWeb3Modal();
-  const { data, loading } = useQuery(ME_QUERY);
-
-  const isLoggedIn = account && data?.dbMe?.address && account === data?.dbMe?.address;
-
-  // TODO FIX NEEDED
-  // it takes some time to load connected metamask account and when
-  // it's loaded after graphql data are received it can cause redirection
-  // from isLoggedIn restricted pages
+  const { isLoggedIn } = useLogInWallet();
 
   // if (DEV && window.location.pathname.startsWith("/demo")) {
   if (window.location.pathname.startsWith("/demo")) {
@@ -151,22 +125,14 @@ export default function App() {
         <ThemeProvider theme={theme}>
           <Header />
             <ErrorBoundary>
-              {loading ? (
-                  <Container maxWidth="md">
-                    <Box sx={styles.loadingSpinner}>
-                      <CircularProgress />
-                    </Box>
-                  </Container>
-                ) : (
-                  <Routes>
-                    <Route path="/s/:id" element={<Artist />}/>
-                    <Route path="/post" element={isLoggedIn ? <ArtistPost/> : <Navigate to="/" />}/>
-                    <Route path="/new-artist" element={isLoggedIn ? <CreateArtist/> : <Navigate to="/" />}/>
-                    <Route path="/profile" element={isLoggedIn ? <ArtistProfile/> : <Navigate to="/" />}/>
-                    <Route path="/" element={<ArtistSearch/>}/>
-                    <Route path="*" element={<Navigate to="/" />}/>
-                  </Routes>
-              )}
+              <Routes>
+                <Route path="/s/:id" element={<Artist />}/>
+                <Route path="/post" element={isLoggedIn ? <ArtistPost/> : <Navigate to="/" />}/>
+                <Route path="/new-artist" element={isLoggedIn ? <CreateArtist/> : <Navigate to="/" />}/>
+                <Route path="/profile" element={isLoggedIn ? <ArtistProfile/> : <Navigate to="/" />}/>
+                <Route path="/" element={<ArtistSearch/>}/>
+                <Route path="*" element={<Navigate to="/" />}/>
+              </Routes>
             </ErrorBoundary>
           <Footer />
         </ThemeProvider>

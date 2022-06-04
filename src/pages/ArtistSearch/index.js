@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 import {
-  Link,
   TextField,
   Typography,
   Button,
@@ -10,7 +9,6 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
-// import ArtistBlock from "components/ArtistBlock";
 import ArtistNFT from "components/ArtistNFT";
 
 // TODO add search param to collections
@@ -38,8 +36,6 @@ export default function ArtistSearch({ view }) {
   const { data, loading, error } = useQuery(COLLECTIONS_QUERY);
 
   useEffect(() => {
-    console.info("Artists: ", data?.collections);
-
     if (!data?.collections?.length) {
       setFilteredArtists([]);
       return;

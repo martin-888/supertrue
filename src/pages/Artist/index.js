@@ -17,6 +17,7 @@ import { abis } from "../../contracts";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import __ from "helpers/__";
 import useAccountBalance from "../../hooks/useAccountBalance";
+import useLogInWallet from "../../hooks/useLogInWallet";
 
 import "./Artist.scss";
 import SinglePost from "components/SinglePost";
@@ -68,7 +69,8 @@ async function mint({ provider, contractAddress, price }) {
  * Component: Single Artist Page
  */
 export default function Artist() {
-  const { provider, loadWeb3Modal, chainId } = useWeb3Modal();
+  const { provider, chainId } = useWeb3Modal();
+  const { login, isLoggedIn } = useLogInWallet();
   const balance = useAccountBalance();
   const { id } = useParams();
   const { data, loading, error } = useQuery(ARTIST_QUERY, {
@@ -156,7 +158,7 @@ export default function Artist() {
     return (
       <Container maxWidth="md">
         <Grid>
-          <Typography variant="h5">Requested Artist Not Found</Typography>
+          <Typography variant="h5">Artist Not Found</Typography>
         </Grid>
       </Container>
     );
@@ -221,7 +223,7 @@ export default function Artist() {
                 <Button
                   size="large"
                   variant="contained"
-                  onClick={!provider ? loadWeb3Modal : mintNFT}
+                  onClick={!isLoggedIn ? login : mintNFT}
                   disabled={minting}
                 >
                   Mint Fan #{artist.minted + 1}
@@ -251,9 +253,9 @@ export default function Artist() {
                 <SinglePost
                   key={p.id}
                   post={p}
-                  artistName={artist?.name}
-                  artistId={artist?.artistId}
-                  instagram={artist?.instagram}
+                  artistName={artist.name}
+                  artistId={artist.artistId}
+                  instagram={artist.instagram}
                 />
               ))}
             {/*{count > 1 && (*/}

@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import AppBar from "@mui/material/AppBar";
-import useWeb3Modal from "../../hooks/useWeb3Modal";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -16,8 +15,10 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { AccountCircle } from "@mui/icons-material";
 
+import useWeb3Modal from "../../hooks/useWeb3Modal";
+import useLogInWallet from "../../hooks/useLogInWallet";
+
 import logo from "./logo.png";
-import LogInWallet from "../LogInWallet";
 
 const ME_QUERY = gql`
   query me($address: ID!) {
@@ -72,6 +73,7 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { account, logoutOfWeb3Modal } = useWeb3Modal();
+  const { login, loggingIn, loginError } = useLogInWallet();
 
   const address = localStorage.getItem("address");
   const { data, loading, error, refetch } = useQuery(ME_QUERY, {
@@ -248,7 +250,14 @@ const Header = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {!isLoggedIn ? (
-              <LogInWallet />
+              <Button
+                size={"large"}
+                variant="contained"
+                onClick={login}
+                disabled={loggingIn}
+              >
+                Connect Wallet
+              </Button>
             ) : !me?.collection ? (
               <>
                 <Button size="large" href={"/new-artist"}>
