@@ -206,7 +206,7 @@ export default function NewArtist() {
 
     // TODO show success message and ask for waiting
     //Redirect to Artist Page
-    setTimeout(() => navigate(`/artist/${artist.id}`), 30000);
+    setTimeout(() => navigate(`/s/${artist.id}`), 30000);
   };
 
   return (
