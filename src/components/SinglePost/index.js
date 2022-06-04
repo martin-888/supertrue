@@ -196,8 +196,6 @@ export default function SinglePost({
 
   const CONTENT = content || loremIpsum();
 
-  console.log({ CONTENT });
-
   return (
     <Box
       key={post.createdAt}
