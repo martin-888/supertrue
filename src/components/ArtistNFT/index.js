@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Grid, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import __ from "helpers/__";
 import './ArtistNFT.scss';
 
@@ -10,9 +11,9 @@ import './ArtistNFT.scss';
     return(
       <Grid item className="artist-nft">
         <Box className="image">
-        <a href={`/s/${artist.id}`} target="_blank" >
+        <Link to={`/s/${artist.id}`} >
           <img src={__.getArtistNFTImage(artist)} />
-        </a>
+        </Link>
         </Box>
         <Box className="details">
           <Box className="actions">

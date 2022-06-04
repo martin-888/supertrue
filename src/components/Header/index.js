@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import AppBar from "@mui/material/AppBar";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
+import { Link } from "react-router-dom";
 import {
   Box,
-  Link,
   Toolbar,
   Menu,
   MenuItem,
@@ -52,18 +52,19 @@ const settings = [
 
 const Logo = () => {
   return (
-    <Link
-      href="/"
-      underline="none"
-      sx={{
-        width: 180,
-        height: 20,
-        display: "inline-block",
-        background: `url(${logo})`,
-        textDecoration: "none",
-        backgroundSize: "contain",
-      }}
-    />
+    <Link to="/">
+      <Box
+        underline="none"
+        sx={{
+          width: 180,
+          height: 20,
+          display: "inline-block",
+          background: `url(${logo})`,
+          textDecoration: "none",
+          backgroundSize: "contain",
+        }}
+      />
+    </Link>
   );
 };
 
@@ -216,7 +217,7 @@ const Header = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link key={page.name} href={page.url}>
+                  <Link key={page.name} to={page.url}>
                     <Typography textAlign="center">{page.name}</Typography>
                   </Link>
                 </MenuItem>
@@ -233,7 +234,7 @@ const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Link key={page.name} href={page.url} underline="none">
+              <Link key={page.name} to={page.url} underline="none">
                 <Button
                   key={page.name}
                   onClick={handleCloseNavMenu}
@@ -295,8 +296,8 @@ const Header = () => {
                   {settings.map((setting) => (
                     <MenuItem
                       key={setting.name}
-                      component="a"
-                      href={setting.url}
+                      to={setting.url}
+                      component={Link}
                       onClick={handleCloseUserMenu}
                       sx={{ display: "flex", justifyContent: "flex-end" }}
                     >

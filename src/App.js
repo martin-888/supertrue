@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -27,8 +27,25 @@ const ME_QUERY = gql`
         }
     }
 `;
+const LinkRouter = React.forwardRef((props, ref) => {
+  const { href, ...other } = props;
+  // Map href (MUI) -> to (react-router)
+  return <Link ref={ref} to={href} {...other} />;
+});
 
 const theme = createTheme({
+  components: {
+    MuiLink: {
+      defaultProps: {
+        component: LinkRouter,
+      },
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkRouter,
+      },
+    },
+  },
   palette: {
     primary: {
       main: grey[900], //Black
