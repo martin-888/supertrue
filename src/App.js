@@ -17,8 +17,6 @@ import Footer from "./components/Footer";
 
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
-import "App.scss";
-
 const DEV = process.env.NODE_ENV === "development";
 
 const ME_QUERY = gql`
@@ -113,6 +111,11 @@ export default function App() {
   const { data, loading } = useQuery(ME_QUERY);
 
   const isLoggedIn = account && data?.dbMe?.address && account === data?.dbMe?.address;
+
+  // TODO FIX NEEDED
+  // it takes some time to load connected metamask account and when
+  // it's loaded after graphql data are received it can cause redirection
+  // from isLoggedIn restricted pages
 
   // if (DEV && window.location.pathname.startsWith("/demo")) {
   if (window.location.pathname.startsWith("/demo")) {

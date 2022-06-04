@@ -160,17 +160,6 @@ export default function ArtistProfile() {
     withdrawMutation();
   };
 
-  if (loading) {
-    return (
-      <Container maxWidth="md">
-        <Typography variant="h2" sx={styles.title}>
-          ARTIST PROFILE
-        </Typography>
-        <Typography>Loading...</Typography>
-      </Container>
-    );
-  }
-
   const CURRENY_OF_FUNDS = "Matic";
   const CURRENY_OF_WITHDRAWAL = "$/USD";
   const EXCHANGE_RATE_MATIC_TO_USD = 0.61;
@@ -203,7 +192,7 @@ export default function ArtistProfile() {
       <Button
         variant="contained"
         onClick={updateCollection}
-        disabled={!me?.collection || updating}
+        disabled={loading || !me?.collection || updating}
       >
         Update
       </Button>
@@ -233,7 +222,7 @@ export default function ArtistProfile() {
       <Box sx={styles.secondaryContainer}>
         <TextField
           fullWidth
-          label="CRYPTO ADDRESS"
+          label="0x..."
           placeholder={me?.address}
           variant="standard"
           margin="normal"
@@ -245,7 +234,7 @@ export default function ArtistProfile() {
       <Button
         variant="contained"
         onClick={withdraw}
-        disabled={withdrawing || !hasMinimumFunds}
+        disabled={loading || withdrawing || !hasMinimumFunds}
         sx={styles.withdrawBtn}
       >
         Withdraw
@@ -254,20 +243,18 @@ export default function ArtistProfile() {
         <Typography sx={styles.error}>{withdrawError}</Typography>
       )}
 
+      <Typography variant="h4" sx={styles.subtitle}>
+        SHARING KIT
+      </Typography>
+      <Typography>
+        This is an image you can share on your instagram{" "}
+      </Typography>
       {me?.collection?.artistId && (
-        <>
-          <Typography variant="h4" sx={styles.subtitle}>
-            SHARING KIT
-          </Typography>
-          <Typography>
-            This is an image you can share on your instagram{" "}
-          </Typography>
-          <img
-            alt="Starting Kit Material"
-            style={styles.startingKit}
-            src={`https://supertrue-api.herokuapp.com/api/artist/${me.collection.artistId}/share`}
-          />
-        </>
+        <img
+          alt="Starting Kit Material"
+          style={styles.startingKit}
+          src={`https://supertrue-api.herokuapp.com/api/artist/${me.collection.artistId}/share`}
+        />
       )}
     </Container>
   );

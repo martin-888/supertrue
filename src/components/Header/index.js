@@ -295,10 +295,9 @@ const Header = () => {
                   {settings.map((setting) => (
                     <MenuItem
                       key={setting.name}
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        window.location.href = setting.url;
-                      }}
+                      component="a"
+                      href={setting.url}
+                      onClick={handleCloseUserMenu}
                       sx={{ display: "flex", justifyContent: "flex-end" }}
                     >
                       <Typography

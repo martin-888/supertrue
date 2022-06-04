@@ -14,6 +14,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Pagination,
+  Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -249,10 +250,10 @@ export default function Artist() {
       </Grid>
 
       {artist?.description && (
-        <Box className="about">
+        <Paper className="about" elevation={2}>
           <Typography variant="h4">About</Typography>
           <Typography>{artist.description}</Typography>
-        </Box>
+        </Paper>
       )}
 
       <Typography mt={"40px"} mb={"20px"} variant="h4">
@@ -266,6 +267,7 @@ export default function Artist() {
             {_POSTS.currentData().map((p) => {
               return (
                 <SinglePost
+                  key={p.id}
                   post={p}
                   artistName={artist?.name}
                   artistId={artist?.artistId}

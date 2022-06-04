@@ -63,22 +63,9 @@ export default function ArtistPost() {
     setTimeout(() => setLoadingPosts(false), 1500);
   }, [me]);
 
-  if (loading) {
-    return (
-      <Container maxWidth="md">
-        <Box sx={styles.loadingSpinner}>
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
   return (
     <Container maxWidth="md">
-      {!data?.dbMe && (
-        <Typography mb={2}>You've to be login for posting.</Typography>
-      )}
-      {!data?.me?.collection && (
+      {!loading && !data?.me?.collection && (
         <Typography mb={6}>
           You've to create collection first for posting.
         </Typography>

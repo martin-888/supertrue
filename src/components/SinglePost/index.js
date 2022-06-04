@@ -137,7 +137,7 @@ export default function SinglePost({
   instagram,
   hasEditingRights,
 }) {
-  const [content, setContent] = useState(post.content);
+  const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -194,8 +194,6 @@ export default function SinglePost({
     },
   });
 
-  const CONTENT = content || loremIpsum();
-
   return (
     <Box
       key={post.createdAt}
@@ -204,7 +202,7 @@ export default function SinglePost({
         boxShadow: isEditing || isDeleting ? 2 : null,
       }}
     >
-      {!content && (
+      {!post.content && (
         <>
           <Box sx={styles.hiddenLayerFirst}>
             <LockIcon color="primary" opacity={0.8} sx={styles.lockerIcon} />
@@ -282,7 +280,7 @@ export default function SinglePost({
               </Box>
             </Box>
           ) : (
-            <Typography sx={styles.postContent}>{CONTENT}</Typography>
+            <Typography sx={styles.postContent}>{content}</Typography>
           )}
         </Box>
       </Box>

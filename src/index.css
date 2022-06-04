@@ -20,3 +20,23 @@ img{
   max-width: 100%;
   max-height: 100%;
 }
+
+.title {
+  font-family: "DM Serif Display", serif;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+header.MuiPaper-root {
+  margin-bottom: 80px;
+}
+
+@media only screen and (max-width: 900px) {
+  header.MuiPaper-root {
+    margin-bottom: 60px;
+  }
+}
+
+.web3modal-modal-lightbox {
+  z-index: 100 !important;
+}
