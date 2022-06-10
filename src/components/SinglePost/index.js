@@ -107,8 +107,9 @@ const styles = {
     position: "absolute",
     width: "100%",
     height: "100%",
-    backdropFilter: "blur(2.5px)",
+    backdropFilter: "blur(10px)",
     borderRadius: "0.7rem",
+
     zIndex: 5,
   },
   lockerIcon: {

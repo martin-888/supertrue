@@ -4,16 +4,16 @@ import { Box, Container, Typography } from "@mui/material";
 import footerImage from "../../assets/img/myCanvas-inverted_1000x350px.png";
 
 const styles = {
-  bgImageContainer: { height: "350px" },
+  bgImageContainer: { height: "100px" },
   bgImageOverlay: {
-    height: "350px",
+    height: "100px",
     width: "100%",
     backgroundImage: "linear-gradient(#ffffff, #ffffffc9, #ffffff)",
     zIndex: 2,
     position: "absolute",
   },
   bgImage: {
-    height: "350px",
+    height: "100px",
     width: "100%",
     maxHeight: "700px",
     backgroundImage: `url(${footerImage})`,
