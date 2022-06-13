@@ -15,11 +15,11 @@ import './ArtistNFT.scss';
           <img src={__.getArtistNFTImage(artist)} />
         </Link>
         </Box>
-        <Box className="details">
-          <Box className="actions">
-            <Button size="large" variant="outlined" href={`/s/${artist.id}`}>Mint #{artist.minted+1}</Button>
-          </Box>
-        </Box>
+        {/*<Box className="details">*/}
+        {/*  <Box className="actions">*/}
+        {/*    <Button size="large" variant="outlined" href={`/s/${artist.id}`}>Mint #{artist.minted+1}</Button>*/}
+        {/*  </Box>*/}
+        {/*</Box>*/}
       </Grid>
     );
   }
