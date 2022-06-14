@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
+
 import CreatePost from "./sections/CreatePost";
 import SinglePost from "../../components/SinglePost";
 
 const ME_QUERY = gql`
   query me($address: ID!) {
-    currentAddress
     dbMe {
       address
-      email
     }
     me: user(id: $address) {
       collection {
@@ -38,8 +37,7 @@ const styles = {
 };
 
 export default function ArtistPost() {
-  const [loadingPosts, setLoadingPosts] = useState(false);
-
+  // const [loadingPosts, setLoadingPosts] = useState(false);
   const address = localStorage.getItem("address");
   const { data, loading, error } = useQuery(ME_QUERY, {
     variables: { address },
@@ -58,10 +56,35 @@ export default function ArtistPost() {
   const reverseOrderedPost = me?.collection?.posts.slice(0).reverse();
 
   // Delay the rendering of posts to make it smoother
-  useEffect(() => {
-    setLoadingPosts(true);
-    setTimeout(() => setLoadingPosts(false), 1500);
-  }, [me]);
+  // what's purpose of delaying showing content to user??
+  // useEffect(() => {
+  //   setLoadingPosts(true);
+  //   setTimeout(() => setLoadingPosts(false), 1500);
+  // }, [me]);
+
+  const renderPosts = () => {
+    if (loading) {
+      return (
+        <Box sx={styles.loadingSpinner}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (!me?.collection?.posts?.length) {
+      return <Typography>No post found.</Typography>;
+    }
+
+    return reverseOrderedPost.map((p) => (
+      <SinglePost
+        post={p}
+        artistName={me?.collection?.name}
+        artistId={me?.collection?.artistId}
+        instagram={me?.collection?.instagram}
+        hasEditingRights={true}
+      />
+    ));
+  };
 
   return (
     <Container maxWidth="md">
@@ -71,23 +94,7 @@ export default function ArtistPost() {
         </Typography>
       )}
       <CreatePost collection={data?.me?.collection} />
-      {!me?.collection?.posts?.length ? (
-        <Typography>No posts exist.</Typography>
-      ) : loadingPosts ? (
-        <Box sx={styles.loadingSpinner}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        reverseOrderedPost.map((p) => (
-          <SinglePost
-            post={p}
-            artistName={me?.collection?.name}
-            artistId={me?.collection?.artistId}
-            instagram={me?.collection?.instagram}
-            hasEditingRights={true}
-          />
-        ))
-      )}
+      {renderPosts()}
     </Container>
   );
 }

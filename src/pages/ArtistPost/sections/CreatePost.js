@@ -12,7 +12,6 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import MessageIcon from "@mui/icons-material/Message";
 
 // TODO Add option for "All"
 const predefinedPostReaches = [10, 100, 1000];
@@ -197,7 +196,6 @@ export default function CreatePost({ collection }) {
                 color="primary"
                 variant="contained"
                 size="large"
-                startIcon={<MessageIcon />}
                 disabled={!content || !collection || creating}
                 sx={styles.postSubmitButton}
                 onClick={submitPost}

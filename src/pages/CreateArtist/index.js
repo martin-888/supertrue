@@ -206,7 +206,7 @@ export default function CreateArtist({ provider }) {
               ),
             }}
             label="Instagram Handle"
-            placeholder="holyhivemusic"
+            placeholder="yourinstagram"
             variant="standard"
             margin="normal"
             disabled={me?.collection}

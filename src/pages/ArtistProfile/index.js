@@ -7,12 +7,10 @@ import {
   Typography,
   Box,
   TextField,
-  InputAdornment,
   Tooltip,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
-import placeholderImage from "assets/img/placeholder-promo-NFT.png";
 
 const ME_QUERY = gql`
   query me($address: ID!) {
@@ -161,19 +159,19 @@ export default function ArtistProfile() {
   };
 
   const CURRENY_OF_FUNDS = "Matic";
-  const CURRENY_OF_WITHDRAWAL = "$/USD";
+  const CURRENY_OF_WITHDRAWAL = "USD";
   const EXCHANGE_RATE_MATIC_TO_USD = 0.61;
-  const funds = !me.pendingFunds
+  const funds = !me.collection?.pendingFunds
     ? 0
-    : ethers.utils.formatEther(me.pendingFunds);
+    : ethers.utils.formatEther(me.collection?.pendingFunds);
 
   const minimumWithdraw = 100;
   const hasMinimumFunds = funds > minimumWithdraw;
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h2" sx={styles.title}>
-        ARTIST PROFILE
+      <Typography variant="h4" sx={styles.title}>
+        BIO
         <Tooltip title="Write your fans a message and tell them how you may want to reward them for buying your Supertrue NFT.">
           <InfoOutlinedIcon fontSize="small" sx={styles.tooltipIcon} />
         </Tooltip>
@@ -203,8 +201,8 @@ export default function ArtistProfile() {
       <Typography>
         {"You have "}
         <span style={styles.bold}>
-          {`${funds} ${CURRENY_OF_FUNDS} available (≈ ${
-            funds * EXCHANGE_RATE_MATIC_TO_USD
+          {`${Number(funds).toFixed(2)} ${CURRENY_OF_FUNDS} available (≈ ${
+            (funds * EXCHANGE_RATE_MATIC_TO_USD).toFixed(2)
           } ${CURRENY_OF_WITHDRAWAL}) from ${
             me?.collection?.minted
           } NFT sales.`}

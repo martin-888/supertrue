@@ -107,7 +107,7 @@ function useWeb3Modal(config = {}) {
     account,
     chainId,
     loadWeb3ModalError,
-    loading: autoLoad && !autoLoaded && web3Modal.cachedProvider,
+    loading: autoLoad && !autoLoaded && !!web3Modal.cachedProvider,
   };
 }
 
