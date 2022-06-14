@@ -29,7 +29,7 @@ const LOGIN_SIGNATURE_MUTATION = gql`
 `;
 
 export default function LogInWallet() {
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [logging, setLoggingIn] = useState(false);
   const [loginOnceAccountIsAvailable, setLoginOnceAccountIsAvailable] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loginError, setLoginError] = useState(null);
@@ -122,7 +122,7 @@ export default function LogInWallet() {
       <h3>Log In</h3>
       {loginError && <p>{loginError}</p>}
       {!isLoggedIn
-        ? <button onClick={login} disabled={loggingIn}>Login</button>
+        ? <button onClick={login} disabled={logging}>Login</button>
         : <button onClick={logout}>Logout</button>
       }
     </section>

@@ -32,7 +32,7 @@ const LOGIN_SIGNATURE_MUTATION = gql`
 `;
 
 export default function useLogInWallet() {
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [logging, setLogging] = useState(false);
   const [loginOnceAccountIsAvailable, setLoginOnceAccountIsAvailable] =
     useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -43,9 +43,10 @@ export default function useLogInWallet() {
     loadWeb3Modal,
     logoutOfWeb3Modal,
     loadWeb3ModalError,
+    loading: web3ModalLoading
   } = useWeb3Modal();
 
-  const { data } = useQuery(SIGNING_MESSAGE_QUERY);
+  const { data, loading } = useQuery(SIGNING_MESSAGE_QUERY);
 
   useEffect(() => {
     if (!loginOnceAccountIsAvailable || !account || !provider) {
@@ -60,7 +61,7 @@ export default function useLogInWallet() {
     localStorage.removeItem("token");
     localStorage.removeItem("address");
     setToken(null);
-    setLoggingIn(false);
+    setLogging(false);
   };
 
   const [loginMutation] = useMutation(LOGIN_SIGNATURE_MUTATION, {
@@ -107,11 +108,11 @@ export default function useLogInWallet() {
 
   const login = async () => {
     setLoginError(null);
-    setLoggingIn(true);
+    setLogging(true);
 
     if (!data?.signingMessage) {
       setLoginError("Missing signing message");
-      setLoggingIn(false);
+      setLogging(false);
       return;
     }
     if (!account || !provider) {
@@ -129,13 +130,13 @@ export default function useLogInWallet() {
     if (loadWeb3ModalError) setLoginError(loadWeb3ModalError);
   }, [loadWeb3ModalError]);
 
-  const isLoggedIn = token?.length && account;
+  const isLoggedIn = !!token?.length && !!account;
 
   return {
     login,
     logout,
     isLoggedIn,
-    loggingIn,
+    logging: logging || loading || web3ModalLoading,
     loginError
   };
 }

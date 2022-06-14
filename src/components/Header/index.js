@@ -73,7 +73,7 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { account, logoutOfWeb3Modal } = useWeb3Modal();
-  const { login, loggingIn, loginError } = useLogInWallet();
+  const { login, logging, loginError } = useLogInWallet();
 
   const address = localStorage.getItem("address");
   const { data, loading, error, refetch } = useQuery(ME_QUERY, {
@@ -215,7 +215,7 @@ const Header = () => {
                 size={"large"}
                 variant="contained"
                 onClick={login}
-                disabled={loggingIn}
+                disabled={logging}
               >
                 Connect Wallet
               </Button>

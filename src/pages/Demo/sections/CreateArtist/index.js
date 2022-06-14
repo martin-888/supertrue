@@ -107,7 +107,7 @@ export default function CreateArtist({ provider }) {
     <div>
       <h3>Create Artist Collection</h3>
       {me?.collection ? <p>Artist collection already created</p> : <p>Artist collection not yet created</p> }
-      <p>Copy and paste the following text EXACTLY into your instagram bio and then hit claim. (Yes you can change it immideately afterwards.)</p>
+      <p>Copy and paste the following text EXACTLY into your instagram bio and then hit claim. (Yes you can change it immediately afterwards.)</p>
       <p>Verifying my Supertrue.com:{me?.address || "?"}</p>
       Your name: <input value={name} onChange={e => setName(e.target.value)} disabled={me?.collection} /><br/>
       Your username: <input value={username} onChange={e => setUsername(e.target.value)} disabled={me?.collection} /><br/>

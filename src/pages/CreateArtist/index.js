@@ -227,7 +227,7 @@ export default function CreateArtist({ provider }) {
               <Typography>
                 Copy and paste the following text EXACTLY into your instagram
                 bio and then hit Verify & Create. (Yes you can change it
-                immideately afterwards.)
+                immediately afterwards.)
               </Typography>
             </Box>
             <Box>

@@ -40,6 +40,7 @@ function useWeb3Modal(config = {}) {
 
     if (!newProvider) {
       // console.error("useWeb3Modal() No Provider Found");
+      setAutoLoaded(true);
       return;
     }
 
@@ -51,7 +52,8 @@ function useWeb3Modal(config = {}) {
     //Set Current Account
     signerProvider
       .listAccounts()
-      .then((accounts) => setAccount(accounts?.[0]?.toLowerCase()));
+      .then((accounts) => setAccount(accounts?.[0]?.toLowerCase()))
+      .then(() => setAutoLoaded(true))
 
     newProvider.on("accountsChanged", (accounts) => {
       console.log(`account changed to:`, accounts?.[0]);
@@ -89,7 +91,6 @@ function useWeb3Modal(config = {}) {
   useEffect(() => {
     if (autoLoad && !autoLoaded && web3Modal.cachedProvider) {
       loadWeb3Modal();
-      setAutoLoaded(true);
     }
   }, [
     autoLoad,
@@ -106,6 +107,7 @@ function useWeb3Modal(config = {}) {
     account,
     chainId,
     loadWeb3ModalError,
+    loading: autoLoad && !autoLoaded && web3Modal.cachedProvider,
   };
 }
 

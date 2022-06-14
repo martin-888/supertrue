@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 import Artist from "./pages/Artist";
@@ -10,6 +10,7 @@ import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
+import NotFound from "./pages/NotFound";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -79,6 +80,14 @@ const theme = createTheme({
   },
 });
 
+const styles = {
+  loadingSpinner: {
+    display: "flex",
+    justifyContent: "center",
+    margin: "10em"
+  },
+};
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -106,7 +115,23 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
-  const { isLoggedIn } = useLogInWallet();
+  const { isLoggedIn, logging } = useLogInWallet();
+
+  const onlyLoggedInPage = (Page) => {
+    if (logging) {
+      return (
+        <Box sx={styles.loadingSpinner}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (!isLoggedIn) {
+      return <Navigate to="/" />;
+    }
+
+    return <Page />;
+  }
 
   // if (DEV && window.location.pathname.startsWith("/demo")) {
   if (window.location.pathname.startsWith("/demo")) {
@@ -127,11 +152,11 @@ export default function App() {
             <ErrorBoundary>
               <Routes>
                 <Route path="/s/:id" element={<Artist />}/>
-                <Route path="/post" element={isLoggedIn ? <ArtistPost/> : <Navigate to="/" />}/>
-                <Route path="/new-artist" element={isLoggedIn ? <CreateArtist/> : <Navigate to="/" />}/>
-                <Route path="/profile" element={isLoggedIn ? <ArtistProfile/> : <Navigate to="/" />}/>
-                <Route path="/" element={<ArtistSearch/>}/>
-                <Route path="*" element={<Navigate to="/" />}/>
+                <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
+                <Route path="/new-artist" element={onlyLoggedInPage(CreateArtist)} />
+                <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
+                <Route path="/" element={<ArtistSearch />}/>
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </ErrorBoundary>
           <Footer />

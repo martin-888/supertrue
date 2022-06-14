@@ -8,7 +8,6 @@ import {
   FormControl,
   InputLabel,
   Select,
-  SelectChangeEvent,
   MenuItem,
   Typography,
   CircularProgress,
@@ -114,7 +113,7 @@ export default function CreatePost({ collection }) {
     setContent(event.target.value);
   };
 
-  const handleChangeReach = (event: SelectChangeEvent) => {
+  const handleChangeReach = (event) => {
     setLastNftID(event.target.value);
   };
 
