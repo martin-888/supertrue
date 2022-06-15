@@ -308,7 +308,7 @@ export default function SinglePost({
               <>
                 <Button
                   size="small"
-                  variant="contained"
+                  variant="outlined"
                   sx={{ marginRight: 2 }}
                   onClick={() => setIsDeleting(false)}
                   disabled={updating}
@@ -317,7 +317,8 @@ export default function SinglePost({
                 </Button>
                 <Button
                   size="small"
-                  variant="outlined"
+                  variant="contained"
+                  color="error"
                   onClick={() => {
                     setUpdating(true);
                     deletePostMutation();
