@@ -72,14 +72,13 @@ export default function Artist() {
   const { login, isLoggedIn } = useLogInWallet();
   const balance = useAccountBalance();
   const { id } = useParams();
-  const { data, loading, error } = useQuery(ARTIST_QUERY, {
+  const { data, loading, error, refetch } = useQuery(ARTIST_QUERY, {
     variables: { artistId: Number(id) },
   });
 
   const [minting, setMinting] = useState(false);
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
-  const waitTime = 2000;
 
   useEffect(() => {
     if (error) {
@@ -127,14 +126,15 @@ export default function Artist() {
     }
 
     setMinting(true);
+
     await mint({
       provider,
       contractAddress: artist.address,
       price: artist.price,
     })
-      .then(() => setTimeout(() => setMinted(true), waitTime))
+      .then(() => setTimeout(() => setMinted(true) && refetch(), 5000))
       .catch((err) => console.error(err.message))
-      .finally(() => setTimeout(() => setMinting(false), waitTime));
+      .finally(() => setTimeout(() => setMinting(false), 5000));
   };
 
   if (loading) {
@@ -189,7 +189,7 @@ export default function Artist() {
             <Typography variant="h5" className="price">
               <label>Price:</label>{" "}
             </Typography>{" "}
-            <Typography>{artist.price / 10 ** 18} ETH </Typography>
+            <Typography>{(artist.price / 10 ** 18).toFixed(4)} ETH </Typography>
             <br />
             <Typography variant="subtitle2">
               Price goes up per each additional NFT created.
