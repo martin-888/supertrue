@@ -37,7 +37,6 @@ const styles = {
 };
 
 export default function ArtistPost() {
-  // const [loadingPosts, setLoadingPosts] = useState(false);
   const address = localStorage.getItem("address");
   const { data, loading, error } = useQuery(ME_QUERY, {
     variables: { address },
@@ -55,13 +54,6 @@ export default function ArtistPost() {
   // NOTE quick and dirty approach, could breaks if db ordering of post' change
   const reverseOrderedPost = me?.collection?.posts.slice(0).reverse();
 
-  // Delay the rendering of posts to make it smoother
-  // what's purpose of delaying showing content to user??
-  // useEffect(() => {
-  //   setLoadingPosts(true);
-  //   setTimeout(() => setLoadingPosts(false), 1500);
-  // }, [me]);
-
   const renderPosts = () => {
     if (loading) {
       return (
@@ -72,11 +64,12 @@ export default function ArtistPost() {
     }
 
     if (!me?.collection?.posts?.length) {
-      return <Typography>No post found.</Typography>;
+      return <Typography>No posts found</Typography>;
     }
 
     return reverseOrderedPost.map((p) => (
       <SinglePost
+        key={p.id}
         post={p}
         artistName={me?.collection?.name}
         artistId={me?.collection?.artistId}

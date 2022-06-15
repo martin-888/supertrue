@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Grid,
   Typography,
-  Pagination,
   Paper,
 } from "@mui/material";
 
@@ -81,9 +80,6 @@ export default function Artist() {
   const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
   const waitTime = 2000;
-
-  const [page, setPage] = useState(1);
-  const POSTS_PER_PAGE = 10;
 
   useEffect(() => {
     if (error) {
@@ -246,7 +242,7 @@ export default function Artist() {
       </Typography>
       <Box>
         {!artist?.posts.length ? (
-          <Typography>No Post.</Typography>
+          <Typography>No posts found</Typography>
         ) : (
           <>
             {artist.posts.map((p) => (
@@ -258,15 +254,6 @@ export default function Artist() {
                   instagram={artist.instagram}
                 />
               ))}
-            {/*{count > 1 && (*/}
-            {/*  <Pagination*/}
-            {/*    className="pagination-bar"*/}
-            {/*    count={count}*/}
-            {/*    page={page}*/}
-            {/*    onChange={handleChange}*/}
-            {/*    color="primary"*/}
-            {/*  />*/}
-            {/*)}*/}
           </>
         )}
       </Box>

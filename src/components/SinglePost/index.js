@@ -118,9 +118,9 @@ const styles = {
   },
 };
 
-const UPDATE_COLLECTION_MUTATION = gql`
-  mutation update($input: UpdateCollectionInput!) {
-    UpdateCollection(input: $input) {
+const UPDATE_POST_MUTATION = gql`
+  mutation updatePost($input: UpdatePostInput!) {
+    UpdatePost(input: $input) {
       collection {
         id
         posts {
@@ -129,6 +129,19 @@ const UPDATE_COLLECTION_MUTATION = gql`
       }
     }
   }
+`;
+
+const DELETE_POST_MUTATION = gql`
+    mutation deletePost($input: DeletePostInput!) {
+        DeletePost(input: $input) {
+            collection {
+                id
+                posts {
+                    id
+                }
+            }
+        }
+    }
 `;
 
 export default function SinglePost({
@@ -141,57 +154,38 @@ export default function SinglePost({
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
 
   const artistImage = __.getArtistImage(artistId);
-
-  const submitChanges = () => {
-    setLoading(false);
-    setIsEditing(false);
-    // setMessage(post.content);
-  };
-
-  // NOTE skeleton handler functions for edit and delete a post
-  const editPost = () => {
-    setIsEditing(true);
-  };
-  const resetChanges = () => {
-    setIsEditing(false);
-    // setMessage(post.content);
-  };
-  const saveChanges = () => {
-    setLoading(true);
-    setTimeout(submitChanges, 3000);
-  };
-  const deletePost = () => {
-    if (isDeleting) {
-      console.log("will delete post for sure");
-      setIsDeleting(false);
-    } else {
-      console.log("post not deleted yet");
-      setIsDeleting(true);
-    }
-  };
 
   const humanizedCreatedAtTime = humanizeDuration(
     new Date().getTime() - Date.parse(post.createdAt),
     { largest: 1, maxDecimalPoints: 0 }
   );
 
-  const updateCollection = () => {
-    setUpdating(true);
-    updateCollectionMutation();
-  };
-
-  const [updateCollectionMutation] = useMutation(UPDATE_COLLECTION_MUTATION, {
-    variables: { input: { content } },
+  const [updatePostMutation] = useMutation(UPDATE_POST_MUTATION, {
+    variables: { input: { content, id: post.id.toString(), lastNftID: post.lastNftID } },
     onCompleted: () => {
-      setTimeout(() => setUpdating(false), 1500);
+      setUpdating(false);
+      setIsEditing(false);
     },
     onError: (e) => {
       console.log(e.message);
       setUpdating(false);
+    },
+  });
+
+  const [deletePostMutation] = useMutation(DELETE_POST_MUTATION, {
+    variables: { input: { id: post.id.toString() } },
+    onCompleted: () => {
+      setUpdating(false);
+      setIsEditing(false);
+      setIsDeleting(false);
+    },
+    onError: (e) => {
+      console.log(e.message);
+      setUpdating(false);
+      setIsDeleting(false);
     },
   });
 
@@ -260,7 +254,7 @@ export default function SinglePost({
                   variant="outlined"
                   size="small"
                   sx={{ marginRight: 2 }}
-                  onClick={resetChanges}
+                  onClick={() => setIsEditing(false)}
                   disabled={updating}
                 >
                   Cancel
@@ -273,7 +267,10 @@ export default function SinglePost({
                   <Button
                     variant="contained"
                     size="small"
-                    onClick={updateCollection}
+                    onClick={() => {
+                      setUpdating(true);
+                      updatePostMutation();
+                    }}
                   >
                     Save
                   </Button>
@@ -293,14 +290,14 @@ export default function SinglePost({
               <>
                 <IconButton
                   color="primary"
-                  onClick={editPost}
+                  onClick={() => setIsEditing(true)}
                   disabled={isEditing}
                 >
                   <ModeEditOutlineOutlinedIcon sx={styles.icons} />
                 </IconButton>
                 <IconButton
                   color="primary"
-                  onClick={deletePost}
+                  onClick={() => setIsDeleting(!isDeleting)}
                   disabled={isEditing}
                 >
                   <DeleteOutlineOutlinedIcon sx={styles.icons} />
@@ -314,11 +311,20 @@ export default function SinglePost({
                   variant="contained"
                   sx={{ marginRight: 2 }}
                   onClick={() => setIsDeleting(false)}
+                  disabled={updating}
                 >
-                  No, don't delete
+                  Cancel
                 </Button>
-                <Button size="small" onClick={deletePost}>
-                  Yes, I'm sure!
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    setUpdating(true);
+                    deletePostMutation();
+                  }}
+                  disabled={updating}
+                >
+                  Delete
                 </Button>
               </>
             )}
