@@ -55,9 +55,12 @@ function useWeb3Modal(config = {}) {
       .then((accounts) => setAccount(accounts?.[0]?.toLowerCase()))
       .then(() => setAutoLoaded(true))
 
-    newProvider.on("accountsChanged", (accounts) => {
-      console.log(`account changed to:`, accounts?.[0]);
-      setAccount(accounts?.[0]?.toLowerCase());
+    newProvider.on("accountsChanged", () => {
+      // logout when account changes
+      localStorage.removeItem("token");
+      localStorage.removeItem("address");
+      logoutOfWeb3Modal();
+      window.location.reload();
     });
 
     newProvider.on("chainChanged", (chainId) => {

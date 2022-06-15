@@ -141,7 +141,7 @@ export default function CreateArtist({ provider }) {
     return (
       <Container maxWidth="md">
         <Typography variant="h2" sx={styles.title}>
-          CREATE ARTIST PROFILE
+          CREATE PROFILE
         </Typography>
         <Typography>Loading...</Typography>
       </Container>
@@ -164,7 +164,7 @@ export default function CreateArtist({ provider }) {
     <>
       <Container maxWidth="md">
         <Typography variant="h2" sx={styles.title}>
-          CREATE ARTIST PROFILE
+          CREATE PROFILE
         </Typography>
         <Box sx={styles.secondaryContainer}>
           <TextField

@@ -13,6 +13,8 @@ import {
   Button,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import useLogInWallet from "../../hooks/useLogInWallet";
 
@@ -57,6 +59,8 @@ const Logo = () => {
 };
 
 const Header = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down(450));
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { login, logging, logout } = useLogInWallet();
 
@@ -93,10 +97,89 @@ const Header = () => {
     if (!me?.collection) {
       return (
         <>
-          <Button size="large" href={"/new-artist"}>
-            Artist Sign Up
-          </Button>
-          {/*TODO show menu with logout button*/}
+          {!isMobile && (
+            <Button
+              variant="outlined"
+              size="medium"
+              href={"/new"}
+              sx={{ marginRight: "1em" }}
+            >
+              Create Profile
+            </Button>
+          )}
+
+          <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
+            <AccountCircle
+              style={{ width: "38px", height: "38px", color: "#111" }}
+            />
+          </IconButton>
+          <Menu
+            sx={{ mt: "45px", justifyContent: "flex-end" }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={!!anchorElUser}
+            onClose={() => setAnchorElUser(null)}
+          >
+            <MenuItem
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <Typography
+                textTransform="uppercase"
+                sx={{
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  opacity: 0.5
+                }}
+              >
+                {address.slice(0,6)}...{address.slice(-4)}
+              </Typography>
+            </MenuItem>
+            {isMobile && (
+              <MenuItem
+                to={`/new`}
+                component={Link}
+                onClick={() => setAnchorElUser(null)}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Typography
+                  textTransform="uppercase"
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  Create Profile
+                </Typography>
+              </MenuItem>
+            )}
+            <MenuItem
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <Typography
+                onClick={logout}
+                textTransform="uppercase"
+                sx={{
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                Logout
+              </Typography>
+            </MenuItem>
+          </Menu>
         </>
       );
     }
@@ -124,6 +207,21 @@ const Header = () => {
           open={!!anchorElUser}
           onClose={() => setAnchorElUser(null)}
         >
+          <MenuItem
+            sx={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <Typography
+              textTransform="uppercase"
+              sx={{
+                textAlign: "center",
+                display: "flex",
+                justifyContent: "flex-end",
+                opacity: 0.5
+              }}
+            >
+              {address.slice(0,6)}...{address.slice(-4)}
+            </Typography>
+          </MenuItem>
           <MenuItem
             to={`/s/${me.collection.artistId}`}
             component={Link}
@@ -195,10 +293,9 @@ const Header = () => {
             noWrap
             component="div"
             sx={{
-              mr: 12,
+              mr: 1,
               display: {
-                xs: "none",
-                md: "flex",
+                xs: "flex",
                 fontSize: "3rem",
               },
             }}

@@ -153,7 +153,7 @@ export default function App() {
               <Routes>
                 <Route path="/s/:id" element={<Artist />}/>
                 <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
-                <Route path="/new-artist" element={onlyLoggedInPage(CreateArtist)} />
+                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
                 <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
                 <Route path="/" element={<ArtistSearch />}/>
                 <Route path="*" element={<NotFound />} />
