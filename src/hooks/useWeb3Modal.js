@@ -60,7 +60,6 @@ function useWeb3Modal(config = {}) {
       localStorage.removeItem("token");
       localStorage.removeItem("address");
       logoutOfWeb3Modal();
-      window.location.reload();
     });
 
     newProvider.on("chainChanged", (chainId) => {
@@ -76,6 +75,9 @@ function useWeb3Modal(config = {}) {
     newProvider.on("disconnect", (code, reason) => {
       console.log("disconnect");
       console.log(code, reason);
+      // logout
+      localStorage.removeItem("token");
+      localStorage.removeItem("address");
       logoutOfWeb3Modal();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
