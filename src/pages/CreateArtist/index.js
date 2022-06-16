@@ -70,8 +70,8 @@ const CREATE_COLLECTION_MUTATION = gql`
   }
 `;
 
-export default function CreateArtist({ provider }) {
-  const { account } = useWeb3Modal();
+export default function CreateArtist() {
+  const { account, provider } = useWeb3Modal();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
