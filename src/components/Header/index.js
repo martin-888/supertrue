@@ -40,24 +40,6 @@ const pages = [
   { name: "Post", url: "/post" },
 ];
 
-const Logo = () => {
-  return (
-    <Link to="/">
-      <Box
-        underline="none"
-        sx={{
-          width: 180,
-          height: 20,
-          display: "inline-block",
-          background: `url(${logo})`,
-          textDecoration: "none",
-          backgroundSize: "contain",
-        }}
-      />
-    </Link>
-  );
-};
-
 const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
@@ -84,7 +66,7 @@ const Header = () => {
     if (!isLoggedIn) {
       return (
         <Button
-          size={"large"}
+          size={isMobile ? "medium" : "large"}
           variant="contained"
           onClick={login}
           disabled={logging}
@@ -300,7 +282,19 @@ const Header = () => {
               },
             }}
           >
-            <Logo />
+            <Link to="/" style={{ display: "flex" }}>
+              <Box
+                underline="none"
+                sx={{
+                  width: isMobile ? 153 : 180,
+                  height: isMobile ? 17 : 20,
+                  display: "inline-block",
+                  background: `url(${logo})`,
+                  textDecoration: "none",
+                  backgroundSize: "contain",
+                }}
+              />
+            </Link>
           </Typography>
 
           <Box sx={{ flexGrow: 0 }}>
