@@ -12,7 +12,7 @@ import './ArtistNFT.scss';
       <Grid item className="artist-nft">
         <Box className="image">
         <Link to={`/s/${artist.id}`} >
-          <img src={__.getArtistNFTImage(artist)} />
+          <img src={__.getNFTImage(artist.id, artist.minted)} />
         </Link>
         </Box>
         {/*<Box className="details">*/}

@@ -165,7 +165,7 @@ export default function Artist() {
       <Grid container className="artist-single">
         <Grid item className="image" md={6}>
           <img
-            src={__.getNFTImage(artist.artistId, artist.minted + 1)}
+            src={__.getNFTImage(artist.artistId, artist.minted)}
             alt={artist.name}
           />
         </Grid>
