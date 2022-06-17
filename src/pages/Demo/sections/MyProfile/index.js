@@ -1,20 +1,16 @@
-import React, {useMemo, useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {gql, useMutation, useQuery} from "@apollo/client";
 import * as ethers from "ethers";
 
 import waitForMintedTransaction from "../../../../utils/waitForMintedTransaction";
 
 const ME_QUERY = gql`
-    query me($address: ID!) {
-        currentAddress
-        dbMe {
+    query me {
+        me {
             id
             address
             email
             description
-        }
-        me: user(id: $address) {
-            email
             collection {
                 id
                 description
@@ -61,16 +57,9 @@ export default function MyProfile({ provider }) {
   const [withdrawError, setWithdrawError] = useState(false);
   const [description, setDescription] = useState("");
   const [withdrawAddress, setWithdrawAddress] = useState("");
-  const address = localStorage.getItem("address");
-  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address
-  });
+  const { data, loading, error, refetch } = useQuery(ME_QUERY);
 
-  const me = useMemo(() => ({
-    ...data?.me,
-    ...data?.dbMe
-  }), [data]);
+  const me = data?.me;
 
   useEffect(() => setDescription(me?.collection?.description || description), [data]);
 

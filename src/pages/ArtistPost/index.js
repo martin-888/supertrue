@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
@@ -6,11 +6,9 @@ import CreatePost from "./sections/CreatePost";
 import SinglePost from "../../components/SinglePost";
 
 const ME_QUERY = gql`
-  query me($address: ID!) {
-    dbMe {
-      address
-    }
-    me: user(id: $address) {
+  query me {
+    me {
+      id
       collection {
         id
         address
@@ -37,22 +35,7 @@ const styles = {
 };
 
 export default function ArtistPost() {
-  const address = localStorage.getItem("address");
-  const { data, loading, error } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address,
-  });
-
-  const me = useMemo(
-    () => ({
-      ...data?.me,
-      ...data?.dbMe,
-    }),
-    [data]
-  );
-
-  // NOTE quick and dirty approach, could breaks if db ordering of post' change
-  const reverseOrderedPost = me?.collection?.posts.slice(0).reverse();
+  const { data, loading, error } = useQuery(ME_QUERY);
 
   const renderPosts = () => {
     if (loading) {
@@ -63,17 +46,17 @@ export default function ArtistPost() {
       );
     }
 
-    if (!me?.collection?.posts?.length) {
+    if (!data?.me?.collection?.posts?.length) {
       return <Typography>No posts found</Typography>;
     }
 
-    return reverseOrderedPost.map((p) => (
+    return data.me.collection.posts.map((p) => (
       <SinglePost
         key={p.id}
         post={p}
-        artistName={me?.collection?.name}
-        artistId={me?.collection?.artistId}
-        instagram={me?.collection?.instagram}
+        artistName={data.me.collection.name}
+        artistId={data.me.collection.artistId}
+        instagram={data.me.collection.instagram}
         hasEditingRights={true}
       />
     ));

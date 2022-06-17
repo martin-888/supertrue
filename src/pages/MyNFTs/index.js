@@ -10,8 +10,9 @@ import {
 import ArtistNFT from "components/ArtistNFT";
 
 const NFTS_QUERY = gql`
-  query me($address: ID!) {
-    user(id: $address) {
+  query myNfts {
+    me {
+      id
       nfts {
         id
         tokenId
@@ -22,12 +23,9 @@ const NFTS_QUERY = gql`
 `;
 
 export default function MyNFTs({ view }) {
-  const address = localStorage["address"];
-  const { data, loading, error } = useQuery(NFTS_QUERY, {
-    variables: { address },
-  });
+  const { data, loading, error } = useQuery(NFTS_QUERY);
 
-  if (loading || !data?.user?.nfts?.length) {
+  if (loading || !data?.me?.nfts?.length) {
     return (
       <Container maxWidth="md" sx={{ my: 8 }}>
         <Grid
@@ -55,7 +53,7 @@ export default function MyNFTs({ view }) {
       )}
 
       <Grid container spacing={8}>
-        {data.user.nfts.map((nft, index) => (
+        {data.me.nfts.map((nft) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
             <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />
           </Grid>

@@ -1,14 +1,11 @@
-import React, {useMemo, useState} from "react";
+import React, {useState} from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const ME_QUERY = gql`
-    query me($address: ID!) {
-        currentAddress
-        dbMe {
+    query me {
+        me {
             address
             email
-        }
-        me: user(id: $address) {
             collection {
                 id
                 address
@@ -47,16 +44,9 @@ export default function Post() {
   const [creating, setCreating] = useState(false);
   const [lastNftID, setLastNftID] = useState(100);
   const [createPostError, setCreatePostError] = useState(null);
-  const address = localStorage.getItem("address");
-  const { data, loading, error } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address
-  });
+  const { data, loading, error } = useQuery(ME_QUERY);
 
-  const me = useMemo(() => ({
-    ...data?.me,
-    ...data?.dbMe
-  }), [data]);
+  const me = data?.me;
 
   const [createPostMutation] = useMutation(CREATE_POST_MUTATION, {
     variables: { input: { content, lastNftID } },
@@ -90,7 +80,7 @@ export default function Post() {
   return (
     <div>
       <h3>Post</h3>
-      {!data?.dbMe && <p>You've to be login for posting</p>}
+      {!data?.me && <p>You've to be login for posting</p>}
       {!data?.me?.collection && <p>You've to create collection first for posting</p>}
       <textarea
         value={content}

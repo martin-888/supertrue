@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import {
@@ -39,24 +39,18 @@ const styles = {
 };
 
 const ME_QUERY = gql`
-  query me($address: ID!) {
-    currentAddress
-    dbMe {
+  query me {
+    me {
       id
       address
       email
       description
-    }
-    me: user(id: $address) {
-      email
       collection {
-        id
-        artistId
-        address
-        minted
-        name
-        instagram
-        pendingFunds
+          id
+          artistId
+          address
+          name
+          instagram
       }
     }
   }
@@ -82,19 +76,9 @@ export default function CreateArtist() {
   const [instagramValid, setInstagramValid] = useState(true);
   const [createCollectionError, setCreateCollectionError] = useState(null);
   const [isTxError, setIsTxError] = useState(false);
-  const address = localStorage.getItem("address");
-  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address,
-  });
+  const { data, loading, error, refetch } = useQuery(ME_QUERY);
 
-  const me = useMemo(
-    () => ({
-      ...data?.me,
-      ...data?.dbMe,
-    }),
-    [data]
-  );
+  const me = data?.me;
 
   useEffect(() => {
     if (!refetching) {

@@ -4,7 +4,7 @@ import {gql, useQuery} from "@apollo/client";
 const ME_QUERY = gql`
     query me {
         currentAddress
-        dbMe {
+        me {
             id
             address
         }
@@ -48,15 +48,15 @@ export default function LoggedIn({ magic }) {
       return;
     }
     console.log({loading, magicIsLoggedIn, userMetadata, data})
-    if (magicIsLoggedIn && !data?.dbMe?.address) {
+    if (magicIsLoggedIn && !data?.me?.address) {
       logout();
       return;
     }
-    if (userMetadata?.publicAddress && !data?.dbMe?.address) {
+    if (userMetadata?.publicAddress && !data?.me?.address) {
       logout();
       return;
     }
-    if (userMetadata?.publicAddress !== data?.dbMe?.address) {
+    if (userMetadata?.publicAddress !== data?.me?.address) {
       logout();
     }
   }, [userMetadata, data, loading, magicIsLoggedIn]);

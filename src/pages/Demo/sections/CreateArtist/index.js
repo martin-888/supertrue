@@ -3,16 +3,12 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import waitForMintedTransaction from "../../../../utils/waitForMintedTransaction";
 
 const ME_QUERY = gql`
-    query me($address: ID!) {
-        currentAddress
-        dbMe {
+    query me {
+        me {
             id
             address
             email
             description
-        }
-        me: user(id: $address) {
-            email
             collection {
                 id
                 artistId
@@ -44,16 +40,9 @@ export default function CreateArtist({ provider }) {
   const [instagram, setInstagram] = useState("");
   const [createCollectionError, setCreateCollectionError] = useState(null);
   const [isTxError, setIsTxError] = useState(false);
-  const address = localStorage.getItem("address");
-  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address
-  });
+  const { data, loading, error, refetch } = useQuery(ME_QUERY);
 
-  const me = useMemo(() => ({
-    ...data?.me,
-    ...data?.dbMe
-  }), [data]);
+  const me = data?.me;
 
   useEffect(() => {
     if (!refetching) {

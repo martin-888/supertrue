@@ -8,14 +8,11 @@ import { abis } from "../../../../contracts";
 const requestedChainId = Number.parseInt(process.env.REACT_APP_CHAIN_ID || 0, 10);
 
 const ME_QUERY = gql`
-    query ($address: ID!) {
-        currentAddress
-        dbMe {
+    query me {
+        me {
             id
             address
             email
-        }
-        me: user(id: $address) {
             nfts {
                 id
                 tokenId
@@ -51,10 +48,7 @@ export default function Mint() {
   const address = localStorage.getItem("address");
   const { account, provider, chainId } = useWeb3Modal();
 
-  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address
-  });
+  const { data, loading, error, refetch } = useQuery(ME_QUERY);
 
   useEffect(() => {
     if (!refetching) {
@@ -112,7 +106,7 @@ export default function Mint() {
   return (
     <div>
       <h3>Mint</h3>
-      {!data?.dbMe && <p>You've to be login for minting</p>}
+      {!data?.me && <p>You've to be login for minting</p>}
       {mintingError && <p>{mintingError}</p>}
       <button disabled={!data?.me?.collection || minting} onClick={mint}>Mint my NFT</button>
     </div>

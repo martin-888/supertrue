@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as ethers from "ethers";
 import {
@@ -13,25 +13,21 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const ME_QUERY = gql`
-  query me($address: ID!) {
-    currentAddress
-    dbMe {
+  query me {
+    me {
       id
       address
       email
       description
-    }
-    me: user(id: $address) {
-      email
       collection {
-        id
-        description
-        artistId
-        address
-        minted
-        name
-        instagram
-        pendingFunds
+          id
+          description
+          artistId
+          address
+          minted
+          name
+          instagram
+          pendingFunds
       }
     }
   }
@@ -85,19 +81,9 @@ export default function ArtistProfile() {
   const [withdrawError, setWithdrawError] = useState(false);
   const [description, setDescription] = useState("");
   const [withdrawAddress, setWithdrawAddress] = useState("");
-  const address = localStorage.getItem("address");
-  const { data, loading, error, refetch } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address,
-  });
+  const { data, loading, error, refetch } = useQuery(ME_QUERY);
 
-  const me = useMemo(
-    () => ({
-      ...data?.me,
-      ...data?.dbMe,
-    }),
-    [data]
-  );
+  const me = data?.me;
 
   useEffect(
     () => setDescription(me?.collection?.description || description),
@@ -161,7 +147,7 @@ export default function ArtistProfile() {
   const CURRENY_OF_FUNDS = "Matic";
   const CURRENY_OF_WITHDRAWAL = "USD";
   const EXCHANGE_RATE_MATIC_TO_USD = 0.61;
-  const funds = !me.collection?.pendingFunds
+  const funds = !me?.collection?.pendingFunds
     ? 0
     : ethers.utils.formatEther(me.collection?.pendingFunds);
 

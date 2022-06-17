@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import {gql, useMutation, useQuery} from "@apollo/client";
 
 const ME_QUERY = gql`
-    query me($address: ID!) {
-        currentAddress
-        dbMe {
+    query me {
+        me {
             address
             email
-        }
-        me: user(id: $address) {
             collection {
                 artistId
                 address
@@ -33,11 +30,7 @@ export default function MintPaperWallet() {
   const [isPurchaseTabOpened, setIsPurchaseTabOpened] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [createLinkError, setCreateLinkError] = useState();
-  const address = localStorage.getItem("address");
-  const { data, loading, error } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address
-  });
+  const { data, loading, error } = useQuery(ME_QUERY);
 
   const [createCheckoutLinkMutation] = useMutation(CREATE_CHECKOUT_LINK_MUTATION, {
     onCompleted: ({ CreateCheckoutLink: { link } }) => {
@@ -69,7 +62,7 @@ export default function MintPaperWallet() {
   return (
     <div>
       <h3>Mint</h3>
-      {!data?.dbMe && <p>You've to be login for minting</p>}
+      {!data?.me && <p>You've to be login for minting</p>}
       {isPurchaseTabOpened && <p>Finish your purchase in opened tab.</p>}
       {createLinkError && <p>{createLinkError}</p>}
       <button disabled={!data?.me?.collection || waiting} onClick={mint}>Mint my NFT</button>
