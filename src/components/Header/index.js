@@ -38,6 +38,7 @@ const ME_QUERY = gql`
 const pages = [
   { name: "Edit Profile", url: "/profile" },
   { name: "Post", url: "/post" },
+  { name: "NFTs", url: "/nfts" },
 ];
 
 const Header = () => {

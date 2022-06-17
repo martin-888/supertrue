@@ -16,7 +16,7 @@ import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
-import MyNFTs from "./pages/MyNFTs";
+import NFTs from "./pages/MyNFTs";
 import NotFound from "./pages/NotFound";
 
 import Header from "./components/Header";
@@ -161,16 +161,12 @@ export default function App() {
               <Route path="/s/:id" element={<Artist />} />
               <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
               <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-              <Route
-                path="/profile"
-                element={onlyLoggedInPage(ArtistProfile)}
-              />
-              <Route path="/my-nfts" element={<MyNFTs />} />
+              <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
+              <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
               <Route path="/" element={<ArtistSearch />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>
-
           <Footer />
         </ThemeProvider>
       </div>
