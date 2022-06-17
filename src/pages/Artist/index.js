@@ -28,7 +28,7 @@ const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID, 10);
 
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
-    collections(where: { artistId: $artistId }) {
+    collection(artistId: $artistId) {
       id
       artistId
       minted
@@ -77,18 +77,9 @@ export default function Artist() {
   });
 
   const [minting, setMinting] = useState(false);
-  const [artist, setArtist] = useState(null);
   const [minted, setMinted] = useState(false);
 
-  useEffect(() => {
-    if (error) {
-      console.error("Failed to fetch Artist:" + id + " data: ", {
-        data,
-        error,
-      });
-    }
-    setArtist(data?.collections?.[0]);
-  }, [data]);
+  const artist = data?.collection;
 
   const mintNFT = async () => {
     if (chainId !== CHAIN_ID) {

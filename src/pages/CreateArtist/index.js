@@ -107,7 +107,7 @@ export default function CreateArtist() {
       clearInterval(intervalID);
       setTimeout(() => {
         window.location.href=`/s/${data.me.collection.artistId}`;
-      }, 70000)
+      }, 15000)
       return;
     }
 
