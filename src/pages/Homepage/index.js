@@ -1,6 +1,3 @@
-import ArtistSearch from "pages/ArtistSearch";
-import MyNFTs from "pages/MyNFTs";
-import NewsFeed from "./components/NewsFeed";
 import { useState } from "react";
 import {
   Box,
@@ -8,6 +5,11 @@ import {
   Tabs,
   Container,
 } from "@mui/material";
+
+import ArtistSearch from "pages/ArtistSearch";
+import NFTs from "pages/NFTs";
+import NewsFeed from "./components/NewsFeed";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -36,7 +38,7 @@ const tabContent = [
   },
   {
     label: 'My NFTs',
-    content: <MyNFTs/>,
+    content: <NFTs/>,
   }
 ];
 

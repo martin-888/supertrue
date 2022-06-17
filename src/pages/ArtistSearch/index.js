@@ -144,7 +144,6 @@ export default function ArtistSearch({ view }) {
       {view !== "gallery" && (
         <Grid item sm={6} sx={{ mb: 4 }}>
           <TextField
-            autoFocus
             sx={{ width: "100%" }}
             id="standard-basic"
             label="Search Artist"

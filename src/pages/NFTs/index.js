@@ -9,8 +9,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 
 import useLogInWallet from "hooks/useLogInWallet";
 
@@ -27,13 +25,11 @@ const NFTS_QUERY = gql`
   }
 `;
 
-export default function MyNFTs({ view }) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down(450));
+export default function NFTs({ view }) {
   const { login, logging } = useLogInWallet();
   const { data, loading, error } = useQuery(NFTS_QUERY);
 
-  if (loading || !data?.me?.nfts?.length) {
+  if (loading) {
     return (
       <Container maxWidth="md" sx={{ my: 8 }}>
         <Grid
@@ -42,11 +38,26 @@ export default function MyNFTs({ view }) {
           justifyContent="center"
           alignItems="center"
         >
-          {loading ? (
-            <CircularProgress />
+          <CircularProgress />
+        </Grid>
+      </Container>
+    );
+  }
+
+  if (!data?.me?.nfts?.length) {
+    return (
+      <Container maxWidth="md" sx={{ my: 8 }}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {data?.me?.id ? (
+            <Typography variant="h5">No Supertrue NFTs found</Typography>
           ) : (
             <>
-              <Typography variant="h5" mb={2}>Connect your wallet to see your Supertrue NFTs.</Typography>
+              <Typography variant="h5" mb={5}>Connect your wallet to see your Supertrue NFTs.</Typography>
               <Button
                 size="large"
                 variant="contained"

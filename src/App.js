@@ -16,7 +16,7 @@ import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
-import NFTs from "./pages/MyNFTs";
+import NFTs from "./pages/NFTs";
 import NotFound from "./pages/NotFound";
 
 import Header from "./components/Header";
