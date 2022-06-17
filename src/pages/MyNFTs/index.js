@@ -9,11 +9,9 @@ import {
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
 
-const walletAddress = localStorage["address"];
-// TODO add search param to collections
 const NFTS_QUERY = gql`
-  {
-    user(id: "${walletAddress}") {
+  query me($address: ID!) {
+    user(id: $address) {
       nfts {
         id
         tokenId
@@ -24,7 +22,10 @@ const NFTS_QUERY = gql`
 `;
 
 export default function MyNFTs({ view }) {
-  const { data, loading, error } = useQuery(NFTS_QUERY);
+  const address = localStorage["address"];
+  const { data, loading, error } = useQuery(NFTS_QUERY, {
+    variables: { address },
+  });
 
   if (loading || !data?.user?.nfts?.length) {
     return (
@@ -38,7 +39,7 @@ export default function MyNFTs({ view }) {
           {loading ? (
             <CircularProgress />
           ) : (
-            <Typography variant="h5">No NFTs Available</Typography>
+            <Typography variant="h5">No NFTs found</Typography>
           )}
         </Grid>
       </Container>
