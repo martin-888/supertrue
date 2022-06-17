@@ -20,7 +20,7 @@ const LOGIN_SIGNATURE_MUTATION = gql`
     mutation logInSignature($input: LogInSignatureInput!) {
         LogInSignature(input: $input) {
             token
-            dbMe {
+            me {
                 id
                 address
                 description
@@ -116,7 +116,13 @@ export default function useLogInWallet() {
       return;
     }
     if (!account || !provider) {
-      await loadWeb3Modal();
+      const result = await loadWeb3Modal();
+
+      if (result?.closed) {
+        setLogging(false);
+        return;
+      }
+
       setLoginOnceAccountIsAvailable(true);
     }
     if (account && provider) {

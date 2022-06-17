@@ -34,14 +34,14 @@ function useWeb3Modal(config = {}) {
   // Open wallet selection modal.
   const loadWeb3Modal = useCallback(async () => {
     setLoadWeb3ModalError(null);
+
     const newProvider = await web3Modal
       .connect()
       .catch((e) => setLoadWeb3ModalError(e?.message));
 
     if (!newProvider) {
-      // console.error("useWeb3Modal() No Provider Found");
       setAutoLoaded(true);
-      return;
+      return { closed: true };
     }
 
     const signerProvider = new providers.Web3Provider(newProvider);

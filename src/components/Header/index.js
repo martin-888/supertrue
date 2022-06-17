@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import AppBar from "@mui/material/AppBar";
 import { Link } from "react-router-dom";
@@ -21,13 +21,12 @@ import useLogInWallet from "../../hooks/useLogInWallet";
 import logo from "./logo.png";
 
 const ME_QUERY = gql`
-  query me($address: ID!) {
-    dbMe {
-        id
-        address
-    }
-    me: user(id: $address) {
+  query me {
+    me {
+      id
+      address
       collection {
+        id
         name
         artistId
       }
@@ -41,6 +40,27 @@ const pages = [
   { name: "NFTs", url: "/nfts" },
 ];
 
+const MenuLinkItem = ({ to, onClick, title, sx }) => (
+  <MenuItem
+    to={to}
+    component={Link}
+    onClick={onClick}
+    sx={{ display: "flex", justifyContent: "flex-end" }}
+  >
+    <Typography
+      textTransform="uppercase"
+      sx={{
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "flex-end",
+        ...(sx || {})
+      }}
+    >
+      {title}
+    </Typography>
+  </MenuItem>
+);
+
 const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
@@ -48,20 +68,10 @@ const Header = () => {
   const { login, logging, logout } = useLogInWallet();
 
   const address = localStorage.getItem("address");
-  const { data } = useQuery(ME_QUERY, {
-    variables: { address },
-    skip: !address,
-  });
+  const { data } = useQuery(ME_QUERY);
 
-  const me = useMemo(
-    () => ({
-      ...data?.dbMe,
-      ...data?.me,
-    }),
-    [data]
-  );
-
-  const isLoggedIn = address && me?.address && address === me.address;
+  const me = data?.me;
+  const isLoggedIn = me?.address && address === me.address;
 
   const renderMenu = () => {
     if (!isLoggedIn) {
@@ -128,25 +138,18 @@ const Header = () => {
               </Typography>
             </MenuItem>
             {isMobile && (
-              <MenuItem
-                to={`/new`}
-                component={Link}
+              <MenuLinkItem
+                to="/new"
+                title="Create Profile"
                 onClick={() => setAnchorElUser(null)}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              >
-                <Typography
-                  textTransform="uppercase"
-                  sx={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  Create Profile
-                </Typography>
-              </MenuItem>
+                sx={{ justifyContent: "flex-end" }}
+              />
             )}
+            <MenuLinkItem
+              to="/nfts"
+              title="NFTs"
+              onClick={() => setAnchorElUser(null)}
+            />
             <MenuItem
               sx={{ display: "flex", justifyContent: "flex-end" }}
             >
@@ -224,24 +227,12 @@ const Header = () => {
             </Typography>
           </MenuItem>
           {pages.map((setting) => (
-            <MenuItem
+            <MenuLinkItem
               key={setting.name}
               to={setting.url}
-              component={Link}
+              title={setting.name}
               onClick={() => setAnchorElUser(null)}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <Typography
-                textTransform="uppercase"
-                sx={{
-                  textAlign: "center",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                {setting.name}
-              </Typography>
-            </MenuItem>
+            />
           ))}
           <MenuItem
             sx={{ display: "flex", justifyContent: "flex-end" }}
