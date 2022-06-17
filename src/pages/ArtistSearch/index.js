@@ -6,7 +6,6 @@ import {
   Button,
   Grid,
   Box,
-  Container,
   CircularProgress,
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
@@ -141,7 +140,7 @@ export default function ArtistSearch({ view }) {
   };
 
   return (
-    <Container maxWidth="md" sx={{ my: 8 }}>
+    <>
       {view !== "gallery" && (
         <Grid item sm={6} sx={{ mb: 4 }}>
           <TextField
@@ -166,6 +165,6 @@ export default function ArtistSearch({ view }) {
       {/*  </Box>*/}
       {/*)}*/}
       {getContent()}
-    </Container>
+    </>
   );
 }

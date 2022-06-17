@@ -11,7 +11,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 import Artist from "./pages/Artist";
-import ArtistSearch from "./pages/ArtistSearch";
+import Homepage from "./pages/Homepage";
 import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
@@ -163,7 +163,7 @@ export default function App() {
               <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
               <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
               <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
-              <Route path="/" element={<ArtistSearch />} />
+              <Route path="/" element={<Homepage />}/>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>

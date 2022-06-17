@@ -4,6 +4,7 @@ import humanizeDuration from "humanize-duration";
 import { loremIpsum } from "lorem-ipsum";
 import {
   Box,
+  Link,
   Typography,
   IconButton,
   Divider,
@@ -17,6 +18,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import __ from "helpers/__";
 import placeholderArtistImage from "assets/img/no-user-image.png";
 import brandOverlay from "assets/img/myCanvas-inverted_1000x350px.png";
+import { ConditionalWrapper } from "utils/helperComponents";
 
 const styles = {
   postBox: {
@@ -214,14 +216,18 @@ export default function SinglePost({
       <Box sx={styles.postTop}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
+          <ConditionalWrapper
+            condition={post.content}
+            wrapper={children => <Link href={`/s/${artistId}`}>{children}</Link>}>
             <img
               src={artistImage}
               onError={(e) => {
-                e.target.src = placeholderArtistImage;
-              }}
+                  e.target.src = placeholderArtistImage;
+                }}
               alt="Author Profile"
               style={styles.profileImage}
             />
+          </ConditionalWrapper>
             <Box sx={styles.authorText}>
               <Typography sx={styles.authorName}>{artistName}</Typography>
               <Typography
