@@ -3,7 +3,6 @@ import {gql, useQuery} from "@apollo/client";
 
 const ME_QUERY = gql`
     query me {
-        currentAddress
         me {
             id
             address
