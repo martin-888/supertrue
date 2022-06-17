@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -10,6 +16,7 @@ import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
+import MyNFTs from "./pages/MyNFTs";
 import NotFound from "./pages/NotFound";
 
 import Header from "./components/Header";
@@ -84,7 +91,7 @@ const styles = {
   loadingSpinner: {
     display: "flex",
     justifyContent: "center",
-    margin: "10em"
+    margin: "10em",
   },
 };
 
@@ -131,7 +138,7 @@ export default function App() {
     }
 
     return <Page />;
-  }
+  };
 
   // if (DEV && window.location.pathname.startsWith("/demo")) {
   if (window.location.pathname.startsWith("/demo")) {
@@ -149,16 +156,21 @@ export default function App() {
       <div className="app">
         <ThemeProvider theme={theme}>
           <Header />
-            <ErrorBoundary>
-              <Routes>
-                <Route path="/s/:id" element={<Artist />}/>
-                <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
-                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-                <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
-                <Route path="/" element={<ArtistSearch />}/>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </ErrorBoundary>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/s/:id" element={<Artist />} />
+              <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
+              <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
+              <Route
+                path="/profile"
+                element={onlyLoggedInPage(ArtistProfile)}
+              />
+              <Route path="/my-nfts" element={<MyNFTs />} />
+              <Route path="/" element={<ArtistSearch />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
+
           <Footer />
         </ThemeProvider>
       </div>
