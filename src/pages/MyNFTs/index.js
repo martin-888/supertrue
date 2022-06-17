@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
 
-let walletAddress = localStorage["address"];
+const walletAddress = localStorage["address"];
 // TODO add search param to collections
 const NFTS_QUERY = gql`
   {
@@ -23,9 +23,6 @@ const NFTS_QUERY = gql`
   }
 `;
 
-/**
- * Component: My NFTs page
- */
 export default function MyNFTs({ view }) {
   const [NFTs, setNFTs] = useState([]);
   const { data, loading, error } = useQuery(NFTS_QUERY);
@@ -39,54 +36,40 @@ export default function MyNFTs({ view }) {
     setNFTs(data.user.nfts);
   }, [data]);
 
-  const getContent = () => {
-    if (loading) {
-      return (
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <CircularProgress />
-        </Grid>
-      );
-    }
-    if (!NFTs.length) {
-      return (
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography variant="h5">No NFTs Available</Typography>
-        </Grid>
-      );
-    }
-
+  if (loading || !NFTs.length) {
     return (
-      <>
-        {view !== "gallery" && (
-          <Box key="h2" sx={{ mb: 3 }}>
-            <Typography variant="h2">MY NFTS</Typography>
-          </Box>
-        )}
-
-        <Grid container spacing={8}>
-          {NFTs.map((nft, index) => (
-            <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
-              <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />
-            </Grid>
-          ))}
+      <Container maxWidth="md" sx={{ my: 8 }}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Typography variant="h5">No NFTs Available</Typography>
+          )}
         </Grid>
-      </>
+      </Container>
     );
-  };
+  }
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
-      {getContent()}
+      {view !== "gallery" && (
+        <Box key="h2" sx={{ mb: 3 }}>
+          <Typography variant="h2">MY NFTS</Typography>
+        </Box>
+      )}
+
+      <Grid container spacing={8}>
+        {NFTs.map((nft, index) => (
+          <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
+            <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 }
