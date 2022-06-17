@@ -24,19 +24,9 @@ const NFTS_QUERY = gql`
 `;
 
 export default function MyNFTs({ view }) {
-  const [NFTs, setNFTs] = useState([]);
   const { data, loading, error } = useQuery(NFTS_QUERY);
 
-  useEffect(() => {
-    if (!data?.user?.nfts?.length) {
-      setNFTs([]);
-      return;
-    }
-
-    setNFTs(data.user.nfts);
-  }, [data]);
-
-  if (loading || !NFTs.length) {
+  if (loading || !data?.user?.nfts?.length) {
     return (
       <Container maxWidth="md" sx={{ my: 8 }}>
         <Grid
@@ -64,7 +54,7 @@ export default function MyNFTs({ view }) {
       )}
 
       <Grid container spacing={8}>
-        {NFTs.map((nft, index) => (
+        {data.user.nfts.map((nft, index) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
             <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />
           </Grid>
