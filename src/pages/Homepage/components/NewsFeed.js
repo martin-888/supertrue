@@ -4,7 +4,7 @@ import {
   CircularProgress,
   Link
 } from "@mui/material";
-import SinglePost from "components/SinglePost";
+import Post from "components/Post";
 import {
   gql,
   useQuery
@@ -13,12 +13,9 @@ import { ConditionalWrapper } from "utils/helperComponents";
 
 const styles = {
   infoText: {
-    fontSize: {
-        xs: "0.6rem",
-        sm: "0.8rem"
-    },
+    fontSize: "0.8rem",
     fontWeight: "bold",
-    paddingLeft: 2.5,
+    paddingX: 2.5,
     paddingBottom: 1,
     color: "grey.400",
     textAlign: "start",
@@ -30,6 +27,7 @@ const styles = {
   postWrapper: {
     backgroundColor: "white",
     borderRadius: "0.7rem",
+    marginBottom: 4,
   },
   loaderContainer: {
     textAlign: "center",
@@ -106,7 +104,7 @@ export default function NewsFeed() {
                   <ConditionalWrapper
                     condition={!content}
                     wrapper={children => <Link href={`/s/${author.artistId}`} sx={styles.link}>{children}</Link>}>
-                    <SinglePost
+                    <Post
                       post={post}
                       artistName={author.collection.name}
                       artistId={author.artistId}

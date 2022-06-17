@@ -19,7 +19,7 @@ import useAccountBalance from "../../hooks/useAccountBalance";
 import useLogInWallet from "../../hooks/useLogInWallet";
 
 import "./Artist.scss";
-import SinglePost from "components/SinglePost";
+import Post from "components/Post";
 import FAQ from "./FAQ";
 
 const NETWORK = process.env.REACT_APP_NETWORK;
@@ -238,14 +238,16 @@ export default function Artist() {
         ) : (
           <>
             {artist.posts.map((p) => (
-                <SinglePost
+              <Box sx={{ marginBottom: 4 }}>
+                <Post
                   key={p.id}
                   post={p}
                   artistName={artist.name}
                   artistId={artist.artistId}
                   instagram={artist.instagram}
                 />
-              ))}
+              </Box>
+            ))}
           </>
         )}
       </Box>

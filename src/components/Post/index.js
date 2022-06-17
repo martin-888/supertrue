@@ -28,8 +28,7 @@ const styles = {
     borderRadius: "0.7rem",
     "&:hover": {
       boxShadow: 2,
-    },
-    marginBottom: 4,
+    }
   },
   postTop: {
     padding: { xs: 2, md: 3 },
@@ -146,7 +145,7 @@ const DELETE_POST_MUTATION = gql`
     }
 `;
 
-export default function SinglePost({
+export default function Post({
   post,
   artistName,
   artistId,

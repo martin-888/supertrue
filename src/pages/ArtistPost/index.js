@@ -3,7 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
 import CreatePost from "./sections/CreatePost";
-import SinglePost from "../../components/SinglePost";
+import Post from "../../components/Post";
 
 const ME_QUERY = gql`
   query me {
@@ -51,14 +51,16 @@ export default function ArtistPost() {
     }
 
     return data.me.collection.posts.map((p) => (
-      <SinglePost
-        key={p.id}
-        post={p}
-        artistName={data.me.collection.name}
-        artistId={data.me.collection.artistId}
-        instagram={data.me.collection.instagram}
-        hasEditingRights={true}
-      />
+      <Box sx={{ marginBottom: 4 }}>
+        <Post
+          key={p.id}
+          post={p}
+          artistName={data.me.collection.name}
+          artistId={data.me.collection.artistId}
+          instagram={data.me.collection.instagram}
+          hasEditingRights={true}
+        />
+      </Box>
     ));
   };
 
