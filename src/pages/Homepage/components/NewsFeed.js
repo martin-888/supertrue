@@ -96,8 +96,8 @@ export default function NewsFeed() {
                   content ?
                   getPostHeader(ownedArtistNftToken?.tokenId, author.collection.name) :
                   ownedArtistNftToken ?
-                      `You own Supertrue #${ownedArtistNftToken.tokenId} for ${author.artistId}. You need 1-${lastNftID} to access` :
-                      `You need 1-${lastNftID} to access ${author.collection.name}'s posts`
+                      `You own Supertrue #${ownedArtistNftToken.tokenId} for ${author.collection.name}. You need #1-${lastNftID} to see this post.` :
+                      `You need Supertrue #1-${lastNftID} to access ${author.collection.name}'s posts.`
                 }
               </Typography>
 
