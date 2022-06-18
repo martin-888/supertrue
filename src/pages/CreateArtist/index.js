@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import useWeb3Modal from "../../hooks/useWeb3Modal";
 import {
   Button,
   Container,
@@ -12,6 +11,9 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
+import { useNavigate } from "react-router-dom";
+
+import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
@@ -64,9 +66,8 @@ const CREATE_COLLECTION_MUTATION = gql`
   }
 `;
 
-let intervalID;
-
 export default function CreateArtist() {
+  const navigate = useNavigate();
   const { account, provider } = useWeb3Modal();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -76,7 +77,7 @@ export default function CreateArtist() {
   const [instagramValid, setInstagramValid] = useState(true);
   const [createCollectionError, setCreateCollectionError] = useState(null);
   const [isTxError, setIsTxError] = useState(false);
-  const { data, loading, error, refetch } = useQuery(ME_QUERY);
+  const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
 
   const me = data?.me;
 
@@ -88,17 +89,10 @@ export default function CreateArtist() {
     if (data?.me?.collection?.id) {
       setRefetching(false);
       setCreating(false);
-      clearInterval(intervalID);
-      setTimeout(() => {
-        window.location.href=`/s/${data.me.collection.artistId}`;
-      }, 15000)
-      return;
+      stopPolling();
+      setTimeout(() => navigate(`/s/${data.me.collection.artistId}`), 15000)
     }
-
-    if (!intervalID) {
-      intervalID = setInterval(refetch, 5000);
-    }
-  }, [data, refetching, refetch]);
+  }, [data, refetching]);
 
   const [createCollectionMutation] = useMutation(CREATE_COLLECTION_MUTATION, {
     onCompleted: async ({ CreateCollection: { tx } }) => {
@@ -111,7 +105,7 @@ export default function CreateArtist() {
       }
 
       setRefetching(true);
-      await refetch();
+      startPolling(5000);
     },
     onError: (e) => {
       setCreateCollectionError(e.message);
@@ -141,8 +135,6 @@ export default function CreateArtist() {
     );
   }
 
-  const VERIFY_SENTENCE = `Verifying my Supertrue.com:${me?.address || "?"}`;
-
   if (!account) {
     return (
       <Container maxWidth="md">
@@ -153,124 +145,126 @@ export default function CreateArtist() {
     );
   }
 
-  return (
+  if (me?.collection) {
+    return (
       <Container maxWidth="md">
-        {me?.collection ? (
-          <>
-            <Typography variant="h2" sx={styles.title}>COLLECTION CREATED</Typography>
-            <Box sx={styles.infoBox}>
-              <Typography>
-                Your collection was successfully created! You can now delete
-                "Verifying my Supertrue.com:0x..." from your instagram bio.
-              </Typography>
-              <br />
-              <br />
-              <Typography>
-                We are generating your unique NFT. Please wait...
-              </Typography>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Typography variant="h2" sx={styles.title}>CREATE PROFILE</Typography>
-            <Box sx={styles.secondaryContainer}>
-              <TextField
-                fullWidth
-                label="YOUR ARTIST NAME"
-                placeholder="HOLY HIVE"
-                helperText="Your artist name will appear on your NFT."
-                variant="standard"
-                margin="normal"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                disabled={me?.collection}
-              />
-              <TextField
-                fullWidth
-                label="YOUR SUPERTRUE USERNAME"
-                placeholder="HOLYHIVE"
-                helperText="Your username will define the link to your profile."
-                variant="standard"
-                margin="normal"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={me?.collection}
-              />
-            </Box>
-            <Typography variant="h4" sx={styles.subtitle}>
-              VERIFY INSTAGRAM{" "}
-              <Tooltip title="We verify instagram to help your fans trust your identity">
-                <HelpCenterIcon fontSize="small" />
-              </Tooltip>
-            </Typography>
-            <Box sx={styles.secondaryContainer}>
-              <TextField
-                fullWidth
-                error={!instagramValid}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">@</InputAdornment>
-                  ),
-                }}
-                label="Instagram Handle"
-                placeholder="yourinstagram"
-                variant="standard"
-                margin="normal"
-                disabled={me?.collection}
-                value={instagram}
-                onChange={(e) => setInstagram(e.target.value)}
-              />
-            </Box>
-            <Box sx={styles.infoBox}>
-              <Typography>
-                Copy and paste the following text EXACTLY into your instagram
-                bio and then hit Verify & Create. (Yes you can change it
-                immediately afterwards.)
-              </Typography>
-            </Box>
-            <Box>
-              <Typography sx={styles.verifySentence}>
-                {VERIFY_SENTENCE}
-              </Typography>
-            </Box>
-            <Button
-              size="large"
-              startIcon={<ContentCopyIcon />}
-              onClick={(e) => {
-                navigator.clipboard.writeText(VERIFY_SENTENCE);
-              }}
-              value={`Verifying my Supertrue.com:${me?.address || "?"}`}
-            >
-              <span style={styles.verifyButtonPrefix}>click to copy</span>
-            </Button>
-
-            <Box sx={styles.secondaryContainer}>
-              <Button
-                onClick={verifyCreate}
-                disabled={!name.length || !instagram.length || creating}
-                size="large"
-                variant="contained"
-                fullWidth
-                sx={styles.button}
-              >
-                Verify & Create Profile
-              </Button>
-              {creating && (
-                <Typography>
-                  Creating collection on blockchain. Please wait...
-                </Typography>
-              )}
-              {createCollectionError && (
-                <Typography color="red">Error: {createCollectionError}</Typography>
-              )}
-              {isTxError && (
-                <Typography color="red">
-                  Error: Create collection transaction failed
-                </Typography>
-              )}
-            </Box>
-          </>
-        )}
+        <Typography variant="h2" sx={styles.title}>COLLECTION CREATED</Typography>
+        <Box sx={styles.infoBox}>
+          <Typography>
+            Your collection was successfully created! You can now delete
+            "Verifying my Supertrue.com:0x..." from your instagram bio.
+          </Typography>
+          <br />
+          <br />
+          <Typography>
+            We are generating your unique NFT. Please wait...
+          </Typography>
+        </Box>
       </Container>
+    );
+  }
+
+  const VERIFY_SENTENCE = `Verifying my Supertrue.com:${me?.address || "?"}`;
+
+  return (
+    <Container maxWidth="md">
+      <Typography variant="h2" sx={styles.title}>CREATE PROFILE</Typography>
+      <Box sx={styles.secondaryContainer}>
+        <TextField
+          fullWidth
+          label="YOUR NAME"
+          helperText="Your name will appear on your NFT"
+          variant="standard"
+          margin="normal"
+          value={name}
+          onChange={({ target: { value } }) => setName(value.slice(0,30))}
+          disabled={me?.collection || creating}
+        />
+        <TextField
+          fullWidth
+          label="YOUR SUPERTRUE USERNAME"
+          helperText="Your username will define the link to your profile"
+          variant="standard"
+          margin="normal"
+          value={username}
+          disabled={me?.collection || creating}
+          onChange={({ target: { value } }) =>
+            setUsername(value.trim().toLowerCase().slice(0,30).replace(" ", ""))
+          }
+        />
+      </Box>
+      <Typography variant="h4" sx={styles.subtitle}>
+        VERIFY INSTAGRAM{" "}
+        <Tooltip title="We verify instagram to help your fans trust your identity">
+          <HelpCenterIcon fontSize="small" />
+        </Tooltip>
+      </Typography>
+      <Box sx={styles.secondaryContainer}>
+        <TextField
+          fullWidth
+          error={!instagramValid}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">@</InputAdornment>
+            ),
+          }}
+          label="Instagram Handle"
+          placeholder="yourinstagram"
+          variant="standard"
+          margin="normal"
+          value={instagram}
+          disabled={me?.collection || creating}
+          onChange={({ target: { value } }) =>
+            setInstagram(value.trim().slice(0,30))
+          }
+        />
+      </Box>
+      <Box sx={styles.infoBox}>
+        <Typography>
+          Copy and paste the following text EXACTLY into your instagram
+          bio and then hit Verify & Create. (Yes you can change it
+          immediately afterwards.)
+        </Typography>
+      </Box>
+      <Box>
+        <Typography sx={styles.verifySentence}>
+          {VERIFY_SENTENCE}
+        </Typography>
+      </Box>
+      <Button
+        size="large"
+        startIcon={<ContentCopyIcon />}
+        onClick={() => navigator.clipboard.writeText(VERIFY_SENTENCE)}
+        value={`Verifying my Supertrue.com:${me?.address || "?"}`}
+      >
+        <span style={styles.verifyButtonPrefix}>click to copy</span>
+      </Button>
+
+      <Box sx={styles.secondaryContainer}>
+        <Button
+          onClick={verifyCreate}
+          disabled={!name.length || !instagram.length || creating}
+          size="large"
+          variant="contained"
+          fullWidth
+          sx={styles.button}
+        >
+          Verify & Create Profile
+        </Button>
+        {creating && (
+          <Typography>
+            Creating collection on blockchain. Please wait...
+          </Typography>
+        )}
+        {createCollectionError && (
+          <Typography color="red">Error: {createCollectionError}</Typography>
+        )}
+        {isTxError && (
+          <Typography color="red">
+            Error: Create collection transaction failed
+          </Typography>
+        )}
+      </Box>
+    </Container>
   );
 }
