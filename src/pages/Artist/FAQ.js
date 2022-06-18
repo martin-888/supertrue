@@ -15,11 +15,11 @@ import "./Artist.scss";
  */
 export default function FAQ() {
   return (
-    <Box>
-      <Typography mt={"40px"} mb={"20px"} variant="h4">
+    <Box mb={4}>
+      <Typography mb={2} variant="h4">
         FAQ
       </Typography>
-      <Accordion className="faqs">
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h4">WHY MINT A SUPERTRUE NFT?</Typography>
         </AccordionSummary>
@@ -34,7 +34,7 @@ export default function FAQ() {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="faqs">
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h4">WHAT’S IN IT FOR THE ARTIST</Typography>
         </AccordionSummary>
@@ -50,7 +50,7 @@ export default function FAQ() {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="faqs">
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h4">
             WHAT HAPPENS WHEN AN ARTIST I BELIEVE IN GROWS
@@ -67,7 +67,7 @@ export default function FAQ() {
           </Typography>
         </AccordionDetails>
       </Accordion>
-      <Accordion className="faqs">
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h4">
             CAN I SELL OR TRADE MY SUPERTRUE NFT

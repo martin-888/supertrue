@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Contract, utils } from "ethers";
@@ -153,7 +153,7 @@ export default function Artist() {
 
   return (
     <Container maxWidth="md">
-      <Grid container className="artist-single">
+      <Grid container mb={6} className="artist-single">
         <Grid item className="image" md={6}>
           <img
             src={__.getNFTImage(artist.artistId, artist.minted)}
@@ -223,24 +223,23 @@ export default function Artist() {
       </Grid>
 
       {artist?.description && (
-        <Paper className="about" elevation={2}>
-          <Typography variant="h4">About</Typography>
-          <Typography>{artist.description}</Typography>
-        </Paper>
+        <Box mb={6}>
+          <Paper className="about" elevation={2}>
+            <Typography variant="h4">About</Typography>
+            <Typography>{artist.description}</Typography>
+          </Paper>
+        </Box>
       )}
 
-      <Typography mt={"40px"} mb={"20px"} variant="h4">
-        Posts{" "}
-      </Typography>
-      <Box>
+      <Typography mb={2} variant="h4">Posts</Typography>
+      <Box mb={6}>
         {!artist?.posts.length ? (
           <Typography>No posts found</Typography>
         ) : (
           <>
             {artist.posts.map((p) => (
-              <Box sx={{ marginBottom: 4 }}>
+              <Box key={p.id} mb={4}>
                 <Post
-                  key={p.id}
                   post={p}
                   artistName={artist.name}
                   artistId={artist.artistId}

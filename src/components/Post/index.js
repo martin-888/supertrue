@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -23,11 +24,8 @@ import { ConditionalWrapper } from "utils/helperComponents";
 const styles = {
   postBox: {
     position: "relative",
-    border: 1,
-    borderColor: "grey.400",
-    borderRadius: "0.7rem",
     "&:hover": {
-      boxShadow: 2,
+      boxShadow: 4,
     }
   },
   postTop: {
@@ -95,6 +93,9 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     zIndex: 15,
+  },
+  postedFor: {
+    maxWidth: "60%"
   },
   hiddenLayerSecond: {
     position: "absolute",
@@ -191,21 +192,21 @@ export default function Post({
   });
 
   return (
-    <Box
-      key={post.createdAt}
+    <Paper
+      elevation={2}
       sx={{
         ...styles.postBox,
-        boxShadow: isEditing || isDeleting ? 2 : null,
+        boxShadow: isEditing || isDeleting ? 4 : null,
       }}
     >
       {!post.content && (
         <>
           <Box sx={styles.hiddenLayerFirst}>
             <LockIcon color="primary" opacity={0.8} sx={styles.lockerIcon} />
-            <Typography>
+            <Typography sx={styles.postedFor}>
               {`Posted only for 1 - ${post.lastNftID}.`}
               <br />
-              {" >"}Get your Supertrue NFT
+              > Get your Supertrue NFT
             </Typography>
           </Box>
           <Box sx={styles.hiddenLayerSecond} />
@@ -337,6 +338,6 @@ export default function Post({
           </Box>
         </>
       )}
-    </Box>
+    </Paper>
   );
 }

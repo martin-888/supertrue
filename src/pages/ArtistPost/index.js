@@ -51,7 +51,7 @@ export default function ArtistPost() {
     }
 
     return data.me.collection.posts.map((p) => (
-      <Box sx={{ marginBottom: 4 }}>
+      <Box mb={4}>
         <Post
           key={p.id}
           post={p}

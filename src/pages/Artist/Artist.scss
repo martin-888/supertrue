@@ -1,5 +1,4 @@
 .artist-single {
-  margin-bottom: 50px;
   .image {
     width: 385px;
     max-height: 385px;
@@ -25,20 +24,13 @@
   }
 }
 .about {
-  margin-top: 40px;
   padding: 10px 20px;
-  border: 1px solid black;
 }
 .pagination-bar {
   padding-top: 20px;
   padding-bottom: 20px;
   display: flex;
   justify-content: center;
-}
-.faqs {
-  margin-top: 8px;
-  border-top: 1px solid black;
-  box-shadow: none !important;
 }
 .additional-details {
   h4,

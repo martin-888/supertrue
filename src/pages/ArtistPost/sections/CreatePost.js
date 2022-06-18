@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 
 // TODO Add option for "All"
@@ -35,13 +36,10 @@ const CREATE_POST_MUTATION = gql`
 
 const styles = {
   postBox: {
-    border: 1,
-    borderColor: "grey.400",
-    borderRadius: "0.7rem",
     "&:hover": {
-      boxShadow: 2,
+      boxShadow: 4,
     },
-    marginBottom: 10,
+    marginBottom: 8,
   },
   postTextbox: {
     padding: { xs: 2, md: 3 },
@@ -123,11 +121,11 @@ export default function CreatePost({ collection }) {
   };
 
   return (
-    <Box
+    <Paper
       component="form"
       noValidate
       autoComplete="off"
-      sx={{ ...styles.postBox, boxShadow: content ? 2 : null }}
+      sx={{ ...styles.postBox, boxShadow: content ? 4 : null }}
     >
       <Grid container direction="column" sx={styles.postContainer}>
         <Grid item md={12}>
@@ -209,6 +207,6 @@ export default function CreatePost({ collection }) {
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </Paper>
   );
 }
