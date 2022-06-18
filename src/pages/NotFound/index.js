@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Typography,
@@ -9,6 +9,11 @@ const styles = {
 };
 
 export default function NotFound() {
+  useEffect(() => {
+      document.title = `Page not found | Supertrue`;
+    },[],
+  );
+
   return (
     <Container maxWidth="md">
       <Typography variant="h1" sx={styles.title}>

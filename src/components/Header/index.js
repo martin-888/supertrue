@@ -36,7 +36,7 @@ const ME_QUERY = gql`
 
 const pages = [
   { name: "Edit Profile", url: "/profile" },
-  { name: "Post", url: "/post" },
+  { name: "Posts", url: "/posts" },
   { name: "NFTs", url: "/nfts" },
 ];
 

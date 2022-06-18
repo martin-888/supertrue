@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
@@ -36,6 +36,11 @@ const styles = {
 
 export default function ArtistPost() {
   const { data, loading, error } = useQuery(ME_QUERY);
+
+  useEffect(() => {
+      document.title = `Posts | Supertrue`;
+    },[],
+  );
 
   const renderPosts = () => {
     if (loading) {

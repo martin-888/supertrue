@@ -82,6 +82,11 @@ export default function CreateArtist() {
   const me = data?.me;
 
   useEffect(() => {
+      document.title = `Create Artist | Supertrue`;
+    },[],
+  );
+
+  useEffect(() => {
     if (!refetching) {
       return;
     }

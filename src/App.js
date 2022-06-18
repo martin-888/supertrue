@@ -159,7 +159,7 @@ export default function App() {
           <ErrorBoundary>
             <Routes>
               <Route path="/s/:id" element={<Artist />} />
-              <Route path="/post" element={onlyLoggedInPage(ArtistPost)} />
+              <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
               <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
               <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
               <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />

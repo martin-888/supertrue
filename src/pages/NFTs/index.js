@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 import {
   Button,
   Typography,
   Grid,
-  Box,
   Container,
   CircularProgress,
 } from "@mui/material";
@@ -28,6 +27,11 @@ const NFTS_QUERY = gql`
 export default function NFTs({ view }) {
   const { login, logging } = useLogInWallet();
   const { data, loading, error } = useQuery(NFTS_QUERY);
+
+  useEffect(() => {
+      document.title = `NFTs | Supertrue`;
+    },[],
+  );
 
   if (loading) {
     return (

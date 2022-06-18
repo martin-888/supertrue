@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {
   Box,
   Tab,
@@ -44,6 +44,11 @@ const tabContent = [
 
 export default function Homepage() {
   const [tabValue, setTabValue] = useState(0);
+
+  useEffect(() => {
+    document.title = `Supertrue`;
+    },[],
+  );
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>

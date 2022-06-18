@@ -85,6 +85,11 @@ export default function ArtistProfile() {
 
   const me = data?.me;
 
+  useEffect(() => {
+      document.title = `Profile | Supertrue`;
+    },[],
+  );
+
   useEffect(
     () => setDescription(me?.collection?.description || description),
     [data]

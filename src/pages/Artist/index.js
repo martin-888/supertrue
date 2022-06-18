@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Contract, utils } from "ethers";
 import {
   Container,
@@ -68,6 +68,7 @@ async function mint({ provider, contractAddress, price }) {
  * Component: Single Artist Page
  */
 export default function Artist() {
+  const location = useLocation();
   const { provider, chainId } = useWeb3Modal();
   const { login, isLoggedIn } = useLogInWallet();
   const balance = useAccountBalance();
@@ -80,6 +81,13 @@ export default function Artist() {
   const [minted, setMinted] = useState(false);
 
   const artist = data?.collection;
+
+  useEffect(() => {
+      if (data?.collection?.name) {
+        document.title = `${data.collection.name} Supertrue`
+      }
+    },[location, data],
+  );
 
   const mintNFT = async () => {
     if (chainId !== CHAIN_ID) {
