@@ -122,7 +122,7 @@ export default function ArtistSearch() {
           </>
         )}
 
-        <Grid container spacing={8}>
+        <Grid container spacing={4}>
           {filteredArtists.map((artist, index) => (
             <Grid item key={artist.id} className="artist" xs={12} sm={6} md={4}>
               <ArtistNFT artist={{ ...artist, id: artist.artistId }} />

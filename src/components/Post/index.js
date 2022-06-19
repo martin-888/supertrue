@@ -16,6 +16,7 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import LockIcon from "@mui/icons-material/Lock";
+
 import __ from "helpers/__";
 import placeholderArtistImage from "assets/img/no-user-image.png";
 import brandOverlay from "assets/img/myCanvas-inverted_1000x350px.png";
@@ -37,9 +38,9 @@ const styles = {
     paddingBottom: 3,
   },
   postBottom: {
-    paddingLeft: { xs: 1, md: 2 },
-    paddingTop: 0.7,
-    paddingBottom: 0.7,
+    paddingLeft: { xs: 2, md: 3 },
+    paddingTop: 1,
+    paddingBottom: 1,
     minHeight: "35px",
   },
   authorBox: {
@@ -110,13 +111,12 @@ const styles = {
     width: "100%",
     height: "100%",
     backdropFilter: "blur(10px)",
-    borderRadius: "0.7rem",
-
+    borderRadius: 1,
     zIndex: 5,
   },
   lockerIcon: {
     fontSize: "45px",
-    marginRight: "10px",
+    marginRight: 2,
   },
 };
 
@@ -204,7 +204,7 @@ export default function Post({
           <Box sx={styles.hiddenLayerFirst}>
             <LockIcon color="primary" opacity={0.8} sx={styles.lockerIcon} />
             <Typography sx={styles.postedFor}>
-              {`Posted only for 1 - ${post.lastNftID}.`}
+              Posted only for 1&nbsp;-&nbsp;{post.lastNftID}.
               <br />
               > Get your Supertrue NFT
             </Typography>
@@ -239,7 +239,7 @@ export default function Post({
             <Typography
               sx={styles.infoText}
             >{`Posted for 1-${post.lastNftID}`}</Typography>
-            <Typography sx={styles.infoText} fontWeight={"bold"} pl={2.5}>
+            <Typography sx={styles.infoText} fontWeight={"bold"} pl={3}>
               {`${humanizedCreatedAtTime} ago`}
             </Typography>
           </Box>
@@ -325,11 +325,11 @@ export default function Post({
                   size="small"
                   variant="contained"
                   color="error"
+                  disabled={updating}
                   onClick={() => {
                     setUpdating(true);
                     deletePostMutation();
                   }}
-                  disabled={updating}
                 >
                   Delete
                 </Button>

@@ -27,7 +27,7 @@ const styles = {
   postWrapper: {
     backgroundColor: "white",
     borderRadius: "0.7rem",
-    marginBottom: 4,
+    marginBottom: 4
   },
   loaderContainer: {
     textAlign: "center",
@@ -95,7 +95,7 @@ export default function NewsFeed() {
                   getPostHeader(ownedArtistNftToken?.tokenId, author.collection.name) :
                   ownedArtistNftToken ?
                       `You own Supertrue #${ownedArtistNftToken.tokenId} for ${author.collection.name}. You need #1-${lastNftID} to see this post.` :
-                      `You need Supertrue #1-${lastNftID} to access ${author.collection.name}'s posts.`
+                      `You need Supertrue #1-${lastNftID} to access this ${author.collection.name}'s post.`
                 }
               </Typography>
 

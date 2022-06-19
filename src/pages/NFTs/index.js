@@ -79,7 +79,7 @@ export default function NFTs({ view }) {
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
-      <Grid container spacing={8}>
+      <Grid container spacing={4}>
         {data.me.nfts.map((nft) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
             <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />

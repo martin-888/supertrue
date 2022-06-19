@@ -35,7 +35,7 @@ export default function Footer() {
       <Container maxWidth="md">
         <Box className="app-footer">
           <Typography className="inner" textAlign="center" pb={2}>
-            Created with 🖤 by the Supertrue Team . ✋🏿 hi@supertrue.com
+            Created with 🖤 by the Supertrue Team. ✋🏿 hi@supertrue.com
           </Typography>
         </Box>
       </Container>
