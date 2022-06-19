@@ -59,6 +59,8 @@ export default function Homepage() {
         }}
       >
         <Tabs
+          scrollButtons="auto"
+          variant="scrollable"
           value={tabValue}
           onChange={(e, val) => setTabValue(val)}
           >

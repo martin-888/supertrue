@@ -61,7 +61,7 @@ export default function NFTs({ view }) {
             <Typography variant="h5">No Supertrue NFTs found</Typography>
           ) : (
             <>
-              <Typography variant="h5" mb={5}>Connect your wallet to see your Supertrue NFTs.</Typography>
+              <Typography variant="h5" mb={5} textAlign="center">Connect wallet to see your Supertrue NFTs.</Typography>
               <Button
                 size="large"
                 variant="contained"
