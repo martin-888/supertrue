@@ -29,12 +29,12 @@ function TabPanel(props) {
 
 const tabContent = [
   {
-    label: 'Artist Feed',
-    content: <NewsFeed/>,
+    label: 'Search & Discover',
+    content: <ArtistSearch/>,
   },
   {
-    label: 'Search',
-    content: <ArtistSearch/>,
+    label: 'My Artist Feed',
+    content: <NewsFeed/>,
   },
   {
     label: 'My NFTs',
