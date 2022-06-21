@@ -204,9 +204,9 @@ export default function Post({
           <Box sx={styles.hiddenLayerFirst}>
             <LockIcon color="primary" opacity={0.8} sx={styles.lockerIcon} />
             <Typography sx={styles.postedFor}>
-              Posted only for 1&nbsp;-&nbsp;{post.lastNftID}.
+              Posted only for 1-{post.lastNftID}.
               <br />
-              > Get your Supertrue NFT
+              Get your Supertrue NFT
             </Typography>
           </Box>
           <Box sx={styles.hiddenLayerSecond} />

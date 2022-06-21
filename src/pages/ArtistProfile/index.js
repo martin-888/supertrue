@@ -168,7 +168,7 @@ export default function ArtistProfile() {
         </Tooltip>
       </Typography>
       <TextField
-        placeholder="What do you want to share..."
+        placeholder="What do you want to share?"
         variant="outlined"
         fullWidth
         multiline

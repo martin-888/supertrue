@@ -131,7 +131,7 @@ export default function CreatePost({ collection }) {
         <Grid item md={12}>
           <Box container sx={styles.postTextbox}>
             <TextField
-              placeholder="What do you want to share..."
+              placeholder="What do you want to share?"
               variant="outlined"
               multiline
               fullWidth

@@ -64,6 +64,10 @@ async function mint({ provider, contractAddress, price }) {
   return { tx, receipt };
 }
 
+function capitalizeFirstLetter(string) {
+  return string.replace(/^./, string[0].toUpperCase());
+}
+
 /**
  * Component: Single Artist Page
  */
@@ -242,7 +246,7 @@ export default function Artist() {
       <Typography mb={2} variant="h4">Posts</Typography>
       <Box mb={6}>
         {!artist?.posts.length ? (
-          <Typography>No posts found</Typography>
+          <Typography>{capitalizeFirstLetter(artist.name)} hasn't posted yet.</Typography>
         ) : (
           <>
             {artist.posts.map((p) => (
