@@ -81,7 +81,7 @@ export default function ArtistSearch() {
       return (
         <>
           <Typography variant="h5" component="h3" align="center">
-            No collection found for "{searchQuery}"
+            {searchQuery} isn't on Supertrue yet
           </Typography>
           {/*<Typography variant="h5" component="h3" align="center">*/}
           {/*  Collection "{searchQuery}" not found.*/}
@@ -110,10 +110,7 @@ export default function ArtistSearch() {
               className="explanation"
               sx={{ mt: 6, mb: 10 }}
             >
-              Mint your favorite new artist to receive a dated NFT with your
-              disovery date and your supertrue follower count. Display your music
-              finds in your gallery. Funds are held for the artist minus
-              transaction fees.
+              Follow your favorite artists to receive a dated NFT with your supertrue follower number. Display what you support on your gallery. Artists can message fans exclusively based on how early they’re to back them. Sell, trade or buy your NFTs. Every NFT is unique and you can buy more than one for each artist!
             </Typography>
 
             <Box key="h2" sx={{ mb: 3 }}>
