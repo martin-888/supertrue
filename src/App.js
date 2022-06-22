@@ -12,7 +12,6 @@ import { grey } from "@mui/material/colors";
 
 import Artist from "./pages/Artist";
 import Homepage from "./pages/Homepage";
-import Demo from "./pages/Demo";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
@@ -139,17 +138,6 @@ export default function App() {
 
     return <Page />;
   };
-
-  // if (DEV && window.location.pathname.startsWith("/demo")) {
-  if (window.location.pathname.startsWith("/demo")) {
-    return (
-      <div className="app">
-        <ThemeProvider theme={theme}>
-          <Demo />
-        </ThemeProvider>
-      </div>
-    );
-  }
 
   return (
     <Router>
