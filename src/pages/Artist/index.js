@@ -202,7 +202,7 @@ export default function Artist() {
                 color="success"
                 target="_blank"
                 LinkComponent="a"
-                href={`https://testnets.opensea.io/assets/${artist.address}/${
+                href={`https://opensea.io/assets/matic/${artist.address}/${
                   artist.minted + 1
                 }`}
               >
