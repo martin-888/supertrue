@@ -188,7 +188,7 @@ export default function Artist() {
             <Typography variant="h5" className="price">
               <label>Price:</label>{" "}
             </Typography>{" "}
-            <Typography>{(artist.price / 10 ** 18).toFixed(4)} ETH </Typography>
+            <Typography>{(artist.price / 10 ** 18).toFixed(4)} MATIC</Typography>
             <br />
             <Typography variant="subtitle2">
               Price goes up per each additional NFT created.
