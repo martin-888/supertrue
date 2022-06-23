@@ -12,6 +12,7 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import { useNavigate } from "react-router-dom";
+import copy from 'copy-to-clipboard';
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
@@ -239,7 +240,7 @@ export default function CreateArtist() {
       <Button
         size="large"
         startIcon={<ContentCopyIcon />}
-        onClick={() => navigator.clipboard.writeText(VERIFY_SENTENCE)}
+        onClick={() => copy(VERIFY_SENTENCE)}
         value={`Verifying my Supertrue.com:${me?.address || "?"}`}
       >
         <span style={styles.verifyButtonPrefix}>click to copy</span>
