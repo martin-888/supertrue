@@ -2,7 +2,7 @@
  * General Helper Functions
  */
 
-const url = "https://storage.googleapis.com/supertrue-5bc93.appspot.com";
+const url = process.env.REACT_APP_FIREBASE_STORAGE_URL;
 
 export const __ = {
     getNFTImage(artistId, tokenId){ return `${url}/nfts/${artistId}/${tokenId}.png`; },
