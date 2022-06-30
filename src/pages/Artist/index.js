@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams, useLocation } from "react-router-dom";
 import { Contract, utils } from "ethers";
 import {
@@ -21,6 +21,7 @@ import useLogInWallet from "../../hooks/useLogInWallet";
 import "./Artist.scss";
 import Post from "components/Post";
 import FAQ from "./FAQ";
+import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const NETWORK = process.env.REACT_APP_NETWORK;
 const NETWORK_RPC_URL = process.env.REACT_APP_NETWORK_RPC_URL;
@@ -46,6 +47,14 @@ const ARTIST_QUERY = gql`
       }
     }
   }
+`;
+
+const CREATE_CHECKOUT_LINK_MUTATION = gql`
+    mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
+        CreateCheckoutLink(input: $input) {
+            link
+        }
+    }
 `;
 
 async function mint({ provider, contractAddress, price }) {
@@ -92,6 +101,22 @@ export default function Artist() {
       }
     },[location, data],
   );
+
+  const [createCheckoutLinkMutation] = useMutation(CREATE_CHECKOUT_LINK_MUTATION, {
+    variables: { input: { artistId: Number(id) } },
+    onCompleted: ({ CreateCheckoutLink: { link } }) => {
+      window.location.href = link
+    },
+    onError: (e) => {
+      console.log("CreateCheckoutLink failed", e.message);
+      setMinting(false);
+    },
+  });
+
+  const mintNFTPaper = async () => {
+    setMinting(true);
+    return createCheckoutLinkMutation();
+  };
 
   const mintNFT = async () => {
     if (chainId !== CHAIN_ID) {
@@ -223,7 +248,7 @@ export default function Artist() {
                 <Button
                   size="large"
                   variant="contained"
-                  onClick={!isLoggedIn ? login : mintNFT}
+                  onClick={!isLoggedIn ? login : mintNFTPaper}
                   disabled={minting}
                 >
                   Mint Fan #{artist.minted + 1}
