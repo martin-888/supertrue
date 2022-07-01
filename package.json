@@ -38,8 +38,7 @@
     "web3modal": "^1.9.5"
   },
   "devDependencies": {
-    "react-app-rewired": "^2.1.11",
-    "surge": "^0.21.5"
+    "react-app-rewired": "^2.1.11"
   },
   "scripts": {
     "start": "set WDS_SOCKET_PORT=0 && react-app-rewired start",
