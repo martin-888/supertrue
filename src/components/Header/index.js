@@ -15,9 +15,9 @@ import {
 import { AccountCircle } from "@mui/icons-material";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useLocation } from "react-router-dom";
 
 import useLogInWallet from "../../hooks/useLogInWallet";
-
 import logo from "./logo.png";
 
 const ME_QUERY = gql`
@@ -61,11 +61,12 @@ const MenuLinkItem = ({ to, onClick, title, sx }) => (
   </MenuItem>
 );
 
-const Header = () => {
+const Header = ({magic}) => {
   const theme = useTheme();
+  const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { login, logging, logout } = useLogInWallet();
+  const { logout } = useLogInWallet();
 
   const address = localStorage.getItem("address");
   const { data } = useQuery(ME_QUERY);
@@ -79,10 +80,9 @@ const Header = () => {
         <Button
           size={isMobile ? "medium" : "large"}
           variant="contained"
-          onClick={login}
-          disabled={logging}
+          href="/login"
         >
-          Connect Wallet
+          Log In
         </Button>
       );
     }
@@ -94,7 +94,7 @@ const Header = () => {
             <Button
               variant="outlined"
               size="medium"
-              href={"/new"}
+              href="/new"
               sx={{ marginRight: "1em" }}
             >
               Create Profile
@@ -154,7 +154,18 @@ const Header = () => {
               sx={{ display: "flex", justifyContent: "flex-end" }}
             >
               <Typography
-                onClick={logout}
+                onClick={async () => {
+                  magic.user
+                  .isLoggedIn()
+                  .then(async (isLoggedIn) => {
+                    if (isLoggedIn) {
+                      await magic.user.logout();
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("address");
+                    }
+                  })
+                  .then(() => logout());
+                }}
                 textTransform="uppercase"
                 sx={{
                   textAlign: "center",
@@ -288,9 +299,8 @@ const Header = () => {
               />
             </Link>
           </Typography>
-
           <Box sx={{ flexGrow: 0 }}>
-            {renderMenu()}
+            {location.pathname !== "/login" && renderMenu()}
           </Box>
         </Toolbar>
       </Container>

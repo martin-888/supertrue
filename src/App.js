@@ -9,6 +9,7 @@ import {
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { Magic } from 'magic-sdk';
 
 import Artist from "./pages/Artist";
 import Homepage from "./pages/Homepage";
@@ -17,10 +18,11 @@ import CreateArtist from "./pages/CreateArtist";
 import ArtistProfile from "./pages/ArtistProfile";
 import NFTs from "./pages/NFTs";
 import NotFound from "./pages/NotFound";
+import Callback from "pages/Login/Callback";
+import Login from "pages/Login/Login";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-
 import useLogInWallet from "./hooks/useLogInWallet";
 
 const LinkRouter = React.forwardRef((props, ref) => {
@@ -121,6 +123,8 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
+  const NETWORK = process.env.REACT_APP_NETWORK;
+  const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, { network: NETWORK });
   const { isLoggedIn, logging } = useLogInWallet();
 
   const onlyLoggedInPage = (Page) => {
@@ -143,7 +147,7 @@ export default function App() {
     <Router>
       <div className="app">
         <ThemeProvider theme={theme}>
-          <Header />
+          <Header magic={magic}/>
           <ErrorBoundary>
             <Routes>
               <Route path="/s/:id" element={<Artist />} />
@@ -152,6 +156,8 @@ export default function App() {
               <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
               <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
               <Route path="/" element={<Homepage />}/>
+              <Route path="/login" element={<Login magic={magic} />}/>
+              <Route path="/login-callback" exact element={<Callback magic={magic} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ErrorBoundary>
