@@ -6,6 +6,7 @@ import {
   Navigate,
   Link,
 } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -24,6 +25,12 @@ import Login from "pages/Login/Login";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import useLogInWallet from "./hooks/useLogInWallet";
+
+const ME_QUERY = gql`
+  query me {
+    me { address }
+  }
+`;
 
 const LinkRouter = React.forwardRef((props, ref) => {
   const { href, ...other } = props;
@@ -126,9 +133,10 @@ export default function App() {
   const NETWORK = process.env.REACT_APP_NETWORK;
   const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, { network: NETWORK });
   const { isLoggedIn, logging } = useLogInWallet();
+  const { data, loading } = useQuery(ME_QUERY);
 
   const onlyLoggedInPage = (Page) => {
-    if (logging) {
+    if (logging || loading) {
       return (
         <Box sx={styles.loadingSpinner}>
           <CircularProgress />
@@ -136,7 +144,7 @@ export default function App() {
       );
     }
 
-    if (!isLoggedIn) {
+    if (!isLoggedIn && (!loading && !data?.me?.address)) {
       return <Navigate to="/" />;
     }
 

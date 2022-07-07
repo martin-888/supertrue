@@ -141,11 +141,11 @@ export default function CreateArtist() {
     );
   }
 
-  if (!account) {
+  if (!account && (!loading && !me?.address)) {
     return (
       <Container maxWidth="md">
         <Typography mb={2}>
-          You've to be login with your wallet first.
+          Please log in to create your profile.
         </Typography>
       </Container>
     );
