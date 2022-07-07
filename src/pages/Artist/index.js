@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useParams, useLocation } from "react-router-dom";
-import { Contract, utils } from "ethers";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
   Box,
@@ -12,23 +11,15 @@ import {
   Paper,
 } from "@mui/material";
 
-import { abis } from "../../contracts";
-import useWeb3Modal from "../../hooks/useWeb3Modal";
 import __ from "helpers/__";
-import useAccountBalance from "../../hooks/useAccountBalance";
 import useLogInWallet from "../../hooks/useLogInWallet";
-
 import "./Artist.scss";
 import Post from "components/Post";
 import FAQ from "./FAQ";
-import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
-
-const NETWORK = process.env.REACT_APP_NETWORK;
-const NETWORK_RPC_URL = process.env.REACT_APP_NETWORK_RPC_URL;
-const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID, 10);
 
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
+    me { address }
     collection(artistId: $artistId) {
       id
       artistId
@@ -57,42 +48,19 @@ const CREATE_CHECKOUT_LINK_MUTATION = gql`
     }
 `;
 
-async function mint({ provider, contractAddress, price }) {
-  const supertrueNFT = new Contract(
-    contractAddress,
-    abis.supertrueNFT,
-    provider.getSigner()
-  );
-
-  const address = provider.getSigner().getAddress();
-
-  const tx = await supertrueNFT.mint(address, { value: price });
-
-  const receipt = await tx.wait();
-
-  return { tx, receipt };
-}
-
 function capitalizeFirstLetter(string) {
   return string.replace(/^./, string[0].toUpperCase());
 }
 
-/**
- * Component: Single Artist Page
- */
 export default function Artist() {
   const location = useLocation();
-  const { provider, chainId } = useWeb3Modal();
-  const { login, isLoggedIn } = useLogInWallet();
-  const balance = useAccountBalance();
+  const { isLoggedIn } = useLogInWallet();
   const { id } = useParams();
-  const { data, loading, error, refetch } = useQuery(ARTIST_QUERY, {
+  const { data, loading } = useQuery(ARTIST_QUERY, {
     variables: { artistId: Number(id) },
   });
-
   const [minting, setMinting] = useState(false);
-  const [minted, setMinted] = useState(false);
-
+  const navigate = useNavigate();
   const artist = data?.collection;
 
   useEffect(() => {
@@ -116,53 +84,6 @@ export default function Artist() {
   const mintNFTPaper = async () => {
     setMinting(true);
     return createCheckoutLinkMutation();
-  };
-
-  const mintNFT = async () => {
-    if (chainId !== CHAIN_ID) {
-      alert(`To mint NFT first you need to switch to ${NETWORK.toUpperCase()} network.`);
-
-      const hexChainId = `0x${CHAIN_ID.toString(16)}`;
-
-      let error;
-
-      await provider.send('wallet_switchEthereumChain', [{chainId: hexChainId}])
-        .catch(err => {
-          if (err.code !== 4902) {
-            error = `wallet_switchEthereumChain error ${err}`
-            return;
-          }
-
-          return provider.send('wallet_addEthereumChain',
-            [{ chainId: hexChainId, rpcUrls: [NETWORK_RPC_URL] }]
-          )
-            .catch(addErr => {
-              error = `wallet_addEthereumChain error ${addErr}`
-            })
-        })
-
-      if (error) {
-        // TODO show to user
-        console.error(error);
-        return;
-      }
-    }
-
-    if (balance < utils.parseUnits(artist?.price, "wei").toBigInt()) {
-      alert("Not enough funds in your wallet.");
-      return;
-    }
-
-    setMinting(true);
-
-    await mint({
-      provider,
-      contractAddress: artist.address,
-      price: artist.price,
-    })
-      .then(() => setTimeout(() => setMinted(true) && refetch(), 5000))
-      .catch((err) => console.error(err.message))
-      .finally(() => setTimeout(() => setMinting(false), 5000));
   };
 
   if (loading) {
@@ -224,22 +145,6 @@ export default function Artist() {
             </Typography>
           </Box>
 
-          {minted && (
-            <Box sx={{ my: 2 }}>
-              <Button
-                variant="contained"
-                color="success"
-                target="_blank"
-                LinkComponent="a"
-                href={`https://opensea.io/assets/matic/${artist.address}/${
-                  artist.minted + 1
-                }`}
-              >
-                Show On OpenSea
-              </Button>
-            </Box>
-          )}
-
           <Box className="actions">
             <Box>
               {minting ? (
@@ -248,7 +153,11 @@ export default function Artist() {
                 <Button
                   size="large"
                   variant="contained"
-                  onClick={!isLoggedIn ? login : mintNFTPaper}
+                  onClick={() => {
+                    (isLoggedIn || data?.me?.address) ?
+                      mintNFTPaper() :
+                      navigate("/login")
+                  }}
                   disabled={minting}
                 >
                   Mint Fan #{artist.minted + 1}

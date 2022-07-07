@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import {
   Button,
@@ -8,8 +9,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
-
-import useLogInWallet from "hooks/useLogInWallet";
 
 const NFTS_QUERY = gql`
   query myNfts {
@@ -24,14 +23,13 @@ const NFTS_QUERY = gql`
   }
 `;
 
-export default function NFTs({ view }) {
-  const { login, logging } = useLogInWallet();
-  const { data, loading, error } = useQuery(NFTS_QUERY);
+export default function NFTs() {
+  const { data, loading } = useQuery(NFTS_QUERY);
+  const navigate = useNavigate();
 
   useEffect(() => {
-      document.title = `NFTs | Supertrue`;
-    },[],
-  );
+    document.title = `NFTs | Supertrue`;
+  },[]);
 
   if (loading) {
     return (
@@ -61,14 +59,13 @@ export default function NFTs({ view }) {
             <Typography variant="h5">No Supertrue NFTs found</Typography>
           ) : (
             <>
-              <Typography variant="h5" mb={5} textAlign="center">Connect wallet to see your Supertrue NFTs.</Typography>
+              <Typography variant="h5" mb={5} textAlign="center">Log in to see your Supertrue NFTs.</Typography>
               <Button
                 size="large"
                 variant="contained"
-                onClick={login}
-                disabled={logging}
+                onClick={() => navigate("/login")}
               >
-                Connect Wallet
+                Log In
               </Button>
             </>
           )}
