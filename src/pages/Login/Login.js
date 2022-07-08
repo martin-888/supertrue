@@ -81,7 +81,6 @@ const EmailLogin = ({ magic, loading }) => {
         onChange={e => setEmail(e.target.value)}
         fullWidth
         sx={styles.marginBottom}
-        disabled={loading}
       />
       <Button
         onClick={login}

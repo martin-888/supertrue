@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   Container,
   Box,
@@ -10,6 +10,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import __ from "helpers/__";
 import useLogInWallet from "../../hooks/useLogInWallet";
@@ -60,7 +61,6 @@ export default function Artist() {
     variables: { artistId: Number(id) },
   });
   const [minting, setMinting] = useState(false);
-  const navigate = useNavigate();
   const artist = data?.collection;
 
   useEffect(() => {
@@ -147,22 +147,15 @@ export default function Artist() {
 
           <Box className="actions">
             <Box>
-              {minting ? (
-                <CircularProgress />
-              ) : (
-                <Button
-                  size="large"
-                  variant="contained"
-                  onClick={() => {
-                    (isLoggedIn || data?.me?.address) ?
-                      mintNFTPaper() :
-                      navigate("/login")
-                  }}
-                  disabled={minting}
-                >
-                  Mint Fan #{artist.minted + 1}
-                </Button>
-              )}
+              <LoadingButton
+                loading={minting}
+                size="large"
+                variant="contained"
+                onClick={() => (isLoggedIn || data?.me?.address) && mintNFTPaper()}
+                href={isLoggedIn || data?.me?.address ? undefined : "/login"}
+              >
+                Mint Fan #{artist.minted + 1}
+              </LoadingButton>
             </Box>
           </Box>
         </Grid>

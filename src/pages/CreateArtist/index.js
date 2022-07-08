@@ -7,37 +7,28 @@ import {
   Box,
   TextField,
   InputAdornment,
-  Tooltip,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import { useNavigate } from "react-router-dom";
 import copy from 'copy-to-clipboard';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
-  title: { marginBottom: "10px" },
-  subtitle: { marginTop: "40px", marginBottom: "10px" },
   infoBox: {
-    padding: "10px 0px",
-    marginTop: "10px",
-    marginBottom: "10px",
+    marginBottom: 4,
+    maxWidth: "750px",
   },
   secondaryContainer: {
     maxWidth: "380px",
-  },
-  button: { marginTop: "40px", marginBottom: "20px" },
-  verifyButtonPrefix: {
-    fontWeight: "bold",
-    fontSize: "0.7rem",
-    marginRight: "15px",
   },
   verifySentence: {
     overflow: "hidden",
     whiteSpace: "wrap",
     textOverflow: "ellipsis",
+    fontWeight: 600,
   },
 };
 
@@ -133,7 +124,7 @@ export default function CreateArtist() {
   if (loading) {
     return (
       <Container maxWidth="md">
-        <Typography variant="h2" sx={styles.title}>
+        <Typography variant="h2" mb={2}>
           CREATE PROFILE
         </Typography>
         <Typography>Loading...</Typography>
@@ -154,7 +145,7 @@ export default function CreateArtist() {
   if (me?.collection) {
     return (
       <Container maxWidth="md">
-        <Typography variant="h2" sx={styles.title}>COLLECTION CREATED</Typography>
+        <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
         <Box sx={styles.infoBox}>
           <Typography>
             Your collection was successfully created! You can now delete
@@ -174,8 +165,8 @@ export default function CreateArtist() {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h2" sx={styles.title}>CREATE PROFILE</Typography>
-      <Box sx={styles.secondaryContainer}>
+      <Typography variant="h2" mb={2}>CREATE PROFILE</Typography>
+      <Box sx={styles.secondaryContainer} mb={8}>
         <TextField
           fullWidth
           label="YOUR NAME"
@@ -199,64 +190,67 @@ export default function CreateArtist() {
           }
         />
       </Box>
-      <Typography variant="h4" sx={styles.subtitle}>
-        VERIFY INSTAGRAM{" "}
-        <Tooltip title="We verify instagram to help your fans trust your identity">
-          <HelpCenterIcon fontSize="small" />
-        </Tooltip>
-      </Typography>
-      <Box sx={styles.secondaryContainer}>
-        <TextField
-          fullWidth
-          error={!instagramValid}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">@</InputAdornment>
-            ),
-          }}
-          label="Instagram Handle"
-          placeholder="yourinstagram"
-          variant="standard"
-          margin="normal"
-          value={instagram}
-          disabled={me?.collection || creating}
-          onChange={({ target: { value } }) =>
-            setInstagram(value.trim().slice(0,30))
-          }
-        />
-      </Box>
-      <Box sx={styles.infoBox}>
-        <Typography>
-          Copy and paste the following text EXACTLY into your instagram
-          bio and then hit Verify & Create. (Yes you can change it
-          immediately afterwards.)
+
+      <Box mb={8}>
+        <Typography variant="h3" mb={2}>
+          VERIFY INSTAGRAM
         </Typography>
-      </Box>
-      <Box>
-        <Typography sx={styles.verifySentence}>
+        <Typography mb={2}>
+          We verify instagram to help your fans trust your identity.
+        </Typography>
+        <Box sx={styles.secondaryContainer} mb={4}>
+          <TextField
+            fullWidth
+            error={!instagramValid}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">@</InputAdornment>
+              ),
+            }}
+            label="Your Instagram Handle"
+            placeholder="yourinstagram"
+            variant="standard"
+            margin="normal"
+            value={instagram}
+            disabled={me?.collection || creating}
+            onChange={({ target: { value } }) =>
+              setInstagram(value.trim().slice(0,30))
+            }
+          />
+        </Box>
+        <Box sx={styles.infoBox}>
+          <Typography>
+            Copy & paste the following text EXACTLY into your instagram
+            bio and then hit Verify & Create. (Yes you can change it
+            immediately afterwards.)
+          </Typography>
+        </Box>
+        <Typography sx={styles.verifySentence} mb={2}>
           {VERIFY_SENTENCE}
         </Typography>
+        <Button
+          size="large"
+          variant="outlined"
+          startIcon={<ContentCopyIcon />}
+          onClick={() => copy(VERIFY_SENTENCE)}
+          value={`Verifying my Supertrue.com:${me?.address || "?"}`}
+        >
+          Copy to clipboard
+        </Button>
       </Box>
-      <Button
-        size="large"
-        startIcon={<ContentCopyIcon />}
-        onClick={() => copy(VERIFY_SENTENCE)}
-        value={`Verifying my Supertrue.com:${me?.address || "?"}`}
-      >
-        <span style={styles.verifyButtonPrefix}>click to copy</span>
-      </Button>
 
       <Box sx={styles.secondaryContainer}>
-        <Button
+        <LoadingButton
+          loading={creating}
           onClick={verifyCreate}
-          disabled={!name.length || !instagram.length || creating}
+          disabled={!name.length || !instagram.length}
           size="large"
           variant="contained"
           fullWidth
-          sx={styles.button}
+          mb={2}
         >
           Verify & Create Profile
-        </Button>
+        </LoadingButton>
         {creating && (
           <Typography>
             Creating collection on blockchain. Please wait...
