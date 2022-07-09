@@ -4,10 +4,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { gql, useMutation } from "@apollo/client";
 import * as ethers from "ethers";
 
-import waitForMintedTransaction from "../../../utils/waitForMintedTransaction";
+import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
-  error: { color: "red", marginTop: 2 },
+  error: { color: "red" },
   input: { maxWidth: "180px", marginRight: 2 }
 };
 
@@ -26,7 +26,14 @@ const provider = new ethers.providers.InfuraProvider(
   INFURA_KEY
 );
 
-export default function Pricing({ loading, defaultPrice, startPolling, stopPolling }) {
+export default function PricingForm({
+  loading,
+  defaultPrice,
+  startPolling,
+  stopPolling,
+  onNoChange,
+  buttonAlwaysActive
+}) {
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState(null);
   const [priceError, setPriceError] = useState(null);
@@ -59,43 +66,7 @@ export default function Pricing({ loading, defaultPrice, startPolling, stopPolli
   });
 
   return (
-    <section>
-      <Typography variant="h3" mb={2}>
-        PRICING
-      </Typography>
-
-      <Box mb={4}>
-        <Typography mb={2}>
-          Customize pricing of your collection.
-        </Typography>
-        <Typography mb={2}>
-          Price is increasing with each mint up to 1000 NFTs is minted.
-        </Typography>
-        <Typography mb={4}>
-          After price becomes constant.
-        </Typography>
-
-        <Typography mb={1} variant="h4">
-          Starting price
-        </Typography>
-        <Typography mb={1}>
-          - price of the first minted NFT
-        </Typography>
-        <Typography mb={4}>
-          - has to be in range of $10 - $1000
-        </Typography>
-
-        <Typography mb={1} variant="h4">
-          Ending price
-        </Typography>
-        <Typography mb={1}>
-          - a constant price reached once 1000 NFTs is minted
-        </Typography>
-        <Typography mb={1}>
-          - it's automatically 5 * starting price
-        </Typography>
-      </Box>
-
+    <div>
       <Box>
         <TextField
           label="Start Price"
@@ -103,7 +74,6 @@ export default function Pricing({ loading, defaultPrice, startPolling, stopPolli
           type="number"
           margin="normal"
           value={price}
-          mr={2}
           sx={styles.input}
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -143,19 +113,24 @@ export default function Pricing({ loading, defaultPrice, startPolling, stopPolli
       <LoadingButton
         loading={updating}
         variant="contained"
-        disabled={loading || !!priceError || price === defaultPrice}
+        disabled={!buttonAlwaysActive && (loading || !!priceError || price === defaultPrice)}
         onClick={() => {
           setUpdating(true);
           setUpdateError(null);
-          updatePricingMutation();
+
+          if (buttonAlwaysActive && defaultPrice === price && onNoChange) {
+            onNoChange();
+          } else {
+            updatePricingMutation();
+          }
         }}
       >
-        Update
+        Save
       </LoadingButton>
 
       {updateError && (
         <Typography mt={2} sx={styles.error}>{updateError}</Typography>
       )}
-    </section>
+    </div>
   );
 }

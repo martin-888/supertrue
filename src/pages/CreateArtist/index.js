@@ -15,6 +15,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
+import Pricing from "./sections/Pricing";
 
 const styles = {
   infoBox: {
@@ -45,6 +46,7 @@ const ME_QUERY = gql`
           address
           name
           instagram
+          startPriceCents
       }
     }
   }
@@ -87,7 +89,6 @@ export default function CreateArtist() {
       setRefetching(false);
       setCreating(false);
       stopPolling();
-      setTimeout(() => navigate(`/s/${data.me.collection.artistId}`), 15000)
     }
   }, [data, refetching]);
 
@@ -148,15 +149,17 @@ export default function CreateArtist() {
         <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
         <Box sx={styles.infoBox}>
           <Typography>
-            Your collection was successfully created! You can now delete
-            "Verifying my Supertrue.com:0x..." from your instagram bio.
-          </Typography>
-          <br />
-          <br />
-          <Typography>
-            We are generating your unique NFT. Please wait...
+            Your collection was successfully created! You can now delete verification message from your instagram.
           </Typography>
         </Box>
+
+        <Pricing
+          loading={loading}
+          startPolling={startPolling}
+          stopPolling={stopPolling}
+          defaultPrice={Math.trunc((me.collection?.startPriceCents || 1000)/100)}
+          artistId={me.collection?.artistId}
+        />
       </Container>
     );
   }

@@ -16,7 +16,7 @@ import Artist from "./pages/Artist";
 import Homepage from "./pages/Homepage";
 import ArtistPost from "./pages/ArtistPost";
 import CreateArtist from "./pages/CreateArtist";
-import ArtistProfile from "./pages/ArtistProfile";
+import Settings from "./pages/Settings";
 import NFTs from "./pages/NFTs";
 import NotFound from "./pages/NotFound";
 import Callback from "pages/Login/Callback";
@@ -162,7 +162,7 @@ export default function App() {
               <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
               <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
               <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
-              <Route path="/profile" element={onlyLoggedInPage(ArtistProfile)} />
+              <Route path="/settings" element={onlyLoggedInPage(Settings)} />
               <Route path="/" element={<Homepage />}/>
               <Route path="/login" element={<Login magic={magic} />}/>
               <Route path="/login-callback" exact element={<Callback magic={magic} />} />

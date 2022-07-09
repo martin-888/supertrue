@@ -35,9 +35,9 @@ const ME_QUERY = gql`
 `;
 
 const pages = [
-  { name: "Edit Profile", url: "/profile" },
   { name: "Posts", url: "/posts" },
   { name: "NFTs", url: "/nfts" },
+  { name: "Settings", url: "/settings" },
 ];
 
 const MenuLinkItem = ({ to, onClick, title, sx }) => (

@@ -24,13 +24,13 @@ const ME_QUERY = gql`
   }
 `;
 
-export default function ArtistProfile() {
+export default function Settings() {
   const { data, loading, error, startPolling, stopPolling } = useQuery(ME_QUERY);
 
   const me = data?.me;
 
   useEffect(() => {
-      document.title = `Profile | Supertrue`;
+      document.title = `Settings | Supertrue`;
     },[],
   );
 
@@ -44,7 +44,6 @@ export default function ArtistProfile() {
       />
       <Box mb={8} />
       <Pricing
-        key={me?.collection?.startPriceCents}
         loading={loading}
         startPolling={startPolling}
         stopPolling={stopPolling}

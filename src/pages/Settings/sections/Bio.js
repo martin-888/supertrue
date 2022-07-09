@@ -68,7 +68,7 @@ export default function Bio({ defaultDescription, loading, hasCollection }) {
           onClick={updateCollection}
           disabled={loading || !hasCollection || description === defaultDescription}
         >
-          Update
+          Save
         </LoadingButton>
       </Box>
     </section>
