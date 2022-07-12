@@ -31,8 +31,6 @@ export default function PricingForm({
   defaultPrice,
   startPolling,
   stopPolling,
-  onNoChange,
-  buttonAlwaysActive
 }) {
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState(null);
@@ -90,6 +88,7 @@ export default function PricingForm({
               setPrice(Number(value));
             } else if (value > 1000) {
               setPrice(1000);
+              setPriceError(null);
             } else {
               setPrice(Number(value));
               setPriceError(null);
@@ -113,16 +112,11 @@ export default function PricingForm({
       <LoadingButton
         loading={updating}
         variant="contained"
-        disabled={!buttonAlwaysActive && (loading || !!priceError || price === defaultPrice)}
+        disabled={loading || !!priceError || price === defaultPrice}
         onClick={() => {
           setUpdating(true);
           setUpdateError(null);
-
-          if (buttonAlwaysActive && defaultPrice === price && onNoChange) {
-            onNoChange();
-          } else {
-            updatePricingMutation();
-          }
+          updatePricingMutation();
         }}
       >
         Save

@@ -1,6 +1,8 @@
 import React  from "react";
 import { Typography } from "@mui/material";
 
+import __ from "helpers/__";
+
 const styles = {
   startingKit: { maxWidth: "250px" },
 };
@@ -18,8 +20,7 @@ export default function Sharing({ artistId }) {
         <img
           alt="Starting Kit Material"
           style={styles.startingKit}
-          // TODO load from env variable
-          src={`https://supertrue-api.herokuapp.com/api/artist/${artistId}/share`}
+          src={__.getShareImage(artistId)}
         />
       )}
     </section>

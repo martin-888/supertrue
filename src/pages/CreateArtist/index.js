@@ -15,7 +15,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
-import Pricing from "./sections/Pricing";
 
 const styles = {
   infoBox: {
@@ -62,7 +61,7 @@ const CREATE_COLLECTION_MUTATION = gql`
 
 export default function CreateArtist() {
   const navigate = useNavigate();
-  const { account, provider } = useWeb3Modal();
+  const { provider } = useWeb3Modal();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
@@ -89,6 +88,7 @@ export default function CreateArtist() {
       setRefetching(false);
       setCreating(false);
       stopPolling();
+      setTimeout(() => navigate("/settings", { replace: true }), 3000);
     }
   }, [data, refetching]);
 
@@ -133,33 +133,21 @@ export default function CreateArtist() {
     );
   }
 
-  if (!account && (!loading && !me?.address)) {
-    return (
-      <Container maxWidth="md">
-        <Typography mb={2}>
-          Please log in to create your profile.
-        </Typography>
-      </Container>
-    );
-  }
-
   if (me?.collection) {
     return (
       <Container maxWidth="md">
         <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
         <Box sx={styles.infoBox}>
-          <Typography>
-            Your collection was successfully created! You can now delete verification message from your instagram.
+          <Typography paragraph>
+            Collection has been successfully created!
+          </Typography>
+          <Typography paragraph>
+            Verification message can be now deleted from your instagram.
+          </Typography>
+          <Typography paragraph>
+            You are being redirected, please wait...
           </Typography>
         </Box>
-
-        <Pricing
-          loading={loading}
-          startPolling={startPolling}
-          stopPolling={stopPolling}
-          defaultPrice={Math.trunc((me.collection?.startPriceCents || 1000)/100)}
-          artistId={me.collection?.artistId}
-        />
       </Container>
     );
   }
