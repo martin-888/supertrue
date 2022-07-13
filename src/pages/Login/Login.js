@@ -12,12 +12,11 @@ import {
   Box,
   Stack,
   Divider,
-  Paper,
-  useMediaQuery,
-  useTheme
+  Paper
 } from "@mui/material";
-import useLogInWallet from "hooks/useLogInWallet";
+import { useNavigate } from "react-router-dom";
 
+import ConnectButton from "./ConnectButton";
 const ME_QUERY = gql`
     query me {
         me {
@@ -34,7 +33,7 @@ export const styles = {
   centerContainer: {
     textAlign: "center",
   },
-  buttonPadding: {
+  loginButton: {
     padding: 2,
   },
   paper: {
@@ -86,7 +85,7 @@ const EmailLogin = ({ magic, loading }) => {
         onClick={login}
         variant="contained"
         disabled={loading || !isValidEmail(email)}
-        sx={styles.buttonPadding}
+        sx={styles.loginButton}
       >
         Log In
       </Button>
@@ -94,33 +93,12 @@ const EmailLogin = ({ magic, loading }) => {
   );
 }
 
-const WalletLogin = ({ loading }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down(450));
-  const { login, logging, isLoggedIn } = useLogInWallet();
-
-  useEffect(() => {
-    if (isLoggedIn) window.location.href = "/";
-  });
-
-  return (
-    <Button
-      size={isMobile ? "medium" : "large"}
-      variant="contained"
-      onClick={login}
-      disabled={loading || logging}
-      sx={styles.buttonPadding}
-    >
-      Log in with Web3 wallet
-    </Button>
-  )
-}
-
 export default function Login({ magic }) {
   const [isLoggedInMagicUser, setIsLoggedInMagicUser] = useState();
   const { data, loading, error } = useQuery(ME_QUERY);
   const [dataLoading, setDataLoading] = useState(loading);
 
+  const navigate = useNavigate();
   const logout = useCallback(async () => {
     if (isLoggedInMagicUser) await magic.user.logout();
     localStorage.removeItem("token");
@@ -129,7 +107,7 @@ export default function Login({ magic }) {
   }, [isLoggedInMagicUser]);
 
   useEffect(() => {
-    if (data?.me?.address) window.location.href = "/";
+    if (data?.me?.address) navigate("/");
 
     setDataLoading(true);
     magic.user.isLoggedIn().then(isLoggedIn => {
@@ -164,16 +142,19 @@ export default function Login({ magic }) {
         </Box>
       )}
 
-      <Paper elevation={3} sx={styles.paper}>
+      <Paper
+        elevation={3}
+        sx={styles.paper}
+        >
         <Stack spacing={2}>
           <Typography variant="h2" sx={styles.paperHeading}>
             Log In
           </Typography>
-          <EmailLogin magic={magic} loading={dataLoading} />
+          <EmailLogin magic={magic} loading={dataLoading}/>
           <Box sx={styles.divider}>
             <Divider />
           </Box>
-          <WalletLogin loading={dataLoading} />
+          <ConnectButton/>
         </Stack>
       </Paper>
     </Container>

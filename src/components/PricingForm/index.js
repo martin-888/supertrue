@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TextField, Typography, Box, InputAdornment } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { gql, useMutation } from "@apollo/client";
-import * as ethers from "ethers";
+import { useProvider } from 'wagmi';
 
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
@@ -19,12 +19,6 @@ const UPDATE_PRICING_MUTATION = gql`
     }
 `;
 
-const NETWORK = process.env.REACT_APP_NETWORK;
-const INFURA_KEY = process.env.REACT_APP_INFURA_KEY;
-const provider = new ethers.providers.InfuraProvider(
-  NETWORK,
-  INFURA_KEY
-);
 
 export default function PricingForm({
   loading,
@@ -32,6 +26,8 @@ export default function PricingForm({
   startPolling,
   stopPolling,
 }) {
+  const provider = useProvider();
+
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState(null);
   const [priceError, setPriceError] = useState(null);

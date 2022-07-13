@@ -132,11 +132,11 @@ class ErrorBoundary extends React.Component {
 export default function App() {
   const NETWORK = process.env.REACT_APP_NETWORK;
   const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, { network: NETWORK });
-  const { isLoggedIn, logging } = useLogInWallet();
+  const { isLoggedIn } = useLogInWallet();
   const { data, loading } = useQuery(ME_QUERY);
 
   const onlyLoggedInPage = (Page) => {
-    if (logging || loading) {
+    if (loading) {
       return (
         <Box sx={styles.loadingSpinner}>
           <CircularProgress />

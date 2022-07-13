@@ -10,10 +10,9 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useNavigate } from "react-router-dom";
+import { useProvider } from 'wagmi';
 import copy from 'copy-to-clipboard';
 import LoadingButton from '@mui/lab/LoadingButton';
-
-import useWeb3Modal from "../../hooks/useWeb3Modal";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
@@ -61,7 +60,7 @@ const CREATE_COLLECTION_MUTATION = gql`
 
 export default function CreateArtist() {
   const navigate = useNavigate();
-  const { provider } = useWeb3Modal();
+  const provider = useProvider();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");

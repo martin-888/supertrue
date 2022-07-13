@@ -7,12 +7,16 @@ import {
   createHttpLink
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
-// import * as Sentry from '@sentry/react';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
+
+import { wagmiClient, chains } from "utils/rainbow";
+import { WagmiConfig } from 'wagmi';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
 
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_GRAPHQL_URL,
@@ -41,7 +45,19 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains} theme={darkTheme(
+          {
+            accentColor: "#FFFFFF",
+            accentColorForeground: "#212121",
+            borderRadius: "small",
+            fontStack: "system"
+          }
+        )}
+        >
+          <App />
+        </RainbowKitProvider>
+      </WagmiConfig>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

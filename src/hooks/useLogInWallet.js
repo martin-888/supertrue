@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import useWeb3Modal from "./useWeb3Modal";
-
-const SIGNING_MESSAGE_QUERY = gql`
-    query {
-        signingMessage
-    }
-`;
+import { useCallback, useState } from "react";
+import {
+  gql,
+  useMutation
+} from "@apollo/client";
+import {
+  useAccount,
+  useSignMessage,
+  useDisconnect
+ } from "wagmi";
 
 const CREATE_LOGIN_NONCE_MUTATION = gql`
     mutation logInSignature($input: CreateLogInNonceInput!) {
@@ -31,43 +32,60 @@ const LOGIN_SIGNATURE_MUTATION = gql`
     }
 `;
 
+const createSignMessage = (address, nonce) => `Welcome to SUPERTRUE!
+
+Signing is the only way we can truly know that you are the owner of the wallet you are connecting. Signing is a safe, gas-less transaction that does not in any way give permission to perform any transactions with your wallet.
+
+Wallet address: ${address}
+
+Nonce: ${nonce}`;
+
 export default function useLogInWallet() {
-  const [logging, setLogging] = useState(false);
-  const [loginOnceAccountIsAvailable, setLoginOnceAccountIsAvailable] =
-    useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loginError, setLoginError] = useState(null);
-  const {
-    account,
-    provider,
-    loadWeb3Modal,
-    logoutOfWeb3Modal,
-    loadWeb3ModalError,
-    loading: web3ModalLoading
-  } = useWeb3Modal();
 
-  const { data, loading } = useQuery(SIGNING_MESSAGE_QUERY);
+  let { address } = useAccount();
+  address = address?.toLowerCase();
+  const { disconnect } = useDisconnect();
 
-  useEffect(() => {
-    if (!loginOnceAccountIsAvailable || !account || !provider) {
-      return;
-    }
-    setLoginOnceAccountIsAvailable(false);
-    createLoginNonceMutation({ variables: { input: { address: account } } });
-  }, [loginOnceAccountIsAvailable, account, provider]);
+  //1. create an area in the db using the address to store a nonce value
+  const startSupertrueLoginFlow = useCallback(
+    async (address) => {
+      await createLoginNonceMutation({
+        variables: { input: { address } },
+      });
+  }, [address]);
 
-  const logout = async () => {
-    await logoutOfWeb3Modal();
-    localStorage.removeItem("token");
-    localStorage.removeItem("address");
-    setToken(null);
-    setLogging(false);
-  };
+  //2. get the user to sign a message to verify us/them.
+  const [createLoginNonceMutation] = useMutation(CREATE_LOGIN_NONCE_MUTATION, {
+    onCompleted: ({ CreateLogInNonce }) => {
+      const message = createSignMessage(address, CreateLogInNonce.nonce);
+      signMessage({ message, nonce: CreateLogInNonce.nonce });
+    },
+    onError: (e) => {
+      setLoginError("Getting login nonce failed");
+      console.log("createLoginNonceMutation error", e);
+      logout();
+    },
+  });
 
+  //3. upon signing, send signature to the server using the nonce as a lookup.
+  const {signMessage} = useSignMessage({
+    onSuccess(signature, {nonce}) {
+      loginMutation({ variables: { input: { nonce, signature } } });
+    },
+    onError(e) {
+      setLoginError("signMessage failed");
+      console.log("signMessage error", e);
+      logout();
+    },
+  });
+
+  //4. upon successful login, store token in local storage for API calls and redirect to home page.
   const [loginMutation] = useMutation(LOGIN_SIGNATURE_MUTATION, {
     onCompleted: ({ LogInSignature }) => {
       setToken(LogInSignature.token);
-      localStorage.setItem("address", account);
+      localStorage.setItem("address", address);
       localStorage.setItem("token", LogInSignature.token);
       window.location.reload();
     },
@@ -78,71 +96,20 @@ export default function useLogInWallet() {
     },
   });
 
-  const signMessage = async (nonce) => {
-    const message = data.signingMessage
-      .replace("***ADDRESS***", account)
-      .replace("***NONCE***", nonce);
-
-    const signature = await provider
-      .send("personal_sign", [message, account])
-      .catch((e) => {
-        setLoginError(e.message);
-        logout(); // Better to show message than immediately logout
-      });
-
-    if (!signature) {
-      return;
-    }
-
-    await loginMutation({ variables: { input: { nonce, signature } } });
+  const logout = () => {
+    disconnect();
+    localStorage.removeItem("token");
+    localStorage.removeItem("address");
+    setToken(null);
+    window.location.reload();
   };
 
-  const [createLoginNonceMutation] = useMutation(CREATE_LOGIN_NONCE_MUTATION, {
-    onCompleted: ({ CreateLogInNonce }) => signMessage(CreateLogInNonce.nonce),
-    onError: (e) => {
-      setLoginError("Getting login nonce failed");
-      console.log("createLoginNonceMutation error", e);
-      logout();
-    },
-  });
-
-  const login = async () => {
-    setLoginError(null);
-    setLogging(true);
-
-    if (!data?.signingMessage) {
-      setLoginError("Missing signing message");
-      setLogging(false);
-      return;
-    }
-    if (!account || !provider) {
-      const result = await loadWeb3Modal();
-
-      if (result?.closed) {
-        setLogging(false);
-        return;
-      }
-
-      setLoginOnceAccountIsAvailable(true);
-    }
-    if (account && provider) {
-      await createLoginNonceMutation({
-        variables: { input: { address: account } },
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (loadWeb3ModalError) setLoginError(loadWeb3ModalError);
-  }, [loadWeb3ModalError]);
-
-  const isLoggedIn = !!token?.length && !!account;
+  const isLoggedIn = !!token?.length && !!address;
 
   return {
-    login,
+    startSupertrueLoginFlow,
     logout,
     isLoggedIn,
-    logging: logging || loading || web3ModalLoading,
     loginError
   };
 }

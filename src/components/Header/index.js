@@ -70,7 +70,6 @@ const Header = ({magic}) => {
 
   const address = localStorage.getItem("address");
   const { data } = useQuery(ME_QUERY);
-
   const me = data?.me;
   const isLoggedIn = me?.address && address === me.address;
 
