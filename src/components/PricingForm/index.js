@@ -105,6 +105,13 @@ export default function PricingForm({
         />
       </Box>
 
+      {updating && (
+        <Box mb={1} mt={1}>
+          <Typography>Price is being updated on blockchain.</Typography>
+          <Typography>Please wait 1-3 minutes to see applied changes.</Typography>
+        </Box>
+      )}
+
       <LoadingButton
         loading={updating}
         variant="contained"

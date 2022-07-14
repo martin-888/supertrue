@@ -83,12 +83,16 @@ export default function CreateArtist() {
       return;
     }
 
-    if (data?.me?.collection?.id) {
-      setRefetching(false);
-      setCreating(false);
-      stopPolling();
-      setTimeout(() => navigate("/settings", { replace: true }), 3000);
+    if (!data?.me?.collection?.id) {
+      return;
     }
+
+    setRefetching(false);
+    setCreating(false);
+    stopPolling();
+    const timerId = setTimeout(() => navigate("/settings", { replace: true }), 5000);
+
+    return () => clearTimeout(timerId);
   }, [data, refetching]);
 
   const [createCollectionMutation] = useMutation(CREATE_COLLECTION_MUTATION, {
@@ -128,6 +132,15 @@ export default function CreateArtist() {
           CREATE PROFILE
         </Typography>
         <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
+
+  if (refetching) {
+    return (
+      <Container maxWidth="md">
+        <Typography paragraph>Your profile is being created on blockchain.</Typography>
+        <Typography paragraph>Please wait 1-3 minutes and check this tab again.</Typography>
       </Container>
     );
   }

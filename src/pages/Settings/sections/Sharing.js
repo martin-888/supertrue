@@ -1,7 +1,9 @@
 import React  from "react";
 import { Typography } from "@mui/material";
 
-import __ from "helpers/__";
+import Image from "../../../components/Image";
+import generating from "../../../assets/img/generating.jpg";
+import __ from "../../../helpers/__";
 
 const styles = {
   startingKit: { maxWidth: "250px" },
@@ -14,13 +16,14 @@ export default function Sharing({ artistId }) {
         SHARING KIT
       </Typography>
       <Typography mb={2}>
-        This is an image you can share on your instagram
+        Share on your instagram.
       </Typography>
       {artistId && (
-        <img
+        <Image
           alt="Starting Kit Material"
           style={styles.startingKit}
           src={__.getShareImage(artistId)}
+          fallbackSrc={generating}
         />
       )}
     </section>

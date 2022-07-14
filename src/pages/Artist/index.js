@@ -4,7 +4,6 @@ import { useParams, useLocation } from "react-router-dom";
 import {
   Container,
   Box,
-  Button,
   CircularProgress,
   Grid,
   Typography,
@@ -14,9 +13,12 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 import __ from "helpers/__";
 import useLogInWallet from "../../hooks/useLogInWallet";
-import "./Artist.scss";
-import Post from "components/Post";
+import Post from "../../components/Post";
+import Image from "../../components/Image";
 import FAQ from "./FAQ";
+
+import "./Artist.scss";
+import generating from "../../assets/img/generating.jpg";
 
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
@@ -113,9 +115,10 @@ export default function Artist() {
     <Container maxWidth="md">
       <Grid container mb={6} className="artist-single">
         <Grid item className="image" md={6}>
-          <img
-            src={__.getNFTImage(artist.artistId, artist.minted)}
+          <Image
             alt={artist.name}
+            src={__.getNFTImage(artist.artistId, artist.minted)}
+            fallbackSrc={generating}
           />
         </Grid>
 
