@@ -79,21 +79,16 @@ export default function CreateArtist() {
   );
 
   useEffect(() => {
-    if (!refetching) {
-      return;
-    }
-
     if (!data?.me?.collection?.id) {
       return;
     }
 
-    setRefetching(false);
     setCreating(false);
     stopPolling();
     const timerId = setTimeout(() => navigate("/settings", { replace: true }), 5000);
 
     return () => clearTimeout(timerId);
-  }, [data, refetching]);
+  }, [data]);
 
   const [createCollectionMutation] = useMutation(CREATE_COLLECTION_MUTATION, {
     onCompleted: async ({ CreateCollection: { tx } }) => {
@@ -136,30 +131,24 @@ export default function CreateArtist() {
     );
   }
 
+  if (me?.collection?.id) {
+    return (
+      <Container maxWidth="md">
+        <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
+        <Box sx={styles.infoBox}>
+          <Typography paragraph>Collection has been successfully created!</Typography>
+          <Typography paragraph>Verification message can be now deleted from your instagram.</Typography>
+          <Typography paragraph>You are being redirected, please wait...</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
   if (refetching) {
     return (
       <Container maxWidth="md">
         <Typography paragraph>Your profile is being created on blockchain.</Typography>
         <Typography paragraph>Please wait 1-3 minutes and check this tab again.</Typography>
-      </Container>
-    );
-  }
-
-  if (me?.collection) {
-    return (
-      <Container maxWidth="md">
-        <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
-        <Box sx={styles.infoBox}>
-          <Typography paragraph>
-            Collection has been successfully created!
-          </Typography>
-          <Typography paragraph>
-            Verification message can be now deleted from your instagram.
-          </Typography>
-          <Typography paragraph>
-            You are being redirected, please wait...
-          </Typography>
-        </Box>
       </Container>
     );
   }
