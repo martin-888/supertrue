@@ -1,6 +1,6 @@
 const waitForMintedTransaction = ({ provider, tx }) =>
   new Promise((resolve) => {
-      const maxAttempts = 10;
+      const maxAttempts = 40;
       let attempts = 0;
       const intervalId = setInterval(async () => {
         attempts++;
