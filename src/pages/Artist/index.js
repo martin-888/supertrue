@@ -9,7 +9,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import __ from "helpers/__";
 import useLogInWallet from "../../hooks/useLogInWallet";
@@ -22,7 +22,9 @@ import generating from "../../assets/img/generating.jpg";
 
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
-    me { address }
+    me {
+      address
+    }
     collection(artistId: $artistId) {
       id
       artistId
@@ -33,6 +35,7 @@ const ARTIST_QUERY = gql`
       instagram
       address
       price
+      priceCents
       posts {
         id
         lastNftID
@@ -44,12 +47,14 @@ const ARTIST_QUERY = gql`
 `;
 
 const CREATE_CHECKOUT_LINK_MUTATION = gql`
-    mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
-        CreateCheckoutLink(input: $input) {
-            link
-        }
+  mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
+    CreateCheckoutLink(input: $input) {
+      link
     }
+  }
 `;
+
+const SHOW_CENTS_THRESHOLD = 10000;
 
 function capitalizeFirstLetter(string) {
   return string.replace(/^./, string[0].toUpperCase());
@@ -66,22 +71,24 @@ export default function Artist() {
   const artist = data?.collection;
 
   useEffect(() => {
-      if (data?.collection?.name) {
-        document.title = `${data.collection.name} Supertrue`
-      }
-    },[location, data],
-  );
+    if (data?.collection?.name) {
+      document.title = `${data.collection.name} Supertrue`;
+    }
+  }, [location, data]);
 
-  const [createCheckoutLinkMutation] = useMutation(CREATE_CHECKOUT_LINK_MUTATION, {
-    variables: { input: { artistId: Number(id) } },
-    onCompleted: ({ CreateCheckoutLink: { link } }) => {
-      window.location.href = link
-    },
-    onError: (e) => {
-      console.log("CreateCheckoutLink failed", e.message);
-      setMinting(false);
-    },
-  });
+  const [createCheckoutLinkMutation] = useMutation(
+    CREATE_CHECKOUT_LINK_MUTATION,
+    {
+      variables: { input: { artistId: Number(id) } },
+      onCompleted: ({ CreateCheckoutLink: { link } }) => {
+        window.location.href = link;
+      },
+      onError: (e) => {
+        console.log("CreateCheckoutLink failed", e.message);
+        setMinting(false);
+      },
+    }
+  );
 
   const mintNFTPaper = async () => {
     setMinting(true);
@@ -126,7 +133,6 @@ export default function Artist() {
           <Typography variant="h2" className="title">
             Mint {artist.name}
           </Typography>
-
           <Typography variant="subtitle1" className="title">
             <a
               style={{ color: "black" }}
@@ -141,20 +147,27 @@ export default function Artist() {
             <Typography variant="h5" className="price">
               <label>Price:</label>{" "}
             </Typography>{" "}
-            <Typography>{(artist.price / 10 ** 18).toFixed(4)} MATIC</Typography>
+            <Typography>
+              {(artist.price / 10 ** 18).toFixed(2)} MATIC (~$
+              {artist.priceCents < SHOW_CENTS_THRESHOLD
+                ? (artist.priceCents / 100).toFixed(2)
+                : (artist.priceCents / 100).toFixed(0)}
+              )
+            </Typography>
             <br />
             <Typography variant="subtitle2">
               Price goes up per each additional NFT created.
             </Typography>
           </Box>
-
           <Box className="actions">
             <Box>
               <LoadingButton
                 loading={minting}
                 size="large"
                 variant="contained"
-                onClick={() => (isLoggedIn || data?.me?.address) && mintNFTPaper()}
+                onClick={() =>
+                  (isLoggedIn || data?.me?.address) && mintNFTPaper()
+                }
                 href={isLoggedIn || data?.me?.address ? undefined : "/login"}
               >
                 Mint Fan #{artist.minted + 1}
@@ -173,10 +186,14 @@ export default function Artist() {
         </Box>
       )}
 
-      <Typography mb={2} variant="h4">Posts</Typography>
+      <Typography mb={2} variant="h4">
+        Posts
+      </Typography>
       <Box mb={6}>
         {!artist?.posts.length ? (
-          <Typography>{capitalizeFirstLetter(artist.name)} hasn't posted yet.</Typography>
+          <Typography>
+            {capitalizeFirstLetter(artist.name)} hasn't posted yet.
+          </Typography>
         ) : (
           <>
             {artist.posts.map((p) => (
