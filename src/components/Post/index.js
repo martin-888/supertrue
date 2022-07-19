@@ -32,6 +32,10 @@ const styles = {
   postTop: {
     padding: { xs: 2, md: 3 },
   },
+  postTopBlur: {
+    padding: { xs: 2, md: 3 },
+    filter: "blur(10px)",
+  },
   postHeader: {
     display: "flex",
     justifyContent: "space-between",
@@ -213,7 +217,7 @@ export default function Post({
           <Box sx={styles.hiddenLayerThird} />
         </>
       )}
-      <Box sx={styles.postTop}>
+      <Box sx={post.content ? styles.postTop : styles.postTopBlur}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
           <ConditionalWrapper
