@@ -5,6 +5,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useProvider } from 'wagmi';
 
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
+import { sendToSentry } from "../../utils/sentry";
 
 const styles = {
   error: { color: "red" },
@@ -56,6 +57,7 @@ export default function PricingForm({
       console.log(e.message);
       setUpdateError(e.message);
       setUpdating(false);
+      sendToSentry(e);
     },
   });
 

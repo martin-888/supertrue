@@ -25,7 +25,7 @@ const ME_QUERY = gql`
 `;
 
 export default function Settings() {
-  const { data, loading, error, startPolling, stopPolling } = useQuery(ME_QUERY);
+  const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
 
   const me = data?.me;
 

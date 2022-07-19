@@ -28,7 +28,7 @@ const COLLECTIONS_QUERY = gql`
 export default function ArtistSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredArtists, setFilteredArtists] = useState([]);
-  const { data, loading, error } = useQuery(COLLECTIONS_QUERY);
+  const { data, loading } = useQuery(COLLECTIONS_QUERY);
 
   useEffect(() => {
     if (!data?.collections?.length) {

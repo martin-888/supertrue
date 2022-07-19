@@ -14,9 +14,12 @@ import reportWebVitals from './reportWebVitals';
 import './index.css';
 
 import { wagmiClient, chains } from "utils/rainbow";
+import { initializeSentry } from 'utils/sentry';
 import { WagmiConfig } from 'wagmi';
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
+
+initializeSentry();
 
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_GRAPHQL_URL,

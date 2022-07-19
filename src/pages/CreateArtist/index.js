@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useProvider } from 'wagmi';
 import copy from 'copy-to-clipboard';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { sendToSentry } from "../../utils/sentry";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
 const styles = {
@@ -107,6 +108,7 @@ export default function CreateArtist() {
       setCreateCollectionError(e.message);
       setInstagramValid(!e?.message.toLowerCase().includes("instagram"));
       setCreating(false);
+      sendToSentry(e);
     },
   });
 

@@ -35,7 +35,7 @@ const styles = {
 };
 
 export default function ArtistPost() {
-  const { data, loading, error } = useQuery(ME_QUERY);
+  const { data, loading } = useQuery(ME_QUERY);
 
   useEffect(() => {
       document.title = `Posts | Supertrue`;

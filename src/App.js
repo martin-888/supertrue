@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { Magic } from 'magic-sdk';
 
@@ -25,6 +25,7 @@ import Login from "pages/Login/Login";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import useLogInWallet from "./hooks/useLogInWallet";
+import { SentryErrorBoundaryWithFallback } from "utils/sentry";
 
 const ME_QUERY = gql`
   query me {
@@ -96,38 +97,12 @@ const theme = createTheme({
 });
 
 const styles = {
-  loadingSpinner: {
+  center: {
     display: "flex",
     justifyContent: "center",
     margin: "10em",
   },
 };
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <Typography variant="h1">Something went wrong.</Typography>;
-    }
-
-    return this.props.children;
-  }
-}
 
 export default function App() {
   const NETWORK = process.env.REACT_APP_NETWORK;
@@ -138,7 +113,7 @@ export default function App() {
   const onlyLoggedInPage = (Page) => {
     if (loading) {
       return (
-        <Box sx={styles.loadingSpinner}>
+        <Box sx={styles.center}>
           <CircularProgress />
         </Box>
       );
@@ -156,19 +131,19 @@ export default function App() {
       <div className="app">
         <ThemeProvider theme={theme}>
           <Header magic={magic}/>
-          <ErrorBoundary>
-            <Routes>
-              <Route path="/s/:id" element={<Artist />} />
-              <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
-              <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-              <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
-              <Route path="/settings" element={onlyLoggedInPage(Settings)} />
-              <Route path="/" element={<Homepage />}/>
-              <Route path="/login" element={<Login magic={magic} />}/>
-              <Route path="/login-callback" exact element={<Callback magic={magic} />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </ErrorBoundary>
+            <SentryErrorBoundaryWithFallback>
+              <Routes>
+                <Route path="/s/:id" element={<Artist />} />
+                <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
+                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
+                <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
+                <Route path="/settings" element={onlyLoggedInPage(Settings)} />
+                <Route path="/" element={<Homepage />}/>
+                <Route path="/login" element={<Login magic={magic} />}/>
+                <Route path="/login-callback" exact element={<Callback magic={magic} />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SentryErrorBoundaryWithFallback>
           <Footer />
         </ThemeProvider>
       </div>

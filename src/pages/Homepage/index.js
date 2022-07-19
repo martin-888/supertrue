@@ -47,8 +47,7 @@ export default function Homepage() {
 
   useEffect(() => {
     document.title = `Supertrue`;
-    },[],
-  );
+  },[]);
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>

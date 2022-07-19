@@ -19,6 +19,7 @@ import FAQ from "./FAQ";
 
 import "./Artist.scss";
 import generating from "../../assets/img/generating.jpg";
+import { sendToSentry } from "../../utils/sentry";
 
 const ARTIST_QUERY = gql`
   query getArtist($artistId: Int) {
@@ -86,6 +87,7 @@ export default function Artist() {
       onError: (e) => {
         console.log("CreateCheckoutLink failed", e.message);
         setMinting(false);
+        sendToSentry(e);
       },
     }
   );
@@ -137,6 +139,7 @@ export default function Artist() {
             <a
               style={{ color: "black" }}
               target="_blank"
+              rel="noreferrer"
               href={`https://www.instagram.com/${artist.instagram}`}
             >
               @{artist.instagram}
