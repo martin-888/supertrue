@@ -10,7 +10,6 @@ import { gql, useQuery } from "@apollo/client";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Box, CircularProgress } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { Magic } from 'magic-sdk';
 
 import Artist from "./pages/Artist";
 import Homepage from "./pages/Homepage";
@@ -26,6 +25,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import useLogInWallet from "./hooks/useLogInWallet";
 import { SentryErrorBoundaryWithFallback } from "utils/sentry";
+import { AppProvider } from "contexts/app";
 
 const ME_QUERY = gql`
   query me {
@@ -105,8 +105,6 @@ const styles = {
 };
 
 export default function App() {
-  const NETWORK = process.env.REACT_APP_NETWORK;
-  const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, { network: NETWORK });
   const { isLoggedIn } = useLogInWallet();
   const { data, loading } = useQuery(ME_QUERY);
 
@@ -130,21 +128,23 @@ export default function App() {
     <Router>
       <div className="app">
         <ThemeProvider theme={theme}>
-          <Header magic={magic}/>
-            <SentryErrorBoundaryWithFallback>
-              <Routes>
-                <Route path="/s/:id" element={<Artist />} />
-                <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
-                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-                <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
-                <Route path="/settings" element={onlyLoggedInPage(Settings)} />
-                <Route path="/" element={<Homepage />}/>
-                <Route path="/login" element={<Login magic={magic} />}/>
-                <Route path="/login-callback" exact element={<Callback magic={magic} />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SentryErrorBoundaryWithFallback>
-          <Footer />
+          <AppProvider>
+            <Header/>
+              <SentryErrorBoundaryWithFallback>
+                <Routes>
+                  <Route path="/s/:id" element={<Artist />} />
+                  <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
+                  <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
+                  <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
+                  <Route path="/settings" element={onlyLoggedInPage(Settings)} />
+                  <Route path="/" element={<Homepage />}/>
+                  <Route path="/login" element={<Login />}/>
+                  <Route path="/login-callback" exact element={<Callback />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SentryErrorBoundaryWithFallback>
+            <Footer />
+          </AppProvider>
         </ThemeProvider>
       </div>
     </Router>

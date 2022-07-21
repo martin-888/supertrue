@@ -15,7 +15,7 @@ import {
   Paper
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
+import { useAppContext } from "contexts/app";
 import ConnectButton from "./ConnectButton";
 const ME_QUERY = gql`
     query me {
@@ -93,7 +93,8 @@ const EmailLogin = ({ magic, loading }) => {
   );
 }
 
-export default function Login({ magic }) {
+export default function Login() {
+  const { magic } = useAppContext();
   const [isLoggedInMagicUser, setIsLoggedInMagicUser] = useState();
   const { data, loading, error } = useQuery(ME_QUERY);
   const [dataLoading, setDataLoading] = useState(loading);

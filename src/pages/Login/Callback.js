@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styles }from "./Login";
+import { useAppContext } from "contexts/app";
 
 const LOGIN_MUTATION = gql`
     mutation login(
@@ -20,7 +21,8 @@ const LOGIN_MUTATION = gql`
 
 const redirectUrl = "/";
 
-export default function Callback({ magic }) {
+export default function Callback() {
+  const { magic} = useAppContext();
   const { user, auth } = magic;
 
   const logout = useCallback(async () => {

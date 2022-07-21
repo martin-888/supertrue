@@ -9,10 +9,10 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
 const INFURA_ID = process.env.REACT_APP_INFURA_KEY;
-const CHAIN_ID = process.env.REACT_APP_CHAIN_ID;
+const NETWORK = process.env.REACT_APP_NETWORK;
 
 export const { chains, provider } = configureChains(
-  CHAIN_ID === "137" ? [chain.polygon] : [chain.rinkeby],
+  NETWORK === "matic" ? [chain.polygon] : [chain.rinkeby],
   [
     infuraProvider({ infuraId: INFURA_ID }),
     publicProvider()

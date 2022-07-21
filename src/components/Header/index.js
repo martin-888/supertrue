@@ -18,6 +18,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocation } from "react-router-dom";
 
 import useLogInWallet from "../../hooks/useLogInWallet";
+import { useAppContext } from "contexts/app";
 import logo from "./logo.png";
 
 const ME_QUERY = gql`
@@ -61,7 +62,8 @@ const MenuLinkItem = ({ to, onClick, title, sx }) => (
   </MenuItem>
 );
 
-const Header = ({magic}) => {
+const Header = () => {
+  const { magic } = useAppContext();
   const theme = useTheme();
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
