@@ -9,6 +9,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import { Navigate } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import __ from "helpers/__";
@@ -20,32 +21,6 @@ import FAQ from "./FAQ";
 import "./Artist.scss";
 import generating from "../../assets/img/generating.jpg";
 import { sendToSentry } from "../../utils/sentry";
-
-const ARTIST_QUERY = gql`
-  query getArtist($artistId: Int) {
-    me {
-      address
-    }
-    collection(artistId: $artistId) {
-      id
-      artistId
-      minted
-      name
-      description
-      symbol
-      instagram
-      address
-      price
-      priceCents
-      posts {
-        id
-        lastNftID
-        content
-        createdAt
-      }
-    }
-  }
-`;
 
 const CREATE_CHECKOUT_LINK_MUTATION = gql`
   mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
@@ -65,9 +40,42 @@ export default function Artist() {
   const location = useLocation();
   const { isLoggedIn } = useLogInWallet();
   const { id } = useParams();
-  const { data, loading } = useQuery(ARTIST_QUERY, {
-    variables: { artistId: Number(id) },
-  });
+
+  const QUERY_ID = isNaN(id) ? "username" : "artistId";
+  const QUERY_ID_TYPE = isNaN(id) ? "String" : "Int";
+
+  console.log(QUERY_ID);
+  const ARTIST_QUERY = gql`
+    query getArtist($${QUERY_ID}: ${QUERY_ID_TYPE}) {
+      me {
+        address
+      }
+      collection(${QUERY_ID}: $${QUERY_ID}) {
+        username
+        id
+        artistId
+        minted
+        name
+        description
+        symbol
+        instagram
+        address
+        price
+        priceCents
+        posts {
+          id
+          lastNftID
+          content
+          createdAt
+        }
+      }
+    }
+  `;
+
+  const GQL_VARIABLE = isNaN(id) ? { username: id } : { artistId: Number(id) };
+
+  const { data, loading } = useQuery(ARTIST_QUERY, { variables: GQL_VARIABLE });
+
   const [minting, setMinting] = useState(false);
   const artist = data?.collection;
 
@@ -91,6 +99,10 @@ export default function Artist() {
       },
     }
   );
+
+  if (!isNaN(id) && data?.collection?.username) {
+    return <Navigate replace to={`/s/${data.collection.username}`} />;
+  }
 
   const mintNFTPaper = async () => {
     setMinting(true);

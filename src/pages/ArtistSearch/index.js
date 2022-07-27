@@ -18,6 +18,9 @@ const COLLECTIONS_QUERY = gql`
       minted
       name
       instagram
+      owner {
+        username
+      }
     }
   }
 `;
@@ -110,7 +113,11 @@ export default function ArtistSearch() {
               className="explanation"
               sx={{ mt: 6, mb: 10 }}
             >
-              Follow your favorite artists to receive a dated NFT with your supertrue follower number. Display what you support on your gallery. Artists can message fans exclusively based on how early they’re to back them. Sell, trade or buy your NFTs. Every NFT is unique and you can buy more than one for each artist!
+              Follow your favorite artists to receive a dated NFT with your
+              supertrue follower number. Display what you support on your
+              gallery. Artists can message fans exclusively based on how early
+              they’re to back them. Sell, trade or buy your NFTs. Every NFT is
+              unique and you can buy more than one for each artist!
             </Typography>
 
             <Box key="h2" sx={{ mb: 3 }}>

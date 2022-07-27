@@ -29,7 +29,9 @@ import { AppProvider } from "contexts/app";
 
 const ME_QUERY = gql`
   query me {
-    me { address }
+    me {
+      address
+    }
   }
 `;
 
@@ -117,7 +119,7 @@ export default function App() {
       );
     }
 
-    if (!isLoggedIn && (!loading && !data?.me?.address)) {
+    if (!isLoggedIn && !loading && !data?.me?.address) {
       return <Navigate to="/" />;
     }
 
@@ -129,20 +131,20 @@ export default function App() {
       <div className="app">
         <ThemeProvider theme={theme}>
           <AppProvider>
-            <Header/>
-              <SentryErrorBoundaryWithFallback>
-                <Routes>
-                  <Route path="/s/:id" element={<Artist />} />
-                  <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
-                  <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-                  <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
-                  <Route path="/settings" element={onlyLoggedInPage(Settings)} />
-                  <Route path="/" element={<Homepage />}/>
-                  <Route path="/login" element={<Login />}/>
-                  <Route path="/login-callback" exact element={<Callback />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </SentryErrorBoundaryWithFallback>
+            <Header />
+            <SentryErrorBoundaryWithFallback>
+              <Routes>
+                <Route path="/s/:id" element={<Artist />} />
+                <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
+                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
+                <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
+                <Route path="/settings" element={onlyLoggedInPage(Settings)} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/login-callback" exact element={<Callback />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SentryErrorBoundaryWithFallback>
             <Footer />
           </AppProvider>
         </ThemeProvider>
