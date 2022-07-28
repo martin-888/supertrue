@@ -18,6 +18,9 @@ const NFTS_QUERY = gql`
         id
         tokenId
         artistId
+        collection {
+          username
+        }
       }
     }
   }
@@ -29,7 +32,7 @@ export default function NFTs() {
 
   useEffect(() => {
     document.title = `NFTs | Supertrue`;
-  },[]);
+  }, []);
 
   if (loading) {
     return (
@@ -59,7 +62,9 @@ export default function NFTs() {
             <Typography variant="h5">No Supertrue NFTs found</Typography>
           ) : (
             <>
-              <Typography variant="h5" mb={5} textAlign="center">Log in to see your Supertrue NFTs.</Typography>
+              <Typography variant="h5" mb={5} textAlign="center">
+                Log in to see your Supertrue NFTs.
+              </Typography>
               <Button
                 size="large"
                 variant="contained"
@@ -79,7 +84,13 @@ export default function NFTs() {
       <Grid container spacing={4}>
         {data.me.nfts.map((nft) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
-            <ArtistNFT artist={{ id: nft.artistId, minted: nft.tokenId }} />
+            <ArtistNFT
+              artist={{
+                id: nft.artistId,
+                minted: nft.tokenId,
+                owner: { username: nft.collection.username },
+              }}
+            />
           </Grid>
         ))}
       </Grid>
