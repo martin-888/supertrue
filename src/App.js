@@ -20,6 +20,7 @@ import NFTs from "./pages/NFTs";
 import NotFound from "./pages/NotFound";
 import Callback from "pages/Login/Callback";
 import Login from "pages/Login/Login";
+import ReservePage from "pages/reserve";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -139,6 +140,7 @@ export default function App() {
                 <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
                 <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
                 <Route path="/settings" element={onlyLoggedInPage(Settings)} />
+                <Route path="/reserve" element={<ReservePage />}/>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/login-callback" exact element={<Callback />} />

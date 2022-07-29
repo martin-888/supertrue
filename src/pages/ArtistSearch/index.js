@@ -6,6 +6,7 @@ import {
   Grid,
   Box,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import ArtistNFT from "components/ArtistNFT";
 
@@ -83,23 +84,21 @@ export default function ArtistSearch() {
     if (!filteredArtists.length) {
       return (
         <>
-          <Typography variant="h5" component="h3" align="center">
-            {searchQuery} isn't on Supertrue yet
+          <Typography variant="h3" component="h3" align="center" mb={4}>
+            Sorry, we couldn't find "{searchQuery}"
           </Typography>
-          {/*<Typography variant="h5" component="h3" align="center">*/}
-          {/*  Collection "{searchQuery}" not found.*/}
-          {/*  <br />*/}
-          {/*  <br />*/}
-          {/*  You can be the first!*/}
-          {/*</Typography>*/}
-          {/*<Box sx={{ m: 2 }} />*/}
-          {/*<Button*/}
-          {/*  variant="contained"*/}
-          {/*  size="large"*/}
-          {/*  href={`/new?name=${searchQuery}`}*/}
-          {/*>*/}
-          {/*  Add {searchQuery}*/}
-          {/*</Button>*/}
+          <Typography variant="h5" component="h3" align="center">
+           You can reserve them and be the first!
+          </Typography>
+          <Box sx={{ m: 2 , textAlign: "center"}}>
+           <Button
+            variant="contained"
+            size="large"
+            href="/reserve"
+          >
+            Add {searchQuery}
+          </Button>
+          </Box>
         </>
       );
     }
