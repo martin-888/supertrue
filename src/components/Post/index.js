@@ -27,7 +27,7 @@ const styles = {
     position: "relative",
     "&:hover": {
       boxShadow: 4,
-    }
+    },
   },
   postTop: {
     padding: { xs: 2, md: 3 },
@@ -100,7 +100,7 @@ const styles = {
     zIndex: 15,
   },
   postedFor: {
-    maxWidth: "60%"
+    maxWidth: "60%",
   },
   hiddenLayerSecond: {
     position: "absolute",
@@ -138,22 +138,23 @@ const UPDATE_POST_MUTATION = gql`
 `;
 
 const DELETE_POST_MUTATION = gql`
-    mutation deletePost($input: DeletePostInput!) {
-        DeletePost(input: $input) {
-            collection {
-                id
-                posts {
-                    id
-                }
-            }
+  mutation deletePost($input: DeletePostInput!) {
+    DeletePost(input: $input) {
+      collection {
+        id
+        posts {
+          id
         }
+      }
     }
+  }
 `;
 
 export default function Post({
   post,
   artistName,
   artistId,
+  username,
   instagram,
   hasEditingRights,
 }) {
@@ -170,7 +171,9 @@ export default function Post({
   );
 
   const [updatePostMutation] = useMutation(UPDATE_POST_MUTATION, {
-    variables: { input: { content, id: post.id.toString(), lastNftID: post.lastNftID } },
+    variables: {
+      input: { content, id: post.id.toString(), lastNftID: post.lastNftID },
+    },
     onCompleted: () => {
       setUpdating(false);
       setIsEditing(false);
@@ -220,18 +223,21 @@ export default function Post({
       <Box sx={post.content ? styles.postTop : styles.postTopBlur}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
-          <ConditionalWrapper
-            condition={post.content}
-            wrapper={children => <Link href={`/s/${artistId}`}>{children}</Link>}>
-            <img
-              src={artistImage}
-              onError={(e) => {
+            <ConditionalWrapper
+              condition={post.content}
+              wrapper={(children) => (
+                <Link href={`/${username}`}>{children}</Link>
+              )}
+            >
+              <img
+                src={artistImage}
+                onError={(e) => {
                   e.target.src = placeholderArtistImage;
                 }}
-              alt="Author Profile"
-              style={styles.profileImage}
-            />
-          </ConditionalWrapper>
+                alt="Author Profile"
+                style={styles.profileImage}
+              />
+            </ConditionalWrapper>
             <Box sx={styles.authorText}>
               <Typography sx={styles.authorName}>{artistName}</Typography>
               <Typography

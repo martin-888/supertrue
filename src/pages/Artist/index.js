@@ -39,12 +39,11 @@ function capitalizeFirstLetter(string) {
 export default function Artist() {
   const location = useLocation();
   const { isLoggedIn } = useLogInWallet();
-  const { id } = useParams();
+  const { id, username } = useParams();
 
-  const QUERY_ID = isNaN(id) ? "username" : "artistId";
-  const QUERY_ID_TYPE = isNaN(id) ? "String" : "Int";
+  const QUERY_ID = username ? "username" : "artistId";
+  const QUERY_ID_TYPE = username ? "String" : "Int";
 
-  console.log(QUERY_ID);
   const ARTIST_QUERY = gql`
     query getArtist($${QUERY_ID}: ${QUERY_ID_TYPE}) {
       me {
@@ -72,7 +71,9 @@ export default function Artist() {
     }
   `;
 
-  const GQL_VARIABLE = isNaN(id) ? { username: id } : { artistId: Number(id) };
+  const GQL_VARIABLE = username
+    ? { username: username }
+    : { artistId: Number(id) };
 
   const { data, loading } = useQuery(ARTIST_QUERY, { variables: GQL_VARIABLE });
 
@@ -88,7 +89,7 @@ export default function Artist() {
   const [createCheckoutLinkMutation] = useMutation(
     CREATE_CHECKOUT_LINK_MUTATION,
     {
-      variables: { input: { artistId: Number(id) } },
+      variables: { input: { artistId: Number(data?.collection?.artistId) } },
       onCompleted: ({ CreateCheckoutLink: { link } }) => {
         window.location.href = link;
       },
@@ -100,8 +101,8 @@ export default function Artist() {
     }
   );
 
-  if (!isNaN(id) && data?.collection?.username) {
-    return <Navigate replace to={`/s/${data.collection.username}`} />;
+  if (id && data?.collection?.username) {
+    return <Navigate replace to={`/${data.collection.username}`} />;
   }
 
   const mintNFTPaper = async () => {
@@ -183,7 +184,9 @@ export default function Artist() {
                 onClick={() =>
                   (isLoggedIn || data?.me?.address) && mintNFTPaper()
                 }
-                href={isLoggedIn || data?.me?.address ? undefined : "/login"}
+                href={
+                  isLoggedIn || data?.me?.address ? undefined : "/account/login"
+                }
               >
                 Mint Fan #{artist.minted + 1}
               </LoadingButton>
@@ -217,6 +220,7 @@ export default function Artist() {
                   post={p}
                   artistName={artist.name}
                   artistId={artist.artistId}
+                  username={artist.username}
                   instagram={artist.instagram}
                 />
               </Box>

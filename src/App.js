@@ -136,14 +136,28 @@ export default function App() {
             <SentryErrorBoundaryWithFallback>
               <Routes>
                 <Route path="/s/:id" element={<Artist />} />
-                <Route path="/posts" element={onlyLoggedInPage(ArtistPost)} />
-                <Route path="/new" element={onlyLoggedInPage(CreateArtist)} />
-                <Route path="/nfts" element={onlyLoggedInPage(NFTs)} />
-                <Route path="/settings" element={onlyLoggedInPage(Settings)} />
                 <Route path="/reserve" element={<ReservePage />}/>
+                <Route path="/:username" element={<Artist />} />
+                <Route
+                  path="/account/posts"
+                  element={onlyLoggedInPage(ArtistPost)}
+                />
+                <Route
+                  path="/account/new"
+                  element={onlyLoggedInPage(CreateArtist)}
+                />
+                <Route path="/account/nfts" element={onlyLoggedInPage(NFTs)} />
+                <Route
+                  path="/account/settings"
+                  element={onlyLoggedInPage(Settings)}
+                />
                 <Route path="/" element={<Homepage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/login-callback" exact element={<Callback />} />
+                <Route path="/account/login" element={<Login />} />
+                <Route
+                  path="/account/login-callback"
+                  exact
+                  element={<Callback />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </SentryErrorBoundaryWithFallback>

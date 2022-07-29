@@ -68,7 +68,7 @@ export default function NFTs() {
               <Button
                 size="large"
                 variant="contained"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/account/login")}
               >
                 Log In
               </Button>

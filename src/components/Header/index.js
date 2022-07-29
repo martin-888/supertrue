@@ -13,8 +13,8 @@ import {
   Button,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useLocation } from "react-router-dom";
 import { useAccount } from "wagmi";
 import useLogInWallet from "../../hooks/useLogInWallet";
@@ -30,15 +30,16 @@ const ME_QUERY = gql`
         id
         name
         artistId
+        username
       }
     }
   }
 `;
 
 const pages = [
-  { name: "Posts", url: "/posts" },
-  { name: "NFTs", url: "/nfts" },
-  { name: "Settings", url: "/settings" },
+  { name: "Posts", url: "/account/posts" },
+  { name: "NFTs", url: "/account/nfts" },
+  { name: "Settings", url: "/account/settings" },
 ];
 
 const MenuLinkItem = ({ to, onClick, title, sx }) => (
@@ -54,7 +55,7 @@ const MenuLinkItem = ({ to, onClick, title, sx }) => (
         textAlign: "center",
         display: "flex",
         justifyContent: "flex-end",
-        ...(sx || {})
+        ...(sx || {}),
       }}
     >
       {title}
@@ -86,7 +87,7 @@ const Header = () => {
         <Button
           size={isMobile ? "medium" : "large"}
           variant="contained"
-          href="/login"
+          href="/account/login"
         >
           Log In
         </Button>
@@ -100,14 +101,17 @@ const Header = () => {
             <Button
               variant="outlined"
               size="medium"
-              href="/new"
+              href="/account/new"
               sx={{ marginRight: "1em" }}
             >
               Create Profile
             </Button>
           )}
 
-          <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
+          <IconButton
+            onClick={(e) => setAnchorElUser(e.currentTarget)}
+            sx={{ p: 0 }}
+          >
             <AccountCircle
               style={{ width: "38px", height: "38px", color: "#111" }}
             />
@@ -128,49 +132,45 @@ const Header = () => {
             open={!!anchorElUser}
             onClose={() => setAnchorElUser(null)}
           >
-            <MenuItem
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
+            <MenuItem sx={{ display: "flex", justifyContent: "flex-end" }}>
               <Typography
                 textTransform="uppercase"
                 sx={{
                   textAlign: "center",
                   display: "flex",
                   justifyContent: "flex-end",
-                  opacity: 0.5
+                  opacity: 0.5,
                 }}
               >
-                {address.slice(0,6)}...{address.slice(-4)}
+                {address.slice(0, 6)}...{address.slice(-4)}
               </Typography>
             </MenuItem>
             {isMobile && (
               <MenuLinkItem
-                to="/new"
+                to="/account/new"
                 title="Create Profile"
                 onClick={() => setAnchorElUser(null)}
                 sx={{ justifyContent: "flex-end" }}
               />
             )}
             <MenuLinkItem
-              to="/nfts"
+              to="/account/nfts"
               title="NFTs"
               onClick={() => setAnchorElUser(null)}
             />
-            <MenuItem
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
+            <MenuItem sx={{ display: "flex", justifyContent: "flex-end" }}>
               <Typography
                 onClick={async () => {
                   magic.user
-                  .isLoggedIn()
-                  .then(async (isLoggedIn) => {
-                    if (isLoggedIn) {
-                      await magic.user.logout();
-                      localStorage.removeItem("token");
-                      localStorage.removeItem("address");
-                    }
-                  })
-                  .then(() => logout());
+                    .isLoggedIn()
+                    .then(async (isLoggedIn) => {
+                      if (isLoggedIn) {
+                        await magic.user.logout();
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("address");
+                      }
+                    })
+                    .then(() => logout());
                 }}
                 textTransform="uppercase"
                 sx={{
@@ -189,7 +189,10 @@ const Header = () => {
 
     return (
       <>
-        <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
+        <IconButton
+          onClick={(e) => setAnchorElUser(e.currentTarget)}
+          sx={{ p: 0 }}
+        >
           <AccountCircle
             style={{ width: "38px", height: "38px", color: "#111" }}
           />
@@ -210,23 +213,21 @@ const Header = () => {
           open={!!anchorElUser}
           onClose={() => setAnchorElUser(null)}
         >
-          <MenuItem
-            sx={{ display: "flex", justifyContent: "flex-end" }}
-          >
+          <MenuItem sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Typography
               textTransform="uppercase"
               sx={{
                 textAlign: "center",
                 display: "flex",
                 justifyContent: "flex-end",
-                opacity: 0.5
+                opacity: 0.5,
               }}
             >
-              {address.slice(0,6)}...{address.slice(-4)}
+              {address.slice(0, 6)}...{address.slice(-4)}
             </Typography>
           </MenuItem>
           <MenuItem
-            to={`/s/${me.collection.artistId}`}
+            to={`/${me.collection.username}`}
             component={Link}
             onClick={() => setAnchorElUser(null)}
             sx={{ display: "flex", justifyContent: "flex-end" }}
@@ -251,9 +252,7 @@ const Header = () => {
               onClick={() => setAnchorElUser(null)}
             />
           ))}
-          <MenuItem
-            sx={{ display: "flex", justifyContent: "flex-end" }}
-          >
+          <MenuItem sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Typography
               onClick={logout}
               textTransform="uppercase"
@@ -306,7 +305,7 @@ const Header = () => {
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 0 }}>
-            {location.pathname !== "/login" && renderMenu()}
+            {location.pathname !== "/account/login" && renderMenu()}
           </Box>
         </Toolbar>
       </Container>

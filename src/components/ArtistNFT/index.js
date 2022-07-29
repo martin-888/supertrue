@@ -13,7 +13,7 @@ export default function ArtistNFT({ artist }) {
   return (
     <Grid item className="artist-nft">
       <Box className="image">
-        <Link to={`/s/${artist.owner.username}`}>
+        <Link to={`/${artist.owner.username}`}>
           <Image
             src={__.getNFTImage(artist.id, artist.minted)}
             fallbackSrc={generating}

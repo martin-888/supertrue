@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useCallback
-} from "react";
+import { useEffect, useState, useCallback } from "react";
 import { gql, useQuery } from "@apollo/client";
 import {
   Container,
@@ -12,18 +8,18 @@ import {
   Box,
   Stack,
   Divider,
-  Paper
+  Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "contexts/app";
 import ConnectButton from "./ConnectButton";
 const ME_QUERY = gql`
-    query me {
-        me {
-            id
-            address
-        }
+  query me {
+    me {
+      id
+      address
     }
+  }
 `;
 
 export const styles = {
@@ -46,8 +42,8 @@ export const styles = {
   },
   divider: {
     paddingBottom: 2,
-    paddingTop: 2
-  }
+    paddingTop: 2,
+  },
 };
 
 const EmailLogin = ({ magic, loading }) => {
@@ -55,7 +51,7 @@ const EmailLogin = ({ magic, loading }) => {
   const isValidEmail = (email) => {
     const regex = /^\S+@\S+\.\S{2,}$/;
     return regex.test(email);
-  }
+  };
 
   const [email, setEmail] = useState("");
 
@@ -63,10 +59,11 @@ const EmailLogin = ({ magic, loading }) => {
     try {
       await magic.auth.loginWithMagicLink({
         email,
-        redirectURI: new URL("/login-callback", window.location.origin).href,
+        redirectURI: new URL("/account/login-callback", window.location.origin)
+          .href,
       });
-    } catch(e) {
-      console.log("loginWithMagicLink error", e)
+    } catch (e) {
+      console.log("loginWithMagicLink error", e);
     }
   };
 
@@ -77,7 +74,7 @@ const EmailLogin = ({ magic, loading }) => {
         type="email"
         variant="outlined"
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         fullWidth
         sx={styles.marginBottom}
       />
@@ -91,7 +88,7 @@ const EmailLogin = ({ magic, loading }) => {
       </Button>
     </>
   );
-}
+};
 
 export default function Login() {
   const { magic } = useAppContext();
@@ -111,51 +108,36 @@ export default function Login() {
     if (data?.me?.address) navigate("/");
 
     setDataLoading(true);
-    magic.user.isLoggedIn().then(isLoggedIn => {
+    magic.user.isLoggedIn().then((isLoggedIn) => {
       setIsLoggedInMagicUser(isLoggedIn);
       setDataLoading(false);
     });
   }, [data]);
 
   useEffect(() => {
-    if (
-      !loading &&
-      !data?.me?.address &&
-      isLoggedInMagicUser
-    ) logout();
-  }, [
-    loading,
-    data,
-    isLoggedInMagicUser,
-    logout
-  ]);
+    if (!loading && !data?.me?.address && isLoggedInMagicUser) logout();
+  }, [loading, data, isLoggedInMagicUser, logout]);
 
   return (
     <Container maxWidth="sm" sx={{ my: 8 }}>
       {error && (
         <Box sx={styles.centerContainer}>
-          <Typography
-          variant="h2"
-          sx={styles.loadingContent}
-        >
-          An error happened getting your login info, please try again.
-        </Typography>
+          <Typography variant="h2" sx={styles.loadingContent}>
+            An error happened getting your login info, please try again.
+          </Typography>
         </Box>
       )}
 
-      <Paper
-        elevation={3}
-        sx={styles.paper}
-        >
+      <Paper elevation={3} sx={styles.paper}>
         <Stack spacing={2}>
           <Typography variant="h2" sx={styles.paperHeading}>
             Log In
           </Typography>
-          <EmailLogin magic={magic} loading={dataLoading}/>
+          <EmailLogin magic={magic} loading={dataLoading} />
           <Box sx={styles.divider}>
             <Divider />
           </Box>
-          <ConnectButton/>
+          <ConnectButton />
         </Stack>
       </Paper>
     </Container>

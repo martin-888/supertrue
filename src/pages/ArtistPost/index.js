@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
@@ -14,6 +14,7 @@ const ME_QUERY = gql`
         address
         name
         artistId
+        username
         instagram
         symbol
         posts {
@@ -38,9 +39,8 @@ export default function ArtistPost() {
   const { data, loading } = useQuery(ME_QUERY);
 
   useEffect(() => {
-      document.title = `Posts | Supertrue`;
-    },[],
-  );
+    document.title = `Posts | Supertrue`;
+  }, []);
 
   const renderPosts = () => {
     if (loading) {
@@ -61,6 +61,7 @@ export default function ArtistPost() {
           key={p.id}
           post={p}
           artistName={data.me.collection.name}
+          username={data.me.collection.username}
           artistId={data.me.collection.artistId}
           instagram={data.me.collection.instagram}
           hasEditingRights={true}

@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useNavigate } from "react-router-dom";
-import { useProvider } from 'wagmi';
-import copy from 'copy-to-clipboard';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { useProvider } from "wagmi";
+import copy from "copy-to-clipboard";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { sendToSentry } from "../../utils/sentry";
 import waitForMintedTransaction from "../../utils/waitForMintedTransaction";
 
@@ -40,12 +40,12 @@ const ME_QUERY = gql`
       email
       description
       collection {
-          id
-          artistId
-          address
-          name
-          instagram
-          startPriceCents
+        id
+        artistId
+        address
+        name
+        instagram
+        startPriceCents
       }
     }
   }
@@ -75,9 +75,8 @@ export default function CreateArtist() {
   const me = data?.me;
 
   useEffect(() => {
-      document.title = `Create Artist | Supertrue`;
-    },[],
-  );
+    document.title = `Create Artist | Supertrue`;
+  }, []);
 
   useEffect(() => {
     if (!data?.me?.collection?.id) {
@@ -86,7 +85,10 @@ export default function CreateArtist() {
 
     setCreating(false);
     stopPolling();
-    const timerId = setTimeout(() => navigate("/settings", { replace: true }), 5000);
+    const timerId = setTimeout(
+      () => navigate("/account/settings", { replace: true }),
+      5000
+    );
 
     return () => clearTimeout(timerId);
   }, [data]);
@@ -136,11 +138,19 @@ export default function CreateArtist() {
   if (me?.collection?.id) {
     return (
       <Container maxWidth="md">
-        <Typography variant="h2" mb={2}>COLLECTION CREATED</Typography>
+        <Typography variant="h2" mb={2}>
+          COLLECTION CREATED
+        </Typography>
         <Box sx={styles.infoBox}>
-          <Typography paragraph>Collection has been successfully created!</Typography>
-          <Typography paragraph>Verification message can be now deleted from your instagram.</Typography>
-          <Typography paragraph>You are being redirected, please wait...</Typography>
+          <Typography paragraph>
+            Collection has been successfully created!
+          </Typography>
+          <Typography paragraph>
+            Verification message can be now deleted from your instagram.
+          </Typography>
+          <Typography paragraph>
+            You are being redirected, please wait...
+          </Typography>
         </Box>
       </Container>
     );
@@ -149,8 +159,12 @@ export default function CreateArtist() {
   if (refetching) {
     return (
       <Container maxWidth="md">
-        <Typography paragraph>Your profile is being created on blockchain.</Typography>
-        <Typography paragraph>Please wait 1-3 minutes and check this tab again.</Typography>
+        <Typography paragraph>
+          Your profile is being created on blockchain.
+        </Typography>
+        <Typography paragraph>
+          Please wait 1-3 minutes and check this tab again.
+        </Typography>
       </Container>
     );
   }
@@ -159,7 +173,9 @@ export default function CreateArtist() {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h2" mb={2}>CREATE PROFILE</Typography>
+      <Typography variant="h2" mb={2}>
+        CREATE PROFILE
+      </Typography>
       <Box sx={styles.secondaryContainer} mb={8}>
         <TextField
           fullWidth
@@ -168,7 +184,7 @@ export default function CreateArtist() {
           variant="standard"
           margin="normal"
           value={name}
-          onChange={({ target: { value } }) => setName(value.slice(0,30))}
+          onChange={({ target: { value } }) => setName(value.slice(0, 30))}
           disabled={me?.collection || creating}
         />
         <TextField
@@ -180,7 +196,9 @@ export default function CreateArtist() {
           value={username}
           disabled={me?.collection || creating}
           onChange={({ target: { value } }) =>
-            setUsername(value.trim().toLowerCase().slice(0,30).replace(" ", ""))
+            setUsername(
+              value.trim().toLowerCase().slice(0, 30).replace(" ", "")
+            )
           }
         />
       </Box>
@@ -208,15 +226,15 @@ export default function CreateArtist() {
             value={instagram}
             disabled={me?.collection || creating}
             onChange={({ target: { value } }) =>
-              setInstagram(value.trim().slice(0,30))
+              setInstagram(value.trim().slice(0, 30))
             }
           />
         </Box>
         <Box sx={styles.infoBox}>
           <Typography>
-            Copy & paste the following text EXACTLY into your instagram
-            bio and then hit Verify & Create. (Yes you can change it
-            immediately afterwards.)
+            Copy & paste the following text EXACTLY into your instagram bio and
+            then hit Verify & Create. (Yes you can change it immediately
+            afterwards.)
           </Typography>
         </Box>
         <Typography sx={styles.verifySentence} mb={2}>
