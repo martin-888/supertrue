@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import AppBar from "@mui/material/AppBar";
 import { Link } from "react-router-dom";
@@ -16,7 +16,7 @@ import { AccountCircle } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useLocation } from "react-router-dom";
-import { useAccount } from "wagmi";
+
 import useLogInWallet from "../../hooks/useLogInWallet";
 import { useAppContext } from "contexts/app";
 import logo from "./logo.png";
@@ -75,11 +75,6 @@ const Header = () => {
   const { data } = useQuery(ME_QUERY);
   const me = data?.me;
   const isLoggedIn = me?.address && address === me.address;
-  const { address: connectedAddress } = useAccount();
-
-  useEffect(() => {
-    if (isLoggedIn && address !== connectedAddress?.toLowerCase()) logout();
-  }, [isLoggedIn, address, connectedAddress, logout]);
 
   const renderMenu = () => {
     if (!isLoggedIn) {
