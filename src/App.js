@@ -136,7 +136,7 @@ export default function App() {
             <SentryErrorBoundaryWithFallback>
               <Routes>
                 <Route path="/s/:id" element={<Artist />} />
-                <Route path="/reserve" element={<ReservePage />}/>
+                {/*<Route path="/reserve" element={<ReservePage />}/>*/}
                 <Route path="/:username" element={<Artist />} />
                 <Route
                   path="/account/posts"
