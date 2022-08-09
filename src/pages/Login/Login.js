@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { gql, useQuery } from "@apollo/client";
 import {
   Container,
   Typography,
@@ -10,17 +9,10 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { useAppContext } from "contexts/app";
 import ConnectButton from "./ConnectButton";
-const ME_QUERY = gql`
-  query me {
-    me {
-      id
-      address
-    }
-  }
-`;
 
 export const styles = {
   marginBottom: {
@@ -46,7 +38,7 @@ export const styles = {
   },
 };
 
-const EmailLogin = ({ magic, loading }) => {
+const EmailLogin = ({ magic, loading, refetch }) => {
   // from https://stackoverflow.com/a/48800/1754819
   const isValidEmail = (email) => {
     const regex = /^\S+@\S+\.\S{2,}$/;
@@ -62,6 +54,13 @@ const EmailLogin = ({ magic, loading }) => {
         redirectURI: new URL("/account/login-callback", window.location.origin)
           .href,
       });
+      const intervalId = setInterval(() => {
+          if (localStorage.getItem('token')) {
+            clearInterval(intervalId);
+            refetch();
+          }
+        },
+        1000);
     } catch (e) {
       console.log("loginWithMagicLink error", e);
     }
@@ -90,13 +89,13 @@ const EmailLogin = ({ magic, loading }) => {
   );
 };
 
-export default function Login() {
+export default function Login({ data, loading, error, refetch }) {
   const { magic } = useAppContext();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedInMagicUser, setIsLoggedInMagicUser] = useState();
-  const { data, loading, error } = useQuery(ME_QUERY);
   const [dataLoading, setDataLoading] = useState(loading);
 
-  const navigate = useNavigate();
   const logout = useCallback(async () => {
     if (isLoggedInMagicUser) await magic.user.logout();
     localStorage.removeItem("token");
@@ -105,7 +104,9 @@ export default function Login() {
   }, [isLoggedInMagicUser]);
 
   useEffect(() => {
-    if (data?.me?.address) navigate("/");
+    if (data?.me?.address) {
+      location.pathname === "/account/login" ? navigate("/") : navigate(0);
+    }
 
     setDataLoading(true);
     magic.user.isLoggedIn().then((isLoggedIn) => {
@@ -133,7 +134,7 @@ export default function Login() {
           <Typography variant="h2" sx={styles.paperHeading}>
             Log In
           </Typography>
-          <EmailLogin magic={magic} loading={dataLoading} />
+          <EmailLogin magic={magic} loading={dataLoading} refetch={refetch} />
           <Box sx={styles.divider}>
             <Divider />
           </Box>

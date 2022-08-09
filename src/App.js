@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
   Link,
 } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
@@ -31,6 +30,7 @@ import { AppProvider } from "contexts/app";
 const ME_QUERY = gql`
   query me {
     me {
+      id
       address
     }
   }
@@ -109,7 +109,7 @@ const styles = {
 
 export default function App() {
   const { isLoggedIn } = useLogInWallet();
-  const { data, loading } = useQuery(ME_QUERY);
+  const { data, loading, refetch, error } = useQuery(ME_QUERY);
 
   const onlyLoggedInPage = (Page) => {
     if (loading) {
@@ -120,8 +120,8 @@ export default function App() {
       );
     }
 
-    if (!isLoggedIn && !loading && !data?.me?.address) {
-      return <Navigate to="/" />;
+    if (!isLoggedIn && !data?.me?.address) {
+      return <Login data={data} loading={loading} error={error} refetch={refetch} />;
     }
 
     return <Page />;
@@ -152,11 +152,14 @@ export default function App() {
                   element={onlyLoggedInPage(Settings)}
                 />
                 <Route path="/" element={<Homepage />} />
-                <Route path="/account/login" element={<Login />} />
+                <Route
+                  path="/account/login"
+                  element={<Login data={data} loading={loading} error={error} refetch={refetch} />}
+                />
                 <Route
                   path="/account/login-callback"
                   exact
-                  element={<Callback />}
+                  element={<Callback refetch={refetch} />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>

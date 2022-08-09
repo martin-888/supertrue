@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import {
   Box,
@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { styles }from "./Login";
 import { useAppContext } from "contexts/app";
+import { useNavigate } from "react-router-dom";
 
 const LOGIN_MUTATION = gql`
     mutation login(
@@ -19,29 +20,34 @@ const LOGIN_MUTATION = gql`
     }
 `;
 
-const redirectUrl = "/";
-
-export default function Callback() {
-  const { magic} = useAppContext();
+export default function Callback({ refetch }) {
+  const navigate = useNavigate();
+  const [isError, setIsError] = useState(false);
+  const { magic } = useAppContext();
   const { user, auth } = magic;
 
   const logout = useCallback(async () => {
     await user.logout();
     localStorage.removeItem("token");
     localStorage.removeItem("address");
-    window.location.href = redirectUrl;
-  }, [redirectUrl]);
+    const timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
+      navigate("/");
+    }, 3000);
+  }, [navigate]);
 
   const [loginMutation] = useMutation(LOGIN_MUTATION, {
     onCompleted: async ({ LogInMagicLink }) => {
       const metadata = await user.getMetadata();
       localStorage.setItem("address", metadata.publicAddress);
       localStorage.setItem("token", LogInMagicLink.token);
-      window.location.href = redirectUrl;
+      refetch();
+      navigate("/");
     },
-    onError: e => {
+    onError: async e => {
       console.log("loginMutation error", e);
-      logout();
+      setIsError(true);
+      await logout();
     }
   });
 
@@ -52,21 +58,31 @@ export default function Callback() {
       .then((token) => loginMutation({ variables: { input: { token } } }))
       .catch(e => {
         console.log("loginWithCredential fail", e);
-        logout();
+        setIsError(true);
+        return logout();
       });
-  //TODO: fix bug using magic consts as dependencies
   }, [loginMutation, logout]);
+
+  if (isError) {
+    return (
+      <Container maxWidth="md" sx={{ my: 8 }}>
+        <Box sx={styles.centerContainer}>
+          <Typography variant="h2" mb={4}>
+            Something went wrong during your log in, please try it again.
+          </Typography>
+          <Typography variant="h2" mb={4}>
+            You're being redirected to homepage now..
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
-      <Box
-      sx={styles.centerContainer}
-      >
-        <Typography
-          variant="h2"
-          sx={styles.marginBottom}
-        >
-          Logging you in...
+      <Box sx={styles.centerContainer}>
+        <Typography variant="h2" mb={4}>
+          Logging you in..
         </Typography>
         <CircularProgress />
       </Box>

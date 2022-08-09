@@ -101,7 +101,13 @@ export default function useLogInWallet() {
     localStorage.removeItem("token");
     localStorage.removeItem("address");
     setToken(null);
-    window.location.reload();
+
+    // redirect to homepage only from log-in restricted pages
+    if (window.location.pathname.indexOf("/account/") === 0) {
+      window.location.href = "/";
+    } else {
+      window.location.reload();
+    }
   };
 
   const isLoggedIn = !!token?.length && !!address;
