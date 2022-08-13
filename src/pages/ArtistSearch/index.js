@@ -13,7 +13,7 @@ import ArtistNFT from "components/ArtistNFT";
 // TODO add search param to collections
 const COLLECTIONS_QUERY = gql`
   {
-    collections(first: 100) {
+    collections(first: 20) {
       id
       artistId
       minted
@@ -22,6 +22,10 @@ const COLLECTIONS_QUERY = gql`
       owner {
         username
       }
+    }
+    reservations(first: 20) {
+      id
+      instagram
     }
   }
 `;
@@ -34,6 +38,7 @@ export default function ArtistSearch() {
   const [filteredArtists, setFilteredArtists] = useState([]);
   const { data, loading } = useQuery(COLLECTIONS_QUERY);
 
+  // TODO useMemo
   useEffect(() => {
     if (!data?.collections?.length) {
       setFilteredArtists([]);
@@ -47,14 +52,51 @@ export default function ArtistSearch() {
 
     const search = searchQuery.toLowerCase().trim();
 
-    const artists = data.collections.filter(
+    const artistsCollection = data.collections.filter(
       (artist) =>
         artist.name.toLowerCase().indexOf(search) !== -1 ||
         artist.instagram.toLowerCase().indexOf(search) !== -1
     );
 
-    setFilteredArtists(artists);
+    const artistsReservation = data.reservations.filter(
+      (artist) =>
+        artist.instagram.toLowerCase().indexOf(search) !== -1
+    );
+
+    setFilteredArtists([...artistsCollection, ...artistsReservation]);
   }, [searchQuery, data]);
+
+  const ReserveCTA = ({headingText}) => {
+    const ctaStyles = {
+      container: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        minHeight: "260px",
+        textAlign: "center",
+        paddingTop: { xs: 4, sm: 0 }
+      }
+    };
+
+    return (
+      <Box sx={ctaStyles.container}>
+        <Typography variant="h3" component="h3" mb={4}>
+          {headingText}
+        </Typography>
+        <Box>
+          <Button
+          variant="contained"
+          size="large"
+          href="/reserve"
+        >
+          Add {searchQuery}
+        </Button>
+        </Box>
+      </Box>
+    );
+  }
 
   const getContent = () => {
     if (loading) {
@@ -83,23 +125,7 @@ export default function ArtistSearch() {
     }
     if (!filteredArtists.length) {
       return (
-        <>
-          <Typography variant="h3" component="h3" align="center" mb={4}>
-            Sorry, we couldn't find "{searchQuery}"
-          </Typography>
-          <Typography variant="h5" component="h3" align="center">
-           You can reserve them and be the first!
-          </Typography>
-          <Box sx={{ m: 2 , textAlign: "center"}}>
-           <Button
-            variant="contained"
-            size="large"
-            href="/reserve"
-          >
-            Add {searchQuery}
-          </Button>
-          </Box>
-        </>
+        <ReserveCTA headingText={`Sorry, we couldn't find "${searchQuery.trim()}"`} />
       );
     }
 
@@ -109,7 +135,6 @@ export default function ArtistSearch() {
           <>
             <Typography
               variant="subtitle1"
-              className="explanation"
               sx={{ mt: 6, mb: 10 }}
             >
               Follow your favorite artists to receive a dated NFT with your
@@ -127,10 +152,15 @@ export default function ArtistSearch() {
 
         <Grid container spacing={4}>
           {filteredArtists.map((artist, index) => (
-            <Grid item key={artist.id} className="artist" xs={12} sm={6} md={4}>
+            <Grid item key={artist.id} xs={12} sm={6} md={4}>
               <ArtistNFT artist={{ ...artist, id: artist.artistId }} />
             </Grid>
           ))}
+          {searchQuery !== "" && (
+            <Grid item key="claim-CTA" xs={12} sm={6} md={4}>
+              <ReserveCTA headingText={`Did you mean another "${searchQuery.trim()}"?`} />
+            </Grid>
+          )}
         </Grid>
       </>
     );

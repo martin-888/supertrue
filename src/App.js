@@ -19,7 +19,8 @@ import NFTs from "./pages/NFTs";
 import NotFound from "./pages/NotFound";
 import Callback from "pages/Login/Callback";
 import Login from "pages/Login/Login";
-import ReservePage from "pages/reserve";
+import Reserve from "pages/Reserve";
+import Claim from "pages/Claim";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -136,7 +137,9 @@ export default function App() {
             <SentryErrorBoundaryWithFallback>
               <Routes>
                 <Route path="/s/:id" element={<Artist />} />
-                {/*<Route path="/reserve" element={<ReservePage />}/>*/}
+                <Route path="/reserve" element={<Reserve />}/>
+                <Route path="/reserve/:handle" element={<Reserve />}/>
+                <Route path="/claim/:handle" element={<Claim />}/>
                 <Route path="/:username" element={<Artist />} />
                 <Route
                   path="/account/posts"
@@ -144,6 +147,10 @@ export default function App() {
                 />
                 <Route
                   path="/account/new"
+                  element={onlyLoggedInPage(CreateArtist)}
+                />
+                <Route
+                  path="/account/new/:handle"
                   element={onlyLoggedInPage(CreateArtist)}
                 />
                 <Route path="/account/nfts" element={onlyLoggedInPage(NFTs)} />

@@ -9,7 +9,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useProvider } from "wagmi";
 import copy from "copy-to-clipboard";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -29,6 +29,11 @@ const styles = {
     whiteSpace: "wrap",
     textOverflow: "ellipsis",
     fontWeight: 600,
+  },
+  centerContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 };
 
@@ -60,19 +65,23 @@ const CREATE_COLLECTION_MUTATION = gql`
 `;
 
 export default function CreateArtist() {
+  const location = useLocation();
+  const handle = location.pathname.split("/")[3];
   const navigate = useNavigate();
   const provider = useProvider();
   const [refetching, setRefetching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [instagram, setInstagram] = useState("");
+  const [instagram, setInstagram] = useState(handle || "");
   const [instagramValid, setInstagramValid] = useState(true);
   const [createCollectionError, setCreateCollectionError] = useState(null);
   const [isTxError, setIsTxError] = useState(false);
   const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
 
   const me = data?.me;
+  const instagramData  = data?.me?.collection?.instagram;
+  const existingCollectionMatchesUrlHandle = handle?.length > 0 && instagramData?.length > 0 && instagramData === handle;
 
   useEffect(() => {
     document.title = `Create Artist | Supertrue`;
@@ -124,6 +133,23 @@ export default function CreateArtist() {
     });
   };
 
+  if (handle && instagramData && !existingCollectionMatchesUrlHandle) {
+    return (
+      <Container maxWidth="md" sx={styles.centerContent}>
+        <Typography variant="body1" mb={2}>
+          You're not eligible to claim this collection because your account is already associated with another collection.
+        </Typography>
+        <Button
+          m={4}
+          variant="contained"
+          href="/"
+        >
+          Go To Homepage
+        </Button>
+      </Container>
+    );
+  }
+
   if (loading) {
     return (
       <Container maxWidth="md">
@@ -163,7 +189,7 @@ export default function CreateArtist() {
           Your profile is being created on blockchain.
         </Typography>
         <Typography paragraph>
-          Please wait 1-3 minutes and check this tab again.
+          Please wait 1-3 minutes and check this page again.
         </Typography>
       </Container>
     );
@@ -224,7 +250,7 @@ export default function CreateArtist() {
             variant="standard"
             margin="normal"
             value={instagram}
-            disabled={me?.collection || creating}
+            disabled={handle?.length > 0 || me?.collection || creating}
             onChange={({ target: { value } }) =>
               setInstagram(value.trim().slice(0, 30))
             }

@@ -18,9 +18,19 @@ import Post from "../../components/Post";
 import Image from "../../components/Image";
 import FAQ from "./FAQ";
 
-import "./Artist.scss";
 import generating from "../../assets/img/generating.jpg";
 import { sendToSentry } from "../../utils/sentry";
+
+const styles = {
+  image: {
+    maxWidth: "385px",
+    maxHeight: "385px",
+  },
+  price: {
+    textTransform: "uppercase",
+    fontWeight: "bold",
+  }
+};
 
 const CREATE_CHECKOUT_LINK_MUTATION = gql`
   mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
@@ -135,16 +145,18 @@ export default function Artist() {
 
   return (
     <Container maxWidth="md">
-      <Grid container mb={6} className="artist-single">
-        <Grid item className="image" md={6}>
-          <Image
-            alt={artist.name}
-            src={__.getNFTImage(artist.artistId, artist.minted)}
-            fallbackSrc={generating}
-          />
+      <Grid container mb={6}>
+        <Grid item sm={12} md={6}>
+          <div style={styles.image}>
+            <Image
+              alt={artist.name}
+              src={__.getNFTImage(artist.artistId, artist.minted)}
+              fallbackSrc={generating}
+            />
+          </div>
         </Grid>
 
-        <Grid item className="details" md={6}>
+        <Grid item sm={12} md={6} sx={{ paddingTop: { xs: 6, md: 0 } }}>
           <Typography variant="h2" className="title">
             Mint {artist.name}
           </Typography>
@@ -159,10 +171,8 @@ export default function Artist() {
             </a>
           </Typography>
 
-          <Box sx={{ my: 3 }}>
-            <Typography variant="h5" className="price">
-              <label>Price:</label>{" "}
-            </Typography>{" "}
+          <Box mb={1} my={3}>
+            <Typography variant="h5" style={styles.price}>Price</Typography>
             <Typography>
               {(artist.price / 10 ** 18).toFixed(2)} MATIC (~$
               {artist.priceCents < SHOW_CENTS_THRESHOLD
@@ -175,31 +185,31 @@ export default function Artist() {
               Price goes up per each additional NFT created.
             </Typography>
           </Box>
-          <Box className="actions">
-            <Box>
-              <LoadingButton
-                loading={minting}
-                size="large"
-                variant="contained"
-                onClick={() =>
-                  (isLoggedIn || data?.me?.address) && mintNFTPaper()
-                }
-                href={
-                  isLoggedIn || data?.me?.address ? undefined : "/account/login"
-                }
-              >
-                Mint Fan #{artist.minted + 1}
-              </LoadingButton>
-            </Box>
+          <Box>
+            <LoadingButton
+              loading={minting}
+              size="large"
+              variant="contained"
+              onClick={() =>
+                (isLoggedIn || data?.me?.address) && mintNFTPaper()
+              }
+              href={
+                isLoggedIn || data?.me?.address ? undefined : "/account/login"
+              }
+            >
+              Mint Fan #{artist.minted + 1}
+            </LoadingButton>
           </Box>
         </Grid>
       </Grid>
 
       {artist?.description && (
         <Box mb={6}>
-          <Paper className="about" elevation={2}>
-            <Typography variant="h4">About</Typography>
-            <Typography>{artist.description}</Typography>
+          <Paper elevation={2}>
+            <Box p={3}>
+              <Typography variant="h4" mb={2}>About</Typography>
+              <Typography>{artist.description}</Typography>
+            </Box>
           </Paper>
         </Box>
       )}

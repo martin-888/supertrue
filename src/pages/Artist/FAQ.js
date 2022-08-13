@@ -8,8 +8,6 @@ import {
   AccordionDetails,
 } from "@mui/material";
 
-import "./Artist.scss";
-
 /**
  * Component: FAQ
  */

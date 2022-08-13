@@ -86,6 +86,8 @@ const Header = () => {
   }, [isLoggedIn, address, connectedAddress, logout]);
 
   const renderMenu = () => {
+    const currentPathStrings = location.pathname.split("/");
+
     if (!isLoggedIn) {
       return (
         <Button

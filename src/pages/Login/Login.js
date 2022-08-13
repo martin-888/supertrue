@@ -13,6 +13,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useAppContext } from "contexts/app";
 import ConnectButton from "./ConnectButton";
+import { isValidEmail } from "utils/validate";
 
 export const styles = {
   marginBottom: {
@@ -39,12 +40,6 @@ export const styles = {
 };
 
 const EmailLogin = ({ magic, loading, refetch }) => {
-  // from https://stackoverflow.com/a/48800/1754819
-  const isValidEmail = (email) => {
-    const regex = /^\S+@\S+\.\S{2,}$/;
-    return regex.test(email);
-  };
-
   const [email, setEmail] = useState("");
 
   const login = async () => {
