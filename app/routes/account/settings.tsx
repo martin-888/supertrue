@@ -15,8 +15,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     );
 
     if (!session.has("token")) {
-        // Redirect to the home page if they are not logged in
-        return redirect("/account/login/account/settings");
+        return redirect("/account/login?redirect=/account/settings");
     }
 
     return null;

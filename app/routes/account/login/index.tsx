@@ -93,9 +93,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie") || "");
 
   if (session.has("token") && session.has("address")) {
-    // Redirect if they are already signed in.
-    invariant(typeof params?.["*"] === "string", "URL param * should be set");
-    return redirect(params["*"] === "" ? "/" : `/${params["*"]}`);
+    const url = new URL(request.url);
+    const red = url.searchParams.get("redirect") || "";
+    // to avoid redirection outside of our website
+    const useRedirectParam = red.length > 1 && red[0] === "/" && red[1] !== "/";
+
+    return redirect(useRedirectParam ? red : "/");
   }
 
   return null;

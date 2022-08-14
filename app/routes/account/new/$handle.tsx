@@ -9,8 +9,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   );
 
   if (!session.has("token")) {
-    // Redirect to the home page if they are not logged in
-    return redirect(`/account/login/account/new/${params.handle}`);
+    return redirect(`/account/login?redirect=/account/new/${params.handle}`);
   }
 
   return null;

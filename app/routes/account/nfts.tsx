@@ -19,8 +19,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 
   if (!session.has("token")) {
-    // Redirect to the home page if they are not logged in
-    return redirect("/account/login/account/nfts");
+    return redirect("/account/login?redirect=/account/nfts");
   }
 
   return null;
