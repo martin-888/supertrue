@@ -5,8 +5,8 @@ import { useNavigate, useFetcher } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { Box, Container, CircularProgress, Typography } from "@mui/material";
 
-import { useAppContext } from "~/context/app";
-import { apolloClient } from "~/context/apollo";
+import { useAppContext } from "~/contexts/app";
+import { apolloClient } from "~/contexts/apollo";
 import { commitSession, getSession } from "~/sessions.server";
 
 const styles = {

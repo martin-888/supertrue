@@ -9,7 +9,7 @@ import { Container, Typography, Box, TextField, useMediaQuery, useTheme, Circula
 import { sendToSentry } from "~/utils/sentry";
 import { isValidEmail } from "~/utils/validate";
 import DisabledMintSection from "~/components/DisabledMintSection";
-import { apolloClient } from "~/context/apollo";
+import { apolloClient } from "~/contexts/apollo";
 
 export const meta: MetaFunction = ({ params, data }) => {
   if (!data?.reservation?.instagram) {

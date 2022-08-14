@@ -17,7 +17,7 @@ import {
   useTheme
 } from "@mui/material";
 
-import { useAppContext } from "~/context/app";
+import { useAppContext } from "~/contexts/app";
 import logo from "./logo.png";
 
 const ME_QUERY = gql`
@@ -70,7 +70,7 @@ const MenuLinkItem = ({ to, onClick, title, sx }: MenuLinkItemPros) => (
 );
 
 type HeaderProps = {
-  address: string
+  address?: string
 };
 
 const noLoginButtonPaths = ["/account/login", "/account/login/callback", "/account/logout"];

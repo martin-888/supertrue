@@ -9,7 +9,7 @@ import { ApolloProvider } from "@apollo/client";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 
 import { getEnv } from "./env.server";
-import ApolloContext, { initApollo } from "./context/apollo";
+import ApolloContext, { initApollo } from "./contexts/apollo";
 
 global.ENV = getEnv();
 

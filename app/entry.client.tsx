@@ -4,7 +4,7 @@ import { ApolloProvider } from "@apollo/client";
 import { RemixBrowser } from "@remix-run/react";
 import { hydrateRoot } from "react-dom/client";
 
-import { initApollo } from "~/context/apollo";
+import { initApollo } from "~/contexts/apollo";
 import { initSentry } from "~/utils/sentry";
 
 initSentry();

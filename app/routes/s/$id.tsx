@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/node";
 import { gql } from "@apollo/client";
 import invariant from "tiny-invariant";
 
-import { apolloClient } from "~/context/apollo";
+import { apolloClient } from "~/contexts/apollo";
 
 const ARTIST_QUERY = gql`
     query getArtist($id: Int!) {

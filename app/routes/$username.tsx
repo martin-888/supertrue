@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { apolloClient } from "~/context/apollo";
+import { apolloClient } from "~/contexts/apollo";
 import { sendToSentry } from "~/utils/sentry";
 import Post from "~/components/Post";
 import Image from "~/components/Image";

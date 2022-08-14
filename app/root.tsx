@@ -24,13 +24,13 @@ import { withSentry } from "@sentry/remix";
 
 import type { ENV } from "~/env.server";
 import { getEnv } from "~/env.server";
-import ApolloContext from "~/context/apollo";
+import ApolloContext from "~/contexts/apollo";
 import Header from "~/components/Header";
 import Footer from "~/components/Footer";
 import { wagmiClient, chains } from "~/utils/rainbow";
 import { getSession } from "~/sessions.server";
 import theme from '~/theme';
-import clientStyleContext from '~/context/clientStyleContext';
+import clientStyleContext from '~/contexts/clientStyleContext';
 
 import rainbowStylesUrl from '@rainbow-me/rainbowkit/styles.css';
 import appStylesUrl from '~/app.css';

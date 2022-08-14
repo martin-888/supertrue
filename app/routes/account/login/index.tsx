@@ -20,8 +20,8 @@ import {
 
 import { isValidEmail } from "~/utils/validate";
 import { getSession, commitSession } from "~/sessions.server";
-import { apolloClient } from "~/context/apollo";
-import { useAppContext } from "~/context/app";
+import { apolloClient } from "~/contexts/apollo";
+import { useAppContext } from "~/contexts/app";
 
 export const styles = {
   marginBottom: {

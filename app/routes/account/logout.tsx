@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAccount, useDisconnect } from 'wagmi';
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
-import { useAppContext } from '~/context/app';
+import { useAppContext } from '~/contexts/app';
 import { getSession, destroySession } from "~/sessions.server";
 
 const styles = {
