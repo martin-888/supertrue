@@ -8,8 +8,8 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
-const INFURA_ID = "053054e14de8436ca32b539867081440";
-const CHAIN_ID = "4";
+const INFURA_ID = ENV.INFURA_KEY;
+const CHAIN_ID = ENV.CHAIN_ID;
 
 export const { chains, provider } = configureChains(
   CHAIN_ID === "137" ? [chain.polygon] : [chain.rinkeby],

@@ -1,6 +1,7 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
+// We have to use process.env here to not expose it on frontend!
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET should be defined");
 invariant(process.env.SESSION_MAX_AGE, "SESSION_MAX_AGE should be defined");
 
