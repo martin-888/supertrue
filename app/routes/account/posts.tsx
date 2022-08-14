@@ -1,9 +1,24 @@
 import React from "react";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
 import CreatePost from "~/components/CreatePost";
 import Post from "~/components/Post";
+import { getSession } from "~/sessions.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(
+    request.headers.get("Cookie")
+  );
+
+  if (!session.has("token")) {
+    // Redirect to the home page if they are not logged in
+    return redirect("/account/login/account/posts");
+  }
+
+  return null;
+}
 
 const ME_QUERY = gql`
     query me {

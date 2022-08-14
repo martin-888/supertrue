@@ -73,8 +73,6 @@ type HeaderProps = {
   address?: string
 };
 
-const noLoginButtonPaths = ["/account/login", "/account/login/callback", "/account/logout"];
-
 const Header = ({ address }: HeaderProps) => {
   const { magic } = useAppContext();
   const theme = useTheme();
@@ -84,6 +82,9 @@ const Header = ({ address }: HeaderProps) => {
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!address);
+
+  const isLoginLogoutPage = location.pathname.indexOf("/account/login") !== -1
+    || location.pathname.indexOf("/account/logout") !== -1;
 
   const { data } = useQuery(ME_QUERY);
   const me = data?.me;
@@ -98,7 +99,7 @@ const Header = ({ address }: HeaderProps) => {
         setIsLoggedIn(!!(address && address === account?.address?.toLowerCase()));
       }
 
-      if (noLoginButtonPaths.includes(location.pathname)) {
+      if (isLoginLogoutPage) {
         return;
       }
 
@@ -106,11 +107,9 @@ const Header = ({ address }: HeaderProps) => {
         const metadata = await magic.user.getMetadata();
 
         if (address !== metadata?.publicAddress?.toLowerCase()) {
-          console.log("reload header magic.user.isLoggedIn() if") // TODO REMOVE
           navigate("/account/logout");
         }
       } else if (account.address?.toLowerCase() !== address) {
-        console.log("reload header magic.user.isLoggedIn() else if") // TODO REMOVE
         navigate("/account/logout");
       }
     });
@@ -339,7 +338,7 @@ const Header = ({ address }: HeaderProps) => {
             )}
           </Typography>
           <Box sx={{ flexGrow: 0 }}>
-            {!noLoginButtonPaths.includes(location.pathname) && renderMenu()}
+            {!isLoginLogoutPage && renderMenu()}
           </Box>
         </Toolbar>
       </Container>

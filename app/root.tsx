@@ -25,6 +25,7 @@ import { withSentry } from "@sentry/remix";
 import type { ENV } from "~/env.server";
 import { getEnv } from "~/env.server";
 import ApolloContext from "~/contexts/apollo";
+import { AppProvider } from "~/contexts/app";
 import Header from "~/components/Header";
 import Footer from "~/components/Footer";
 import { wagmiClient, chains } from "~/utils/rainbow";
@@ -124,11 +125,13 @@ const App = withEmotionCache((_, emotionCache) => {
             }
           )}
           >
-            <ThemeProvider theme={theme}>
-              <Header address={address} />
-              <Outlet />
-              <Footer />
-            </ThemeProvider>
+            <AppProvider isLoggedIn={!!address}>
+              <ThemeProvider theme={theme}>
+                <Header address={address} />
+                <Outlet />
+                <Footer />
+              </ThemeProvider>
+            </AppProvider>
           </RainbowKitProvider>
         </WagmiConfig>
         <ScrollRestoration />

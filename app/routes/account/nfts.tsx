@@ -1,4 +1,5 @@
 import React from "react";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useNavigate } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import {
@@ -10,6 +11,20 @@ import {
 } from "@mui/material";
 
 import ArtistNFT from "~/components/ArtistNFT";
+import { getSession } from "~/sessions.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(
+    request.headers.get("Cookie")
+  );
+
+  if (!session.has("token")) {
+    // Redirect to the home page if they are not logged in
+    return redirect("/account/login/account/nfts");
+  }
+
+  return null;
+}
 
 const NFTS_QUERY = gql`
     query myNfts {

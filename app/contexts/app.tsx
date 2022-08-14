@@ -8,15 +8,21 @@ const isBrowser = typeof window !== "undefined";
 const magic = !isBrowser ? {} : new Magic(ENV.MAGIC_KEY, { network: ENV.NETWORK });
 
 type AppContext = {
-  magic: MagicType
+  magic: MagicType;
+  isLoggedIn: boolean;
 }
 
 // @ts-ignore
 const AppContext = createContext<AppContext>({ magic });
 
-export function AppProvider() {
+type AppProviderProps = {
+  isLoggedIn: boolean;
+  children: any;
+};
+
+export function AppProvider({ isLoggedIn, children }: AppProviderProps) {
   // @ts-ignore
-  return <AppContext.Provider value={{ magic }} />;
+  return <AppContext.Provider value={{ magic, isLoggedIn }}>{children}</AppContext.Provider>;
 }
 
 export function useAppContext() {

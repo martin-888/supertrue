@@ -1,12 +1,13 @@
 import type { LoaderFunction, ActionFunction } from "@remix-run/node";
 import type { NavigateFunction } from "@remix-run/react";
 import { json, MetaFunction, redirect } from "@remix-run/node";
-import { useFetcher, useNavigate, useLocation } from "@remix-run/react";
+import { useFetcher, useNavigate, useParams } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import { parse as cookieParse } from "cookie";
 import { useEffect, useState, useCallback } from "react";
 import { useAccount, useSignMessage, useDisconnect } from 'wagmi';
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import invariant from "tiny-invariant";
 import {
   Container,
   Typography,
@@ -88,14 +89,13 @@ const LOGIN_SIGNATURE_MUTATION = gql`
     }
 `;
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+export const loader: LoaderFunction = async ({ request, params }) => {
+  const session = await getSession(request.headers.get("Cookie") || "");
 
-  if (session.has("token")) {
-    // Redirect to the home page if they are already signed in.
-    return redirect("/");
+  if (session.has("token") && session.has("address")) {
+    // Redirect if they are already signed in.
+    invariant(typeof params?.["*"] === "string", "URL param * should be set");
+    return redirect(params["*"] === "" ? "/" : `/${params["*"]}`);
   }
 
   return null;
@@ -148,7 +148,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 }
 
-const createSignMessage = (address, nonce) => `Welcome to SUPERTRUE!
+const createSignMessage = (address: string, nonce: string) => `Welcome to SUPERTRUE!
 
 Signing is the only way we can truly know that you are the owner of the wallet you are connecting. Signing is a safe, gas-less transaction that does not in any way give permission to perform any transactions with your wallet.
 
@@ -321,9 +321,9 @@ const EmailLogin = ({ magic, loading, navigate }: EmailLoginProps) => {
 };
 
 export default function Login() {
-  const { magic } = useAppContext();
+  const { magic, isLoggedIn: isLoggedInContext } = useAppContext();
+  const params = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [isLoggedInMagicUser, setIsLoggedInMagicUser] = useState(false);
   const { data, loading, error } = useQuery(ME_QUERY);
   const [dataLoading, setDataLoading] = useState(loading);
@@ -334,8 +334,9 @@ export default function Login() {
   }, [isLoggedInMagicUser]);
 
   useEffect(() => {
-    if (data?.me?.address) {
-      location.pathname === "/account/login" ? navigate("/") : navigate(0);
+    if (data?.me?.address && isLoggedInContext) {
+      invariant(typeof params?.["*"] === "string", "URL param * should be set");
+      navigate(params["*"] === "" ? "/" : `/${params["*"]}`);
     }
 
     setDataLoading(true);

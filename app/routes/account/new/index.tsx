@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "@remix-run/react";
+import { LoaderFunction, redirect } from "@remix-run/node";
+import { useNavigate, useParams } from "@remix-run/react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   Button,
@@ -16,6 +17,20 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { sendToSentry } from "~/utils/sentry";
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
+import { getSession } from "~/sessions.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(
+    request.headers.get("Cookie")
+  );
+
+  if (!session.has("token")) {
+    // Redirect to the home page if they are not logged in
+    return redirect("/account/login/account/new");
+  }
+
+  return null;
+}
 
 const styles = {
   infoBox: {
@@ -66,8 +81,7 @@ const CREATE_COLLECTION_MUTATION = gql`
 `;
 
 export default function CreateArtist() {
-  const location = useLocation();
-  const handle = location.pathname.split("/")[3];
+  const { handle } = useParams();
   const navigate = useNavigate();
   const provider = useProvider();
   const [refetching, setRefetching] = useState(false);
@@ -83,10 +97,6 @@ export default function CreateArtist() {
   const me = data?.me;
   const instagramData  = data?.me?.collection?.instagram;
   const existingCollectionMatchesUrlHandle = handle?.length > 0 && instagramData?.length > 0 && instagramData === handle;
-
-  useEffect(() => {
-    document.title = `Create Artist | Supertrue`;
-  }, []);
 
   useEffect(() => {
     if (!data?.me?.collection?.id) {

@@ -1,4 +1,5 @@
 import React from "react";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { Container, Box } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 
@@ -6,6 +7,20 @@ import Bio from "~/components/Settings/Bio";
 import Pricing from "~/components/Settings/Pricing";
 import Balance, { BALANCE_USER_FRAGMENT } from "~/components/Settings/Balance";
 import Sharing from "~/components/Settings/Sharing";
+import { getSession } from "~/sessions.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+    const session = await getSession(
+      request.headers.get("Cookie")
+    );
+
+    if (!session.has("token")) {
+        // Redirect to the home page if they are not logged in
+        return redirect("/account/login/account/settings");
+    }
+
+    return null;
+}
 
 const ME_QUERY = gql`
     ${BALANCE_USER_FRAGMENT}
