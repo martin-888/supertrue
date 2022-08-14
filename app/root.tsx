@@ -39,7 +39,13 @@ export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: rainbowStylesUrl },
     { rel: "stylesheet", href: appStylesUrl },
-    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Mono&family=DM+Serif+Display&display=swap" }
+    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Mono&family=DM+Serif+Display&display=swap" },
+    { rel: "manifest", href: "/manifest.json" },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+    { rel: "icon", href: "/favicon.ico" },
+    { rel: "icon", href: "/192.png", type: "image/png", sizes: "192x192" },
+    { rel: "apple-touch-icon", href: "/192.png" },
   ];
 };
 
@@ -48,11 +54,12 @@ export const meta: MetaFunction = () => ({
   title: "Supertrue",
   viewport: "width=device-width,initial-scale=1",
   description: "Supertrue - Follow your favorite artists via NFTs",
+  "twitter:site": "@supertruesocial",
   "og:title": "Supertrue - Follow your favorite artists via NFTs",
   "og:type": "website",
   "og:description": "Get rewarded for believing in and following creators early. Receive a dated and numbered NFT for any profile you mint.",
   "og:site_name": "Supertrue",
-  "twitter:site": "@supertruesocial",
+  "og:image": "/og.jpg",
 });
 
 type LoaderData = {
