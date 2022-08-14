@@ -12,7 +12,8 @@ import {
 
 export const meta: MetaFunction = ({ params }) => {
   return {
-    title: `Claim @${params.handle} | Supertrue`
+    title: `Claim @${params.handle} | Supertrue`,
+    "og:title": `Claim @${params.handle} on Supertrue`,
   };
 };
 

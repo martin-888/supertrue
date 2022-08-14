@@ -32,6 +32,7 @@ export const meta: MetaFunction = ({ data }) => {
 
   return {
     title: `${data.collection.name} (@${data.collection.username}) | Supertrue`,
+    "og:title": `Follow ${data.collection.name} (@${data.collection.username}) on Supertrue`,
   };
 };
 

@@ -1,6 +1,6 @@
 import type { LoaderFunction, ActionFunction } from "@remix-run/node";
 import type { NavigateFunction } from "@remix-run/react";
-import { json, redirect } from "@remix-run/node";
+import { json, MetaFunction, redirect } from "@remix-run/node";
 import { useFetcher, useNavigate, useLocation } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import { parse as cookieParse } from "cookie";
@@ -22,6 +22,12 @@ import { isValidEmail } from "~/utils/validate";
 import { getSession, commitSession } from "~/sessions.server";
 import { apolloClient } from "~/contexts/apollo";
 import { useAppContext } from "~/contexts/app";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: `Login | Supertrue`,
+  };
+};
 
 export const styles = {
   marginBottom: {

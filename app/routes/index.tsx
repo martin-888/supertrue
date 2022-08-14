@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@remix-run/node";
 import { useState } from "react";
 import {
   Box,
@@ -10,12 +9,6 @@ import {
 import ArtistSearch from "~/components/ArtistSearch";
 import NewsFeed from "~/components/NewsFeed";
 import NFTs from "~/components/NFTs";
-
-export const meta: MetaFunction = () => {
-  return {
-    title: "Supertrue"
-  };
-};
 
 type TabPanelProps = {
   value: number;

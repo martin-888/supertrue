@@ -19,7 +19,8 @@ export const meta: MetaFunction = ({ params, data }) => {
   }
 
   return {
-    title: `Reserve @${params.handle} | Supertrue`
+    title: `Reserve @${params.handle} | Supertrue`,
+    "og:title": `Reserve @${params.handle} on Supertrue`,
   };
 };
 
