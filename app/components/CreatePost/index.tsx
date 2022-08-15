@@ -18,20 +18,20 @@ import {
 const predefinedPostReaches = [10, 100, 1000];
 
 const CREATE_POST_MUTATION = gql`
-    mutation createPost($input: CreatePostInput!) {
-        CreatePost(input: $input) {
-            collection {
-                id
-                address
-                posts {
-                    id
-                    lastNftID
-                    content
-                    createdAt
-                }
-            }
+  mutation createPost($input: CreatePostInput!) {
+    CreatePost(input: $input) {
+      collection {
+        id
+        address
+        posts {
+          id
+          lastNftID
+          content
+          createdAt
         }
+      }
     }
+  }
 `;
 
 const styles = {
@@ -89,7 +89,7 @@ const styles = {
 
 type CreatePostProps = {
   collection: any;
-}
+};
 
 export default function CreatePost({ collection }: CreatePostProps) {
   const [content, setContent] = useState("");

@@ -32,30 +32,30 @@ const styles = {
 };
 
 const NEWSFEED_QUERY = gql`
-    query newsfeed {
-        me {
-            nfts {
-                id
-                artistId
-                tokenId
-            }
-        }
-        posts(first: 15) {
-            id
-            lastNftID
-            content
-            createdAt
-            author {
-                id
-                artistId
-                collection {
-                    instagram
-                    name
-                    username
-                }
-            }
-        }
+  query newsfeed {
+    me {
+      nfts {
+        id
+        artistId
+        tokenId
+      }
     }
+    posts(first: 15) {
+      id
+      lastNftID
+      content
+      createdAt
+      author {
+        id
+        artistId
+        collection {
+          instagram
+          name
+          username
+        }
+      }
+    }
+  }
 `;
 
 const getPostHeader = (tokenId: any, name: string) =>
@@ -90,12 +90,12 @@ export default function NewsFeed() {
             <Typography sx={styles.infoText}>
               {content
                 ? getPostHeader(
-                  ownedArtistNftToken?.tokenId,
-                  author.collection.name
-                )
+                    ownedArtistNftToken?.tokenId,
+                    author.collection.name
+                  )
                 : ownedArtistNftToken
-                  ? `You own Supertrue #${ownedArtistNftToken.tokenId} for ${author.collection.name}. You need #1-${lastNftID} to see this post.`
-                  : `You need Supertrue #1-${lastNftID} to access ${author.collection.name}'s post.`}
+                ? `You own Supertrue #${ownedArtistNftToken.tokenId} for ${author.collection.name}. You need #1-${lastNftID} to see this post.`
+                : `You need Supertrue #1-${lastNftID} to access ${author.collection.name}'s post.`}
             </Typography>
 
             <Box sx={styles.postContainer}>

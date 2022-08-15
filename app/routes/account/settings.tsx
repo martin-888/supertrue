@@ -10,32 +10,30 @@ import Sharing from "~/components/Settings/Sharing";
 import { getSession } from "~/sessions.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const session = await getSession(
-      request.headers.get("Cookie")
-    );
+  const session = await getSession(request.headers.get("Cookie"));
 
-    if (!session.has("token")) {
-        return redirect("/account/login?redirect=/account/settings");
-    }
+  if (!session.has("token")) {
+    return redirect("/account/login?redirect=/account/settings");
+  }
 
-    return null;
-}
+  return null;
+};
 
 const ME_QUERY = gql`
-    ${BALANCE_USER_FRAGMENT}
-    query me {
-        me {
-            id
-            collection {
-                id
-                artistId
-                description
-                startPriceCents
-                pendingFunds
-            }
-            ...BalanceUserFragment
-        }
+  ${BALANCE_USER_FRAGMENT}
+  query me {
+    me {
+      id
+      collection {
+        id
+        artistId
+        description
+        startPriceCents
+        pendingFunds
+      }
+      ...BalanceUserFragment
     }
+  }
 `;
 
 export default function Settings() {
@@ -56,7 +54,9 @@ export default function Settings() {
         loading={loading}
         startPolling={startPolling}
         stopPolling={stopPolling}
-        defaultPrice={Math.trunc((me?.collection?.startPriceCents || 1000)/100)}
+        defaultPrice={Math.trunc(
+          (me?.collection?.startPriceCents || 1000) / 100
+        )}
       />
       <Box mb={8} />
       <Balance
@@ -66,10 +66,7 @@ export default function Settings() {
         stopPolling={stopPolling}
       />
       <Box mb={8} />
-      <Sharing
-        artistId={me?.collection?.artistId}
-        loading={loading}
-      />
+      <Sharing artistId={me?.collection?.artistId} loading={loading} />
     </Container>
   );
 }

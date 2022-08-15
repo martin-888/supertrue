@@ -20,16 +20,14 @@ import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
 import { getSession } from "~/sessions.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+  const session = await getSession(request.headers.get("Cookie"));
 
   if (!session.has("token")) {
     return redirect("/account/login?redirect=/account/new");
   }
 
   return null;
-}
+};
 
 const styles = {
   infoBox: {
@@ -53,30 +51,30 @@ const styles = {
 };
 
 const ME_QUERY = gql`
-    query me {
-        me {
-            id
-            address
-            email
-            description
-            collection {
-                id
-                artistId
-                address
-                name
-                instagram
-                startPriceCents
-            }
-        }
+  query me {
+    me {
+      id
+      address
+      email
+      description
+      collection {
+        id
+        artistId
+        address
+        name
+        instagram
+        startPriceCents
+      }
     }
+  }
 `;
 
 const CREATE_COLLECTION_MUTATION = gql`
-    mutation createCollection($input: CreateCollectionInput!) {
-        CreateCollection(input: $input) {
-            tx
-        }
+  mutation createCollection($input: CreateCollectionInput!) {
+    CreateCollection(input: $input) {
+      tx
     }
+  }
 `;
 
 export default function CreateArtist() {
@@ -89,13 +87,16 @@ export default function CreateArtist() {
   const [username, setUsername] = useState("");
   const [instagram, setInstagram] = useState(handle || "");
   const [instagramValid, setInstagramValid] = useState(true);
-  const [createCollectionError, setCreateCollectionError] = useState<string | null>(null);
+  const [createCollectionError, setCreateCollectionError] = useState<
+    string | null
+  >(null);
   const [isTxError, setIsTxError] = useState(false);
   const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
 
   const me = data?.me;
-  const instagramData  = data?.me?.collection?.instagram;
-  const existingCollectionMatchesUrlHandle = handle?.length > 0 && instagramData?.length > 0 && instagramData === handle;
+  const instagramData = data?.me?.collection?.instagram;
+  const existingCollectionMatchesUrlHandle =
+    handle?.length > 0 && instagramData?.length > 0 && instagramData === handle;
 
   useEffect(() => {
     if (!data?.me?.collection?.id) {
@@ -147,7 +148,8 @@ export default function CreateArtist() {
     return (
       <Container maxWidth="md" sx={styles.centerContent}>
         <Typography variant="body1" mb={2}>
-          You're not eligible to claim this collection because your account is already associated with another collection.
+          You're not eligible to claim this collection because your account is
+          already associated with another collection.
         </Typography>
         <Button variant="contained" href="/">
           Go To Homepage

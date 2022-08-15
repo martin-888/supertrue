@@ -6,19 +6,21 @@ import invariant from "tiny-invariant";
 import { apolloClient } from "~/contexts/apollo";
 
 const ARTIST_QUERY = gql`
-    query getArtist($id: Int!) {
-        collection(artistId: $id) {
-            id
-            username
-        }
+  query getArtist($id: Int!) {
+    collection(artistId: $id) {
+      id
+      username
     }
+  }
 `;
 
-export const loader: LoaderFunction = async ({request, params}) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(params.id, "params.id should be defined");
 
-  const { data } = await apolloClient(request)
-    .query({ query: ARTIST_QUERY, variables: { id: parseInt(params.id) } });
+  const { data } = await apolloClient(request).query({
+    query: ARTIST_QUERY,
+    variables: { id: parseInt(params.id) },
+  });
 
   if (!data?.collection?.username) {
     throw new Response("Not Found", {

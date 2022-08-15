@@ -12,22 +12,22 @@ import ArtistNFT from "~/components/ArtistNFT";
 
 // TODO add search param to collections
 const COLLECTIONS_QUERY = gql`
-    {
-        collections(first: 20) {
-            id
-            artistId
-            minted
-            name
-            instagram
-            owner {
-                username
-            }
-        }
-        reservations(first: 20) {
-            id
-            instagram
-        }
+  {
+    collections(first: 20) {
+      id
+      artistId
+      minted
+      name
+      instagram
+      owner {
+        username
+      }
     }
+    reservations(first: 20) {
+      id
+      instagram
+    }
+  }
 `;
 
 const reserveCTAStyles = {
@@ -39,8 +39,8 @@ const reserveCTAStyles = {
     height: "100%",
     minHeight: "260px",
     textAlign: "center",
-    paddingTop: { xs: 4, sm: 0 }
-  }
+    paddingTop: { xs: 4, sm: 0 },
+  },
 };
 
 type ReserveCTAProps = {
@@ -48,24 +48,20 @@ type ReserveCTAProps = {
   searchQuery: string;
 };
 
-const ReserveCTA = ({headingText, searchQuery}: ReserveCTAProps) => {
+const ReserveCTA = ({ headingText, searchQuery }: ReserveCTAProps) => {
   return (
     <Box sx={reserveCTAStyles.container}>
       <Typography variant="h3" component="h3" mb={4}>
         {headingText}
       </Typography>
       <Box>
-        <Button
-          variant="contained"
-          size="large"
-          href="/reserve"
-        >
+        <Button variant="contained" size="large" href="/reserve">
           Add {searchQuery}
         </Button>
       </Box>
     </Box>
   );
-}
+};
 
 /**
  * Component: NFT Search Page
@@ -96,8 +92,7 @@ export default function ArtistSearch() {
     );
 
     const artistsReservation = data.reservations.filter(
-      (artist) =>
-        artist.instagram.toLowerCase().indexOf(search) !== -1
+      (artist) => artist.instagram.toLowerCase().indexOf(search) !== -1
     );
 
     setFilteredArtists([...artistsCollection, ...artistsReservation]);
@@ -141,10 +136,7 @@ export default function ArtistSearch() {
       <>
         {searchQuery.length === 0 && (
           <>
-            <Typography
-              variant="subtitle1"
-              sx={{ mt: 6, mb: 10 }}
-            >
+            <Typography variant="subtitle1" sx={{ mt: 6, mb: 10 }}>
               Follow your favorite artists to receive a dated NFT with your
               supertrue follower number. Display what you support on your
               gallery. Artists can message fans exclusively based on how early

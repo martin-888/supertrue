@@ -6,7 +6,10 @@ export function getEnv() {
   invariant(process.env.SENTRY_KEY, "SENTRY_KEY should be defined");
   invariant(process.env.ENVIRONMENT, "ENVIRONMENT should be defined");
   invariant(process.env.GRAPHQL_URL, "GRAPHQL_URL should be defined");
-  invariant(process.env.FIREBASE_STORAGE_URL, "FIREBASE_STORAGE_URL should be defined");
+  invariant(
+    process.env.FIREBASE_STORAGE_URL,
+    "FIREBASE_STORAGE_URL should be defined"
+  );
   invariant(process.env.CHAIN_ID, "CHAIN_ID should be defined");
   invariant(process.env.NETWORK, "NETWORK should be defined");
   invariant(process.env.NETWORK_RPC_URL, "NETWORK_RPC_URL should be defined");

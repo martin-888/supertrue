@@ -1,10 +1,6 @@
 import { createContext } from "react";
-import {
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink
-} from "@apollo/client";
-import { setContext } from '@apollo/client/link/context';
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { parse as cookieParse } from "cookie";
 
 const isBrowser = typeof window !== "undefined";
@@ -13,7 +9,7 @@ const initialState = isBrowser ? window.__INITIAL_STATE__ : {};
 
 export function initApollo(token: string, ssrMode = true) {
   const httpLink = createHttpLink({
-    uri: ENV.GRAPHQL_URL
+    uri: ENV.GRAPHQL_URL,
   });
 
   const authLink = setContext((_, { headers }) => {
@@ -25,8 +21,8 @@ export function initApollo(token: string, ssrMode = true) {
       headers: {
         ...headers,
         authorization: `Bearer ${token}`,
-      }
-    }
+      },
+    };
   });
 
   return new ApolloClient({

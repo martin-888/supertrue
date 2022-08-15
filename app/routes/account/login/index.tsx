@@ -5,7 +5,7 @@ import { useFetcher, useNavigate, useParams } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import { parse as cookieParse } from "cookie";
 import { useEffect, useState, useCallback } from "react";
-import { useAccount, useSignMessage, useDisconnect } from 'wagmi';
+import { useAccount, useSignMessage, useDisconnect } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import invariant from "tiny-invariant";
 import {
@@ -56,37 +56,37 @@ export const styles = {
   buttonContainer: {
     opacity: 0,
     pointerEvents: "none",
-    userSelect: "none"
-  }
+    userSelect: "none",
+  },
 };
 
 const ME_QUERY = gql`
-    query me {
-        me {
-            id
-            address
-        }
+  query me {
+    me {
+      id
+      address
     }
+  }
 `;
 
 const CREATE_LOGIN_NONCE_MUTATION = gql`
-    mutation logInSignature($input: CreateLogInNonceInput!) {
-        CreateLogInNonce(input: $input) {
-            nonce
-        }
+  mutation logInSignature($input: CreateLogInNonceInput!) {
+    CreateLogInNonce(input: $input) {
+      nonce
     }
+  }
 `;
 
 const LOGIN_SIGNATURE_MUTATION = gql`
-    mutation logInSignature($input: LogInSignatureInput!) {
-        LogInSignature(input: $input) {
-            token
-            me {
-                id
-                address
-            }
-        }
+  mutation logInSignature($input: LogInSignatureInput!) {
+    LogInSignature(input: $input) {
+      token
+      me {
+        id
+        address
+      }
     }
+  }
 `;
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -102,7 +102,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 
   return null;
-}
+};
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -111,7 +111,10 @@ export const action: ActionFunction = async ({ request }) => {
   switch (action) {
     case "createLogInNonce": {
       const address = form.get("address");
-      const res = await apolloClient(request).mutate({mutation: CREATE_LOGIN_NONCE_MUTATION, variables: {input: {address}}})
+      const res = await apolloClient(request).mutate({
+        mutation: CREATE_LOGIN_NONCE_MUTATION,
+        variables: { input: { address } },
+      });
       return json(res.data.CreateLogInNonce);
     }
     case "logInSignature": {
@@ -120,11 +123,14 @@ export const action: ActionFunction = async ({ request }) => {
 
       let error;
 
-      const res = await apolloClient(request).mutate({
-        mutation: LOGIN_SIGNATURE_MUTATION,
-        variables: {input: {signature, nonce}},
-      })
-        .catch(e => { error = e.message });
+      const res = await apolloClient(request)
+        .mutate({
+          mutation: LOGIN_SIGNATURE_MUTATION,
+          variables: { input: { signature, nonce } },
+        })
+        .catch((e) => {
+          error = e.message;
+        });
 
       if (error) {
         return json({ error });
@@ -132,26 +138,33 @@ export const action: ActionFunction = async ({ request }) => {
 
       const data = res.data.LogInSignature;
 
-      const session = await getSession(
-        request.headers.get("Cookie")
-      );
+      const session = await getSession(request.headers.get("Cookie"));
 
       session.set("token", data.token);
       session.set("address", data.me.address);
 
       const headers = new Headers();
       headers.append("Set-Cookie", await commitSession(session));
-      headers.append('Set-Cookie', `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`);
+      headers.append(
+        "Set-Cookie",
+        `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
+      );
 
       // Login succeeded, send them to the home page.
-      return json({ loginSuccess: true }, {
-        headers,
-      });
+      return json(
+        { loginSuccess: true },
+        {
+          headers,
+        }
+      );
     }
   }
-}
+};
 
-const createSignMessage = (address: string, nonce: string) => `Welcome to SUPERTRUE!
+const createSignMessage = (
+  address: string,
+  nonce: string
+) => `Welcome to SUPERTRUE!
 
 Signing is the only way we can truly know that you are the owner of the wallet you are connecting. Signing is a safe, gas-less transaction that does not in any way give permission to perform any transactions with your wallet.
 
@@ -160,8 +173,8 @@ Wallet address: ${address}
 Nonce: ${nonce}`;
 
 const ConnectButton = () => {
-  const [ isSigning, setIsSigning ] = useState<boolean>(false);
-  const [ error, setError ] = useState<string | null>(null);
+  const [isSigning, setIsSigning] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const fetcher = useFetcher();
@@ -183,47 +196,46 @@ const ConnectButton = () => {
       return;
     }
 
-    fetcher.submit({ _action: "createLogInNonce", address: address.toLowerCase() }, { method: "post" })
-  }, [address])
+    fetcher.submit(
+      { _action: "createLogInNonce", address: address.toLowerCase() },
+      { method: "post" }
+    );
+  }, [address]);
 
   const { signMessage } = useSignMessage({
     onSuccess: (signature) => {
-      fetcher.submit({ _action: "logInSignature", signature, nonce }, { method: "post" })
+      fetcher.submit(
+        { _action: "logInSignature", signature, nonce },
+        { method: "post" }
+      );
     },
     onError: (e) => {
       setError(e.message);
       disconnect();
       console.log("signMessage error", e);
       setIsSigning(false);
-    }
+    },
   });
 
-  useEffect(()=> {
+  useEffect(() => {
     if (isConnected && address && nonce && !isSigning) {
       setIsSigning(true);
       signMessage({ message: createSignMessage(address.toLowerCase(), nonce) });
     }
-  }, [
-    isConnected,
-    address,
-    createSignMessage,
-    signMessage,
-    nonce,
-    isSigning
-  ]);
+  }, [isConnected, address, createSignMessage, signMessage, nonce, isSigning]);
 
   const buttonContent = "Log in with Web3 wallet";
 
   return (
     <RainbowConnectButton.Custom>
       {({
-          account,
-          chain,
-          openAccountModal,
-          openChainModal,
-          openConnectModal,
-          mounted,
-        }) => {
+        account,
+        chain,
+        openAccountModal,
+        openChainModal,
+        openConnectModal,
+        mounted,
+      }) => {
         return (
           <Box sx={mounted ? {} : styles.buttonContainer}>
             {(() => {
@@ -269,10 +281,10 @@ const ConnectButton = () => {
       }}
     </RainbowConnectButton.Custom>
   );
-}
+};
 
 type EmailLoginProps = {
-  magic: any,
+  magic: any;
   loading: boolean;
   navigate: NavigateFunction;
 };
@@ -288,13 +300,12 @@ const EmailLogin = ({ magic, loading, navigate }: EmailLoginProps) => {
           .href,
       });
       const intervalId = setInterval(() => {
-          const cookie = cookieParse(document.cookie || "");
-          if (cookie?.token && cookie.token.length) {
-            clearInterval(intervalId);
-            navigate(0);
-          }
-        },
-        1000);
+        const cookie = cookieParse(document.cookie || "");
+        if (cookie?.token && cookie.token.length) {
+          clearInterval(intervalId);
+          navigate(0);
+        }
+      }, 1000);
     } catch (e) {
       console.log("loginWithMagicLink error", e);
     }

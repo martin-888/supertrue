@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Grid
-} from "@mui/material";
+import { Box, Typography, Button, Grid } from "@mui/material";
 
 import LivePreviewNFT from "~/components/LivePreviewNFT";
 import { breakLongHandle } from "~/utils/breakLongHandle";
@@ -26,20 +21,26 @@ const styles = {
   price: {
     textTransform: "uppercase",
     fontWeight: "bold",
-  }
+  },
 };
 
 type DisabledMintSection = {
   igHandle: string;
   placeInLine?: number;
-}
+};
 
-export default function DisabledMintSection({ igHandle, placeInLine = 1 }: DisabledMintSection) {
+export default function DisabledMintSection({
+  igHandle,
+  placeInLine = 1,
+}: DisabledMintSection) {
   return (
     <Grid container sx={styles.disabledContainer}>
       <Grid item md={6}>
         <div style={styles.image}>
-          <LivePreviewNFT title={"@" + breakLongHandle(igHandle)} key={igHandle} />
+          <LivePreviewNFT
+            title={"@" + breakLongHandle(igHandle)}
+            key={igHandle}
+          />
         </div>
       </Grid>
       <Grid item sm={12} md={6} sx={{ paddingTop: { xs: 6, md: 0 } }}>
@@ -48,25 +49,21 @@ export default function DisabledMintSection({ igHandle, placeInLine = 1 }: Disab
         </Typography>
 
         <Box sx={{ my: 3 }}>
-          <Typography variant="h5" style={styles.price}>Price</Typography>
-          <Typography>
-            $10 USD (example)
+          <Typography variant="h5" style={styles.price}>
+            Price
           </Typography>
+          <Typography>$10 USD (example)</Typography>
           <br />
           <Typography variant="subtitle2">
             Price goes up per each additional NFT created.
           </Typography>
         </Box>
         <Box>
-          <Button
-            size="large"
-            variant="contained"
-            disabled
-          >
+          <Button size="large" variant="contained" disabled>
             Mint #{placeInLine}
           </Button>
         </Box>
       </Grid>
     </Grid>
-  )
-};
+  );
+}

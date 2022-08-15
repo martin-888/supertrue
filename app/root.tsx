@@ -14,11 +14,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import { WagmiConfig } from 'wagmi';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { WagmiConfig } from "wagmi";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { parse as cookieParse } from "cookie";
-import { withEmotionCache } from '@emotion/react';
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
+import { withEmotionCache } from "@emotion/react";
+import { unstable_useEnhancedEffect as useEnhancedEffect } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { withSentry } from "@sentry/remix";
 
@@ -30,20 +30,27 @@ import Header from "~/components/Header";
 import Footer from "~/components/Footer";
 import { wagmiClient, chains } from "~/utils/rainbow";
 import { getSession } from "~/sessions.server";
-import theme from '~/theme';
-import clientStyleContext from '~/contexts/clientStyleContext';
+import theme from "~/theme";
+import clientStyleContext from "~/contexts/clientStyleContext";
 
-import rainbowStylesUrl from '@rainbow-me/rainbowkit/styles.css';
-import appStylesUrl from '~/app.css';
+import rainbowStylesUrl from "@rainbow-me/rainbowkit/styles.css";
+import appStylesUrl from "~/app.css";
 
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: rainbowStylesUrl },
     { rel: "stylesheet", href: appStylesUrl },
-    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Mono&family=DM+Serif+Display&display=swap" },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Space+Mono&family=DM+Serif+Display&display=swap",
+    },
     { rel: "manifest", href: "/manifest.json" },
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
-    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
+    },
     { rel: "icon", href: "/favicon.ico" },
     { rel: "icon", href: "/192.png", type: "image/png", sizes: "192x192" },
     { rel: "apple-touch-icon", href: "/192.png" },
@@ -58,7 +65,8 @@ export const meta: MetaFunction = () => ({
   "twitter:site": "@supertruesocial",
   "og:title": "Supertrue - Follow your favorite artists via NFTs",
   "og:type": "website",
-  "og:description": "Get rewarded for believing in and following creators early. Receive a dated and numbered NFT for any profile you mint.",
+  "og:description":
+    "Get rewarded for believing in and following creators early. Receive a dated and numbered NFT for any profile you mint.",
   "og:site_name": "Supertrue",
   "og:image": "/og.jpg",
   "emotion-insertion-point": "emotion-insertion-point",
@@ -66,8 +74,8 @@ export const meta: MetaFunction = () => ({
 });
 
 type LoaderData = {
-  address?: string,
-  ENV: ENV
+  address?: string;
+  ENV: ENV;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -76,11 +84,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const cookie = cookieParse(request.headers.get("Cookie") || "");
   const token = cookie?.token;
 
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+  const session = await getSession(request.headers.get("Cookie"));
 
-  if (session.has("token") && session.has("address") && session.get("token") === token) {
+  if (
+    session.has("token") &&
+    session.has("address") &&
+    session.get("token") === token
+  ) {
     return json({ address: session.get("address"), ENV });
   }
 
@@ -116,14 +126,14 @@ const App = withEmotionCache((_, emotionCache) => {
       </head>
       <body>
         <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider chains={chains} theme={darkTheme(
-            {
+          <RainbowKitProvider
+            chains={chains}
+            theme={darkTheme({
               accentColor: "#FFFFFF",
               accentColorForeground: "#212121",
               borderRadius: "small",
-              fontStack: "system"
-            }
-          )}
+              fontStack: "system",
+            })}
           >
             <AppProvider isLoggedIn={!!address}>
               <ThemeProvider theme={theme}>
@@ -152,6 +162,6 @@ const App = withEmotionCache((_, emotionCache) => {
       </body>
     </html>
   );
-})
+});
 
 export default withSentry(App);

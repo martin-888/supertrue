@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 import { gql, useMutation } from "@apollo/client";
 
 const UPDATE_COLLECTION_MUTATION = gql`
-    mutation update($input: UpdateCollectionInput!) {
-        UpdateCollection(input: $input) {
-            collection {
-                id
-                description
-            }
-        }
+  mutation update($input: UpdateCollectionInput!) {
+    UpdateCollection(input: $input) {
+      collection {
+        id
+        description
+      }
     }
+  }
 `;
 
 const styles = {
@@ -49,7 +49,8 @@ export default function Bio({ defaultDescription, loading, hasCollection }) {
           BIO
         </Typography>
         <Typography mb={2}>
-          Write your fans a message and tell them how you may want to reward them for buying your Supertrue NFT.
+          Write your fans a message and tell them how you may want to reward
+          them for buying your Supertrue NFT.
         </Typography>
         <TextField
           placeholder="What do you want to share?"
@@ -66,7 +67,9 @@ export default function Bio({ defaultDescription, loading, hasCollection }) {
           loading={updating}
           variant="contained"
           onClick={updateCollection}
-          disabled={loading || !hasCollection || description === defaultDescription}
+          disabled={
+            loading || !hasCollection || description === defaultDescription
+          }
         >
           Save
         </LoadingButton>

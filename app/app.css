@@ -1,20 +1,22 @@
 :root {
-  --token-width:200px;
+  --token-width: 200px;
 }
 body {
   margin: 0;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: white;
 }
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
-h1, h2{
+h1,
+h2 {
   font-weight: 600;
 }
-img{
+img {
   max-width: 100%;
   max-height: 100%;
 }

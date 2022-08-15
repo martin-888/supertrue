@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 type ImageProps = Partial<HTMLImageElement> & {
   src: string;
   fallbackSrc: string;
-}
+};
 
 export default function Image({ src, fallbackSrc, ...others }: ImageProps) {
   const [error, setError] = useState(false);
@@ -16,4 +16,3 @@ export default function Image({ src, fallbackSrc, ...others }: ImageProps) {
     />
   );
 }
-

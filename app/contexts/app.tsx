@@ -1,16 +1,18 @@
 import { createContext, useContext } from "react";
-import type { Magic as MagicType } from 'magic-sdk';
-import { Magic } from 'magic-sdk';
+import type { Magic as MagicType } from "magic-sdk";
+import { Magic } from "magic-sdk";
 
 const isBrowser = typeof window !== "undefined";
 
 // @ts-ignore
-const magic = !isBrowser ? {} : new Magic(ENV.MAGIC_KEY, { network: ENV.NETWORK });
+const magic = !isBrowser
+  ? {}
+  : new Magic(ENV.MAGIC_KEY, { network: ENV.NETWORK });
 
 type AppContext = {
   magic: MagicType;
   isLoggedIn: boolean;
-}
+};
 
 // @ts-ignore
 const AppContext = createContext<AppContext>({ magic });
@@ -22,7 +24,11 @@ type AppProviderProps = {
 
 export function AppProvider({ isLoggedIn, children }: AppProviderProps) {
   // @ts-ignore
-  return <AppContext.Provider value={{ magic, isLoggedIn }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ magic, isLoggedIn }}>
+      {children}
+    </AppContext.Provider>
+  );
 }
 
 export function useAppContext() {

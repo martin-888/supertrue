@@ -12,19 +12,19 @@ import { commitSession, getSession } from "~/sessions.server";
 const styles = {
   centerContainer: {
     textAlign: "center",
-  }
+  },
 };
 
 const LOGIN_MUTATION = gql`
-    mutation login($input: LogInMagicLinkInput!) {
-        LogInMagicLink(input: $input) {
-            token
-            me {
-                id
-                address
-            }
-        }
+  mutation login($input: LogInMagicLinkInput!) {
+    LogInMagicLink(input: $input) {
+      token
+      me {
+        id
+        address
+      }
     }
+  }
 `;
 
 export const action: ActionFunction = async ({ request }) => {
@@ -34,11 +34,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   let error;
 
-  const res = await apolloClient(request).mutate({
-    mutation: LOGIN_MUTATION,
-    variables: { input: { token } },
-  })
-    .catch(e => { error = e.message });
+  const res = await apolloClient(request)
+    .mutate({
+      mutation: LOGIN_MUTATION,
+      variables: { input: { token } },
+    })
+    .catch((e) => {
+      error = e.message;
+    });
 
   if (error) {
     return json({ error });
@@ -46,22 +49,26 @@ export const action: ActionFunction = async ({ request }) => {
 
   const data = res.data.LogInMagicLink;
 
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+  const session = await getSession(request.headers.get("Cookie"));
 
   session.set("token", data.token);
   session.set("address", data.me.address);
 
   const headers = new Headers();
   headers.append("Set-Cookie", await commitSession(session));
-  headers.append('Set-Cookie', `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`);
+  headers.append(
+    "Set-Cookie",
+    `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
+  );
 
   // Login succeeded, send them to the home page.
-  return json({ loginSuccess: true }, {
-    headers,
-  });
-}
+  return json(
+    { loginSuccess: true },
+    {
+      headers,
+    }
+  );
+};
 
 export default function Callback() {
   const fetcher = useFetcher();
@@ -75,25 +82,25 @@ export default function Callback() {
     }
 
     const timeoutId = setTimeout(() => {
-        clearTimeout(timeoutId);
-        navigate("/account/logout");
-      },
-      3000);
+      clearTimeout(timeoutId);
+      navigate("/account/logout");
+    }, 3000);
   }, [fetcher.data, navigate, isError]);
 
   useEffect(() => {
     // On mount, we try to login with a Magic credential token in the URL query.
-    magic.auth.loginWithCredential()
+    magic.auth
+      .loginWithCredential()
       .then((token) => {
         if (!token) {
           setIsError(true);
           throw Error("Token not obtained from magic.link");
         }
-        fetcher.submit({token}, {method: "post"});
+        fetcher.submit({ token }, { method: "post" });
       })
-      .catch(e => {
-        console.log("loginWithCredential error", e)
-      })
+      .catch((e) => {
+        console.log("loginWithCredential error", e);
+      });
   }, [setIsError, magic]);
 
   if (isError || fetcher.data?.error) {
@@ -120,7 +127,7 @@ export default function Callback() {
           </Typography>
         </Box>
       </Container>
-    )
+    );
   }
 
   return (
@@ -132,5 +139,5 @@ export default function Callback() {
         <CircularProgress />
       </Box>
     </Container>
-  )
+  );
 }

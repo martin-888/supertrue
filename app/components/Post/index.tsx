@@ -126,29 +126,29 @@ const styles = {
 };
 
 const UPDATE_POST_MUTATION = gql`
-    mutation updatePost($input: UpdatePostInput!) {
-        UpdatePost(input: $input) {
-            collection {
-                id
-                posts {
-                    content
-                }
-            }
+  mutation updatePost($input: UpdatePostInput!) {
+    UpdatePost(input: $input) {
+      collection {
+        id
+        posts {
+          content
         }
+      }
     }
+  }
 `;
 
 const DELETE_POST_MUTATION = gql`
-    mutation deletePost($input: DeletePostInput!) {
-        DeletePost(input: $input) {
-            collection {
-                id
-                posts {
-                    id
-                }
-            }
+  mutation deletePost($input: DeletePostInput!) {
+    DeletePost(input: $input) {
+      collection {
+        id
+        posts {
+          id
         }
+      }
     }
+  }
 `;
 
 type PostType = {
@@ -161,13 +161,13 @@ type PostType = {
 };
 
 export default function Post({
-    post,
-    artistName,
-    artistId,
-    username,
-    instagram,
-    hasEditingRights = false,
-  }: PostType) {
+  post,
+  artistName,
+  artistId,
+  username,
+  instagram,
+  hasEditingRights = false,
+}: PostType) {
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

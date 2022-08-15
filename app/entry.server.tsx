@@ -36,38 +36,41 @@ export default function handleRequest(
     </ApolloProvider>
   );
 
-  return getDataFromTree(App).then(() => new Promise((resolve, reject) => {
-    let didError = false;
+  return getDataFromTree(App).then(
+    () =>
+      new Promise((resolve, reject) => {
+        let didError = false;
 
-    const initialState = client.extract();
+        const initialState = client.extract();
 
-    const { pipe, abort } = renderToPipeableStream(
-      <ApolloContext.Provider value={initialState}>
-        {App}
-      </ApolloContext.Provider>,
-      {
-        [callbackName]() {
-          let body = new PassThrough();
+        const { pipe, abort } = renderToPipeableStream(
+          <ApolloContext.Provider value={initialState}>
+            {App}
+          </ApolloContext.Provider>,
+          {
+            [callbackName]() {
+              let body = new PassThrough();
 
-          responseHeaders.set("Content-Type", "text/html");
+              responseHeaders.set("Content-Type", "text/html");
 
-          resolve(
-            new Response(body, {
-              status: didError ? 500 : responseStatusCode,
-              headers: responseHeaders,
-            })
-          );
-          pipe(body);
-        },
-        onShellError(err: unknown) {
-          reject(err);
-        },
-        onError(error: unknown) {
-          didError = true;
-          console.error(error);
-        },
-      }
-    );
-    setTimeout(abort, ABORT_DELAY);
-  }));
+              resolve(
+                new Response(body, {
+                  status: didError ? 500 : responseStatusCode,
+                  headers: responseHeaders,
+                })
+              );
+              pipe(body);
+            },
+            onShellError(err: unknown) {
+              reject(err);
+            },
+            onError(error: unknown) {
+              didError = true;
+              console.error(error);
+            },
+          }
+        );
+        setTimeout(abort, ABORT_DELAY);
+      })
+  );
 }

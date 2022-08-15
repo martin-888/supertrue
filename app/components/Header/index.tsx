@@ -14,25 +14,25 @@ import {
   Button,
   AppBar,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
 
 import { useAppContext } from "~/contexts/app";
 import logo from "./logo.png";
 
 const ME_QUERY = gql`
-    query me {
-        me {
-            id
-            address
-            collection {
-                id
-                name
-                artistId
-                username
-            }
-        }
+  query me {
+    me {
+      id
+      address
+      collection {
+        id
+        name
+        artistId
+        username
+      }
     }
+  }
 `;
 
 const pages = [
@@ -70,7 +70,7 @@ const MenuLinkItem = ({ to, onClick, title, sx }: MenuLinkItemPros) => (
 );
 
 type HeaderProps = {
-  address?: string
+  address?: string;
 };
 
 const Header = ({ address }: HeaderProps) => {
@@ -83,20 +83,23 @@ const Header = ({ address }: HeaderProps) => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!address);
 
-  const isLoginLogoutPage = location.pathname.indexOf("/account/login") !== -1
-    || location.pathname.indexOf("/account/logout") !== -1;
+  const isLoginLogoutPage =
+    location.pathname.indexOf("/account/login") !== -1 ||
+    location.pathname.indexOf("/account/logout") !== -1;
 
   const { data } = useQuery(ME_QUERY);
   const me = data?.me;
 
   useEffect(() => {
     // logout when addresses don't match
-    magic.user.isLoggedIn().then(async loggedIn => {
+    magic.user.isLoggedIn().then(async (loggedIn) => {
       if (loggedIn) {
         const metadata = await magic.user.getMetadata();
         setIsLoggedIn(address === metadata?.publicAddress?.toLowerCase());
       } else {
-        setIsLoggedIn(!!(address && address === account?.address?.toLowerCase()));
+        setIsLoggedIn(
+          !!(address && address === account?.address?.toLowerCase())
+        );
       }
 
       if (isLoginLogoutPage) {
@@ -337,9 +340,7 @@ const Header = ({ address }: HeaderProps) => {
               </Link>
             )}
           </Typography>
-          <Box sx={{ flexGrow: 0 }}>
-            {!isLoginLogoutPage && renderMenu()}
-          </Box>
+          <Box sx={{ flexGrow: 0 }}>{!isLoginLogoutPage && renderMenu()}</Box>
         </Toolbar>
       </Container>
     </AppBar>

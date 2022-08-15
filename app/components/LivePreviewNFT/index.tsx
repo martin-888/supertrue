@@ -1,21 +1,25 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
-import base from './base.png';
+import base from "./base.png";
 
 const styles = {
   wrapper: {
     maxWidth: "800px",
     backgroundImage: `url(${base})`,
-    backgroundSize: "contain"
+    backgroundSize: "contain",
   },
   canvas: {
     maxWidth: "100%",
-    display: "block"
+    display: "block",
   },
 };
 
 // https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element
-const getLines = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+const getLines = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+) => {
   const words = text.split(" ");
   const lines = [];
   let currentLine = words[0];
@@ -33,15 +37,17 @@ const getLines = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   }
   lines.push(currentLine);
 
-  return lines.find(l => ctx.measureText(l).width > maxWidth) ? ["1","2","3","4"] : lines;
-}
+  return lines.find((l) => ctx.measureText(l).width > maxWidth)
+    ? ["1", "2", "3", "4"]
+    : lines;
+};
 
 type LivePreviewNFTProps = {
   title: string;
 };
 
 export default function LivePreviewNFT({ title }: LivePreviewNFTProps) {
-  const ref = useRef<HTMLCanvasElement>()
+  const ref = useRef<HTMLCanvasElement>();
 
   const generateImage = (ctx: CanvasRenderingContext2D) => {
     ctx.fillStyle = "white";
@@ -86,9 +92,9 @@ export default function LivePreviewNFT({ title }: LivePreviewNFTProps) {
   };
 
   useEffect(() => {
-    const ctx = ref?.current?.getContext('2d');
+    const ctx = ref?.current?.getContext("2d");
     ctx && generateImage(ctx);
-  }, [ref])
+  }, [ref]);
 
   return (
     <div style={styles.wrapper}>

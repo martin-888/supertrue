@@ -11,19 +11,19 @@ import {
 import ArtistNFT from "~/components/ArtistNFT";
 
 const NFTS_QUERY = gql`
-    query myNfts {
-        me {
-            id
-            nfts {
-                id
-                tokenId
-                artistId
-                collection {
-                    username
-                }
-            }
+  query myNfts {
+    me {
+      id
+      nfts {
+        id
+        tokenId
+        artistId
+        collection {
+          username
         }
+      }
     }
+  }
 `;
 
 export default function NFTs() {

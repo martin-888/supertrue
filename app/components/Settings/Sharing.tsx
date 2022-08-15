@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import { Typography } from "@mui/material";
 
 import Image from "~/components/Image";
@@ -12,7 +12,7 @@ const styles = {
 
 type SharingProps = {
   artistId: number;
-}
+};
 
 export default function Sharing({ artistId }: SharingProps) {
   return (
@@ -20,9 +20,7 @@ export default function Sharing({ artistId }: SharingProps) {
       <Typography variant="h3" mb={2}>
         SHARING KIT
       </Typography>
-      <Typography mb={2}>
-        Share on your instagram.
-      </Typography>
+      <Typography mb={2}>Share on your instagram.</Typography>
       {artistId && (
         <Image
           alt="Starting Kit Material"

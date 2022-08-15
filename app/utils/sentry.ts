@@ -3,15 +3,18 @@ import { BrowserTracing } from "@sentry/tracing";
 
 const isBrowser = typeof window !== "undefined";
 
-const isCorrectEnv = ["production", "staging", "dev"].includes(ENV.ENVIRONMENT) && isBrowser && window.location.hostname !== "localhost";
+const isCorrectEnv =
+  ["production", "staging", "dev"].includes(ENV.ENVIRONMENT) &&
+  isBrowser &&
+  window.location.hostname !== "localhost";
 
 export function sendToSentry(e: any) {
   if (isCorrectEnv) Sentry.captureException(e);
 }
 
 export function initSentry() {
-  if (isCorrectEnv) Sentry.init(
-    {
+  if (isCorrectEnv)
+    Sentry.init({
       dsn: ENV.SENTRY_KEY,
       integrations: [new BrowserTracing()],
       environment: ENV.ENVIRONMENT,
@@ -19,6 +22,5 @@ export function initSentry() {
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
       tracesSampleRate: 1.0,
-    }
-  );
+    });
 }

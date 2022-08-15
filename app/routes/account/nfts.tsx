@@ -14,31 +14,29 @@ import ArtistNFT from "~/components/ArtistNFT";
 import { getSession } from "~/sessions.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+  const session = await getSession(request.headers.get("Cookie"));
 
   if (!session.has("token")) {
     return redirect("/account/login?redirect=/account/nfts");
   }
 
   return null;
-}
+};
 
 const NFTS_QUERY = gql`
-    query myNfts {
-        me {
-            id
-            nfts {
-                id
-                tokenId
-                artistId
-                collection {
-                    username
-                }
-            }
+  query myNfts {
+    me {
+      id
+      nfts {
+        id
+        tokenId
+        artistId
+        collection {
+          username
         }
+      }
     }
+  }
 `;
 
 export default function NFTs() {

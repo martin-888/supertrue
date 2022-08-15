@@ -8,38 +8,36 @@ import Post from "~/components/Post";
 import { getSession } from "~/sessions.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+  const session = await getSession(request.headers.get("Cookie"));
 
   if (!session.has("token")) {
     return redirect("/account/login?redirect=/account/posts");
   }
 
   return null;
-}
+};
 
 const ME_QUERY = gql`
-    query me {
-        me {
-            id
-            collection {
-                id
-                address
-                name
-                artistId
-                username
-                instagram
-                symbol
-                posts {
-                    id
-                    lastNftID
-                    content
-                    createdAt
-                }
-            }
+  query me {
+    me {
+      id
+      collection {
+        id
+        address
+        name
+        artistId
+        username
+        instagram
+        symbol
+        posts {
+          id
+          lastNftID
+          content
+          createdAt
         }
+      }
     }
+  }
 `;
 
 const styles = {

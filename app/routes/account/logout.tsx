@@ -2,26 +2,27 @@ import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect } from "wagmi";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
-import { useAppContext } from '~/contexts/app';
+import { useAppContext } from "~/contexts/app";
 import { getSession, destroySession } from "~/sessions.server";
 
 const styles = {
   centerContainer: {
     textAlign: "center",
-  }
+  },
 };
 
-export const action: ActionFunction = async ({request}) => {
-  const session = await getSession(
-    request.headers.get("Cookie")
-  );
+export const action: ActionFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
 
   const headers = new Headers();
   headers.append("Set-Cookie", await destroySession(session));
-  headers.append('Set-Cookie', `token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax`);
+  headers.append(
+    "Set-Cookie",
+    `token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax`
+  );
 
   return redirect("/account/login", {
     headers,
@@ -42,20 +43,20 @@ export default function Logout() {
       loggedOut = true;
     }
 
-    magic.user.isLoggedIn()
-      .then(async isLoggedIn => {
-        if (isLoggedIn) {
-          await magic.user.logout();
-          loggedOut = true;
-        }
+    magic.user.isLoggedIn().then(async (isLoggedIn) => {
+      if (isLoggedIn) {
+        await magic.user.logout();
+        loggedOut = true;
+      }
 
-        document.cookie = "token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax";
+      document.cookie =
+        "token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax";
 
-        if (loggedOut) {
-          window.location.reload();
-        } else {
-          fetcher.submit({}, {method: "post"});
-        }
+      if (loggedOut) {
+        window.location.reload();
+      } else {
+        fetcher.submit({}, { method: "post" });
+      }
     });
   }, []);
 

@@ -3,8 +3,18 @@ import { json } from "@remix-run/node";
 import React, { useEffect, useState } from "react";
 import { useParams } from "@remix-run/react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import LoadingButton from '@mui/lab/LoadingButton';
-import { Container, Typography, Box, TextField, useMediaQuery, useTheme, CircularProgress, Button, Paper } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  useMediaQuery,
+  useTheme,
+  CircularProgress,
+  Button,
+  Paper,
+} from "@mui/material";
 
 import { sendToSentry } from "~/utils/sentry";
 import { isValidEmail } from "~/utils/validate";
@@ -14,7 +24,7 @@ import { apolloClient } from "~/contexts/apollo";
 export const meta: MetaFunction = ({ params, data }) => {
   if (!data?.reservation?.instagram) {
     return {
-      title: `Page Not Found | Supertrue`
+      title: `Page Not Found | Supertrue`,
     };
   }
 
@@ -24,29 +34,28 @@ export const meta: MetaFunction = ({ params, data }) => {
   };
 };
 
-
 const RESERVE_COLLECTION_MUTATION = gql`
-    mutation reserveArtist($input:ReserveCollectionInput!) {
-        ReserveCollection(input:$input) {
-            position
-        }
+  mutation reserveArtist($input: ReserveCollectionInput!) {
+    ReserveCollection(input: $input) {
+      position
     }
+  }
 `;
 
 const RESERVATION_QUERY = gql`
-    query getReservation($instagram: String!) {
-        me {
-            id
-            email
-            collection {
-                id
-            }
-        }
-        reservation(instagram: $instagram) {
-            instagram
-            lineLength
-        }
+  query getReservation($instagram: String!) {
+    me {
+      id
+      email
+      collection {
+        id
+      }
     }
+    reservation(instagram: $instagram) {
+      instagram
+      lineLength
+    }
+  }
 `;
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -66,7 +75,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 const styles = {
   container: {
-    marginTop: 0
+    marginTop: 0,
   },
   secondaryContainer: {
     maxWidth: "380px",
@@ -91,20 +100,18 @@ export default function ReserveHandle() {
   const isMobile = useMediaQuery(theme.breakpoints.down(600));
 
   const { data, loading, error } = useQuery(RESERVATION_QUERY, {
-    variables: { instagram: igHandle || "" }
+    variables: { instagram: igHandle || "" },
   });
 
   const reservation = data?.reservation;
   const user = data?.me;
-  const placeInLine = reservation?.lineLength + 1 || '';
+  const placeInLine = reservation?.lineLength + 1 || "";
 
   useEffect(() => {
-      if (email === "" && data?.me?.email) {
-        setEmail(data.me.email)
-      }
-    },
-    [email, data]
-  );
+    if (email === "" && data?.me?.email) {
+      setEmail(data.me.email);
+    }
+  }, [email, data]);
 
   const [reserveCollectionMutation] = useMutation(RESERVE_COLLECTION_MUTATION, {
     onCompleted: () => {
@@ -124,16 +131,18 @@ export default function ReserveHandle() {
       variables: {
         input: {
           email,
-          instagram
-        }
+          instagram,
+        },
       },
     });
     setIsLoading(false);
   };
 
-  const ReservationNotFound = ({igHandle}: {igHandle: string}) => (
+  const ReservationNotFound = ({ igHandle }: { igHandle: string }) => (
     <Box>
-      <Typography variant="h2" mb={2}>Artist Reservation Not Found</Typography>
+      <Typography variant="h2" mb={2}>
+        Artist Reservation Not Found
+      </Typography>
       <Typography variant="subtitle1">
         {igHandle} has not been reserved yet. Be the first!
       </Typography>
@@ -148,7 +157,7 @@ export default function ReserveHandle() {
     </Box>
   );
 
-  const ClaimCTA = ({igHandle}: {igHandle: string}) => {
+  const ClaimCTA = ({ igHandle }: { igHandle: string }) => {
     const localStyles = {
       box: {
         display: "flex",
@@ -160,8 +169,8 @@ export default function ReserveHandle() {
       subtitle: {
         paddingRight: 2,
         fontWeight: 600,
-        marginBottom: isMobile ? 2 : 'initial'
-      }
+        marginBottom: isMobile ? 2 : "initial",
+      },
     };
 
     return (
@@ -170,16 +179,12 @@ export default function ReserveHandle() {
           <Typography variant="subtitle1" sx={localStyles.subtitle}>
             Are you {igHandle}?
           </Typography>
-          <Button
-            size="large"
-            variant="contained"
-            href={`/claim/${igHandle}`}
-          >
+          <Button size="large" variant="contained" href={`/claim/${igHandle}`}>
             CLAIM THIS PROFILE
           </Button>
         </Box>
       </Paper>
-    )
+    );
   };
 
   return (
@@ -193,25 +198,32 @@ export default function ReserveHandle() {
       {error && (
         <Box sx={styles.centerContainer}>
           <Typography variant="h2">
-            `An error occurred getting reservation info for ${igHandle}, please refresh page.`
+            `An error occurred getting reservation info for ${igHandle}, please
+            refresh page.`
           </Typography>
         </Box>
       )}
 
-      {!loading && !reservation && (
-        <ReservationNotFound igHandle={igHandle!}/>
-      )}
+      {!loading && !reservation && <ReservationNotFound igHandle={igHandle!} />}
 
       {reservation && (
         <>
-          {!user?.collection?.id && <ClaimCTA igHandle={reservation.instagram}/>}
+          {!user?.collection?.id && (
+            <ClaimCTA igHandle={reservation.instagram} />
+          )}
           <Box mb={6}>
-            <DisabledMintSection igHandle={reservation.instagram} placeInLine={placeInLine} />
+            <DisabledMintSection
+              igHandle={reservation.instagram}
+              placeInLine={placeInLine}
+            />
           </Box>
           <Box>
-            <Typography variant="h2" mb={2}>RESERVE YOUR SPOT</Typography>
+            <Typography variant="h2" mb={2}>
+              RESERVE YOUR SPOT
+            </Typography>
             <Typography variant="subtitle1">
-              You'll be added to the allow list and keep your position in line when @{igHandle} joins. Currently, you're #{placeInLine} in line.
+              You'll be added to the allow list and keep your position in line
+              when @{igHandle} joins. Currently, you're #{placeInLine} in line.
             </Typography>
             <Box sx={styles.secondaryContainer} mb={8}>
               <TextField
@@ -240,5 +252,5 @@ export default function ReserveHandle() {
       )}
       <Typography paragraph>{reserveStatus}</Typography>
     </Container>
-  )
+  );
 }

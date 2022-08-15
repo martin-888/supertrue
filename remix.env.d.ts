@@ -2,6 +2,6 @@
 /// <reference types="@remix-run/node/globals" />
 
 interface Window {
-  __INITIAL_STATE__: any,
-  requestIdleCallback: any,
+  __INITIAL_STATE__: any;
+  requestIdleCallback: any;
 }

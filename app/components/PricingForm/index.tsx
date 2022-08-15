@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Typography, Box, InputAdornment } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 import { gql, useMutation } from "@apollo/client";
-import { useProvider } from 'wagmi';
+import { useProvider } from "wagmi";
 
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
 import { sendToSentry } from "~/utils/sentry";
 
 const styles = {
   error: { color: "red" },
-  input: { maxWidth: "180px", marginRight: 2 }
+  input: { maxWidth: "180px", marginRight: 2 },
 };
 
 const UPDATE_PRICING_MUTATION = gql`
-    mutation updatePricing($input: UpdatePricingInput!) {
-        UpdatePricing(input: $input) {
-            tx
-        }
+  mutation updatePricing($input: UpdatePricingInput!) {
+    UpdatePricing(input: $input) {
+      tx
     }
+  }
 `;
 
 export type PricingFormProps = {
@@ -118,7 +118,9 @@ export default function PricingForm({
       {updating && (
         <Box mb={1} mt={1}>
           <Typography>Price is being updated on blockchain.</Typography>
-          <Typography>Please wait 1-3 minutes to see applied changes.</Typography>
+          <Typography>
+            Please wait 1-3 minutes to see applied changes.
+          </Typography>
         </Box>
       )}
 
@@ -136,7 +138,9 @@ export default function PricingForm({
       </LoadingButton>
 
       {updateError && (
-        <Typography mt={2} sx={styles.error}>{updateError}</Typography>
+        <Typography mt={2} sx={styles.error}>
+          {updateError}
+        </Typography>
       )}
     </div>
   );

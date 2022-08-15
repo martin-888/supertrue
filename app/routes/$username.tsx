@@ -11,7 +11,7 @@ import {
   AccordionDetails,
   Container,
   Grid,
-  Paper
+  Paper,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -26,7 +26,7 @@ import generating from "~/assets/img/generating.jpg";
 export const meta: MetaFunction = ({ data }) => {
   if (!data?.collection?.name) {
     return {
-      title: `Page Not Found | Supertrue`
+      title: `Page Not Found | Supertrue`,
     };
   }
 
@@ -44,7 +44,7 @@ const styles = {
   price: {
     textTransform: "uppercase",
     fontWeight: "bold",
-  }
+  },
 };
 
 const COLLECTION_QUERY = gql`
@@ -174,11 +174,11 @@ function FAQ() {
 }
 
 const CREATE_CHECKOUT_LINK_MUTATION = gql`
-    mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
-        CreateCheckoutLink(input: $input) {
-            link
-        }
+  mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
+    CreateCheckoutLink(input: $input) {
+      link
     }
+  }
 `;
 
 const SHOW_CENTS_THRESHOLD = 10000;
@@ -244,7 +244,9 @@ export default function Artist() {
           </Typography>
 
           <Box mb={1} my={3}>
-            <Typography variant="h5" style={styles.price}>Price</Typography>
+            <Typography variant="h5" style={styles.price}>
+              Price
+            </Typography>
             <Typography>
               {(artist.price / 10 ** 18).toFixed(2)} MATIC (~$
               {artist.priceCents < SHOW_CENTS_THRESHOLD
@@ -279,7 +281,9 @@ export default function Artist() {
         <Box mb={6}>
           <Paper elevation={2}>
             <Box p={3}>
-              <Typography variant="h4" mb={2}>About</Typography>
+              <Typography variant="h4" mb={2}>
+                About
+              </Typography>
               <Typography>{artist.description}</Typography>
             </Box>
           </Paper>

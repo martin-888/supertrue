@@ -16,8 +16,8 @@ type ArtistNFTProps = {
     minted: number;
     owner?: {
       username: string;
-    }
-  }
+    };
+  };
 };
 
 export default function ArtistNFT({ artist }: ArtistNFTProps) {

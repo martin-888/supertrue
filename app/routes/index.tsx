@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Box,
-  Tab,
-  Tabs,
-  Container,
-} from "@mui/material";
+import { Box, Tab, Tabs, Container } from "@mui/material";
 
 import ArtistSearch from "~/components/ArtistSearch";
 import NewsFeed from "~/components/NewsFeed";
@@ -18,15 +13,9 @@ type TabPanelProps = {
 
 function TabPanel({ children, value, index, ...other }: TabPanelProps) {
   return (
-    <div
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      {...other}
-    >
+    <div hidden={value !== index} id={`tabpanel-${index}`} {...other}>
       {value === index && (
-        <Box sx={{ paddingX: 0, paddingY: 4 }}>
-          {children}
-        </Box>
+        <Box sx={{ paddingX: 0, paddingY: 4 }}>{children}</Box>
       )}
     </div>
   );
@@ -34,17 +23,17 @@ function TabPanel({ children, value, index, ...other }: TabPanelProps) {
 
 const tabContent = [
   {
-    label: 'Search & Discover',
-    content: <ArtistSearch/>,
+    label: "Search & Discover",
+    content: <ArtistSearch />,
   },
   {
-    label: 'My Artist Feed',
-    content: <NewsFeed/>,
+    label: "My Artist Feed",
+    content: <NewsFeed />,
   },
   {
-    label: 'My NFTs',
-    content: <NFTs/>,
-  }
+    label: "My NFTs",
+    content: <NFTs />,
+  },
 ];
 
 export default function Index() {
@@ -55,7 +44,7 @@ export default function Index() {
       <Box
         sx={{
           borderBottom: 1,
-          borderColor: 'divider'
+          borderColor: "divider",
         }}
       >
         <Tabs
@@ -64,25 +53,17 @@ export default function Index() {
           value={tabValue}
           onChange={(e, val) => setTabValue(val)}
         >
-          {tabContent.map(({label}, i) => (
-            <Tab
-              label={label}
-              id={i}
-              key={`tab-content-${i}`}
-            />
+          {tabContent.map(({ label }, i) => (
+            <Tab label={label} id={i} key={`tab-content-${i}`} />
           ))}
         </Tabs>
       </Box>
 
-      {tabContent.map(({content}, i) => (
-        <TabPanel
-          value={tabValue}
-          index={i}
-          key={`tab-panel-${i}`}
-        >
+      {tabContent.map(({ content }, i) => (
+        <TabPanel value={tabValue} index={i} key={`tab-panel-${i}`}>
           {content}
         </TabPanel>
       ))}
     </Container>
-  )
+  );
 }
