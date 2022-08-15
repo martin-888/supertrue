@@ -176,7 +176,7 @@ const Header = ({ address }: HeaderProps) => {
                   opacity: 0.5,
                 }}
               >
-                {address.slice(0, 6)}...{address.slice(-4)}
+                {address!.slice(0, 6)}...{address!.slice(-4)}
               </Typography>
             </MenuItem>
             {isMobile && (
@@ -238,7 +238,7 @@ const Header = ({ address }: HeaderProps) => {
                 opacity: 0.5,
               }}
             >
-              {address.slice(0, 6)}...{address.slice(-4)}
+              {address!.slice(0, 6)}...{address!.slice(-4)}
             </Typography>
           </MenuItem>
           <MenuItem

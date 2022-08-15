@@ -58,7 +58,7 @@ const NEWSFEED_QUERY = gql`
     }
 `;
 
-const getPostHeader = (tokenId, name) =>
+const getPostHeader = (tokenId: any, name: string) =>
   tokenId ? `You own Supertrue #${tokenId} for ${name}` : null;
 
 export default function NewsFeed() {
@@ -80,7 +80,7 @@ export default function NewsFeed() {
         </Box>
       )}
 
-      {data?.posts.map((post, i) => {
+      {data?.posts.map((post, i: number) => {
         const { author, content, lastNftID } = post;
         const ownedArtistNftToken = data?.me?.nfts.find(
           (nft) => nft.artistId === Number(author.artistId)

@@ -10,7 +10,11 @@ const styles = {
   startingKit: { maxWidth: "250px" },
 };
 
-export default function Sharing({ artistId }) {
+type SharingProps = {
+  artistId: number;
+}
+
+export default function Sharing({ artistId }: SharingProps) {
   return (
     <section>
       <Typography variant="h3" mb={2}>

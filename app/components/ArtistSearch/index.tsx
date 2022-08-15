@@ -30,6 +30,43 @@ const COLLECTIONS_QUERY = gql`
     }
 `;
 
+const reserveCTAStyles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    minHeight: "260px",
+    textAlign: "center",
+    paddingTop: { xs: 4, sm: 0 }
+  }
+};
+
+type ReserveCTAProps = {
+  headingText: string;
+  searchQuery: string;
+};
+
+const ReserveCTA = ({headingText, searchQuery}: ReserveCTAProps) => {
+  return (
+    <Box sx={reserveCTAStyles.container}>
+      <Typography variant="h3" component="h3" mb={4}>
+        {headingText}
+      </Typography>
+      <Box>
+        <Button
+          variant="contained"
+          size="large"
+          href="/reserve"
+        >
+          Add {searchQuery}
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
 /**
  * Component: NFT Search Page
  */
@@ -66,38 +103,6 @@ export default function ArtistSearch() {
     setFilteredArtists([...artistsCollection, ...artistsReservation]);
   }, [searchQuery, data]);
 
-  const ReserveCTA = ({headingText}) => {
-    const ctaStyles = {
-      container: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        minHeight: "260px",
-        textAlign: "center",
-        paddingTop: { xs: 4, sm: 0 }
-      }
-    };
-
-    return (
-      <Box sx={ctaStyles.container}>
-        <Typography variant="h3" component="h3" mb={4}>
-          {headingText}
-        </Typography>
-        <Box>
-          <Button
-            variant="contained"
-            size="large"
-            href="/reserve"
-          >
-            Add {searchQuery}
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
-
   const getContent = () => {
     if (loading) {
       return (
@@ -125,7 +130,10 @@ export default function ArtistSearch() {
     }
     if (searchQuery.length > 0 && !filteredArtists.length) {
       return (
-        <ReserveCTA headingText={`Sorry, we couldn't find "${searchQuery.trim()}"`} />
+        <ReserveCTA
+          headingText={`Sorry, we couldn't find "${searchQuery.trim()}"`}
+          searchQuery={searchQuery}
+        />
       );
     }
 
@@ -158,7 +166,10 @@ export default function ArtistSearch() {
           ))}
           {searchQuery !== "" && (
             <Grid item key="claim-CTA" xs={12} sm={6} md={4}>
-              <ReserveCTA headingText={`Did you mean another "${searchQuery.trim()}"?`} />
+              <ReserveCTA
+                headingText={`Did you mean another "${searchQuery.trim()}"?`}
+                searchQuery={searchQuery}
+              />
             </Grid>
           )}
         </Grid>

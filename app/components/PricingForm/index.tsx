@@ -20,18 +20,25 @@ const UPDATE_PRICING_MUTATION = gql`
     }
 `;
 
+export type PricingFormProps = {
+  loading: boolean;
+  defaultPrice: number;
+  startPolling: (ms: number) => void;
+  stopPolling: () => void;
+};
+
 export default function PricingForm({
   loading,
   defaultPrice,
   startPolling,
   stopPolling,
-}) {
+}: PricingFormProps) {
   const provider = useProvider();
 
   const [updating, setUpdating] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
-  const [priceError, setPriceError] = useState(null);
-  const [price, setPrice] = useState(defaultPrice);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [priceError, setPriceError] = useState<string | null>(null);
+  const [price, setPrice] = useState<number | string>(defaultPrice);
 
   useEffect(() => {
     if (defaultPrice === price) {
@@ -41,7 +48,7 @@ export default function PricingForm({
   }, [defaultPrice, price]);
 
   const [updatePricingMutation] = useMutation(UPDATE_PRICING_MUTATION, {
-    variables: { input: { startPrice: price * 100 } },
+    variables: { input: { startPrice: Number(price) * 100 } },
     onCompleted: ({ UpdatePricing: { tx } }) =>
       waitForMintedTransaction({ provider, tx }).then(({ error }) => {
         if (error) {
@@ -77,17 +84,19 @@ export default function PricingForm({
           helperText={priceError}
           disabled={updating}
           onChange={({ target: { value } }) => {
-            if (value < 1) {
+            const val = Number(value);
+
+            if (val < 1) {
               setPriceError("Must be at least $10");
               setPrice("");
-            } else if (value < 10) {
+            } else if (val < 10) {
               setPriceError("Must be at least $10");
-              setPrice(Number(value));
-            } else if (value > 1000) {
+              setPrice(val);
+            } else if (val > 1000) {
               setPrice(1000);
               setPriceError(null);
             } else {
-              setPrice(Number(value));
+              setPrice(val);
               setPriceError(null);
             }
           }}
@@ -98,7 +107,7 @@ export default function PricingForm({
           type="number"
           margin="normal"
           sx={styles.input}
-          value={price * 5}
+          value={Number(price) * 5}
           disabled
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,

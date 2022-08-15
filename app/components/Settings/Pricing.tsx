@@ -1,9 +1,11 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 
-import PricingForm from "~/components/PricingForm";
+import PricingForm, { PricingFormProps } from "~/components/PricingForm";
 
-export default function Pricing({ loading, defaultPrice, startPolling, stopPolling }) {
+type PricingProps = PricingFormProps;
+
+export default function Pricing({ loading, defaultPrice, startPolling, stopPolling }: PricingProps) {
   return (
     <section>
       <Typography variant="h3" mb={2}>

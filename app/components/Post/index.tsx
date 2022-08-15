@@ -151,14 +151,23 @@ const DELETE_POST_MUTATION = gql`
     }
 `;
 
+type PostType = {
+  post: any;
+  artistName: string;
+  artistId: number;
+  username: string;
+  instagram: string;
+  hasEditingRights?: boolean;
+};
+
 export default function Post({
-                               post,
-                               artistName,
-                               artistId,
-                               username,
-                               instagram,
-                               hasEditingRights = false,
-                             }) {
+    post,
+    artistName,
+    artistId,
+    username,
+    instagram,
+    hasEditingRights = false,
+  }: PostType) {
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

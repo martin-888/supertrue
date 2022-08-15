@@ -15,7 +15,7 @@ const styles = {
 };
 
 // https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element
-const getLines = (ctx, text, maxWidth) => {
+const getLines = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
   const words = text.split(" ");
   const lines = [];
   let currentLine = words[0];
@@ -36,10 +36,14 @@ const getLines = (ctx, text, maxWidth) => {
   return lines.find(l => ctx.measureText(l).width > maxWidth) ? ["1","2","3","4"] : lines;
 }
 
-export default function LivePreviewNFT({ title }) {
-  const ref = useRef()
+type LivePreviewNFTProps = {
+  title: string;
+};
 
-  const generateImage = (ctx) => {
+export default function LivePreviewNFT({ title }: LivePreviewNFTProps) {
+  const ref = useRef<HTMLCanvasElement>()
+
+  const generateImage = (ctx: CanvasRenderingContext2D) => {
     ctx.fillStyle = "white";
 
     // Name

@@ -45,9 +45,16 @@ const provider = new ethers.providers.InfuraProvider(
   INFURA_KEY
 );
 
-export default function Balance({ user, startPolling, stopPolling, loading }) {
+export type BalanceProps = {
+  loading: boolean;
+  user: any;
+  startPolling: (ms: number) => void;
+  stopPolling: () => void;
+};
+
+export default function Balance({ user, startPolling, stopPolling, loading }: BalanceProps) {
   const [withdrawing, setWithdrawing] = useState(false);
-  const [withdrawError, setWithdrawError] = useState(null);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [withdrawAddress, setWithdrawAddress] = useState("");
 
   useEffect(() => {
@@ -132,7 +139,6 @@ export default function Balance({ user, startPolling, stopPolling, loading }) {
             variant="contained"
             onClick={withdraw}
             disabled={loading || !hasMinimumFunds}
-            sx={styles.withdrawBtn}
           >
             Withdraw
           </LoadingButton>

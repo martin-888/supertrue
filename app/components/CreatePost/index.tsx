@@ -87,7 +87,11 @@ const styles = {
   customReachInput: { width: "80px", padding: "2px 5px" },
 };
 
-export default function CreatePost({ collection }) {
+type CreatePostProps = {
+  collection: any;
+}
+
+export default function CreatePost({ collection }: CreatePostProps) {
   const [content, setContent] = useState("");
   const [creating, setCreating] = useState(false);
   const [lastNftID, setLastNftID] = useState(predefinedPostReaches[1]);

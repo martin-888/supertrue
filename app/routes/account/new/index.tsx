@@ -89,7 +89,7 @@ export default function CreateArtist() {
   const [username, setUsername] = useState("");
   const [instagram, setInstagram] = useState(handle || "");
   const [instagramValid, setInstagramValid] = useState(true);
-  const [createCollectionError, setCreateCollectionError] = useState(null);
+  const [createCollectionError, setCreateCollectionError] = useState<string | null>(null);
   const [isTxError, setIsTxError] = useState(false);
   const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
 
@@ -256,7 +256,7 @@ export default function CreateArtist() {
             variant="standard"
             margin="normal"
             value={instagram}
-            disabled={handle?.length > 0 || me?.collection || creating}
+            disabled={(handle || "").length > 0 || me?.collection || creating}
             onChange={({ target: { value } }) =>
               setInstagram(value.trim().slice(0, 30))
             }

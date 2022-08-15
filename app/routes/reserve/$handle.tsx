@@ -131,7 +131,7 @@ export default function ReserveHandle() {
     setIsLoading(false);
   };
 
-  const ReservationNotFound = ({igHandle}) => (
+  const ReservationNotFound = ({igHandle}: {igHandle: string}) => (
     <Box>
       <Typography variant="h2" mb={2}>Artist Reservation Not Found</Typography>
       <Typography variant="subtitle1">
@@ -148,7 +148,7 @@ export default function ReserveHandle() {
     </Box>
   );
 
-  const ClaimCTA = ({igHandle}) => {
+  const ClaimCTA = ({igHandle}: {igHandle: string}) => {
     const localStyles = {
       box: {
         display: "flex",
@@ -199,7 +199,7 @@ export default function ReserveHandle() {
       )}
 
       {!loading && !reservation && (
-        <ReservationNotFound igHandle={igHandle}/>
+        <ReservationNotFound igHandle={igHandle!}/>
       )}
 
       {reservation && (
@@ -230,7 +230,7 @@ export default function ReserveHandle() {
                 size="large"
                 disabled={!isValidEmail(email)}
                 loading={isLoading}
-                onClick={() => reserve(igHandle)}
+                onClick={() => reserve(igHandle!)}
               >
                 RESERVE
               </LoadingButton>
