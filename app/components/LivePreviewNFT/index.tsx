@@ -46,55 +46,55 @@ type LivePreviewNFTProps = {
   title: string;
 };
 
-export default function LivePreviewNFT({ title }: LivePreviewNFTProps) {
-  const ref = useRef<HTMLCanvasElement>();
+const generateImage = (ctx: CanvasRenderingContext2D, title: string) => {
+  ctx.fillStyle = "white";
 
-  const generateImage = (ctx: CanvasRenderingContext2D) => {
-    ctx.fillStyle = "white";
+  // Name
+  const words = title.split(" ").length;
 
-    // Name
-    const words = title.split(" ").length;
-
-    let fontSize = 164;
+  let fontSize = 164;
+  ctx.font = `${fontSize}px DM Serif Display`;
+  let lines = getLines(ctx, title, 680);
+  while (lines.length > 2) {
+    fontSize -= 10;
     ctx.font = `${fontSize}px DM Serif Display`;
-    let lines = getLines(ctx, title, 680);
-    while (lines.length > 2) {
+    lines = getLines(ctx, title, 680);
+
+    if (fontSize <= 114 && words >= 3) {
+      break;
+    }
+  }
+
+  if (lines.length > 2) {
+    fontSize = 134;
+    ctx.font = `${fontSize}px DM Serif Display`;
+    lines = getLines(ctx, title, 680);
+    while (lines.length > 3) {
       fontSize -= 10;
       ctx.font = `${fontSize}px DM Serif Display`;
       lines = getLines(ctx, title, 680);
-
-      if (fontSize <= 114 && words >= 3) {
-        break;
-      }
     }
+  }
 
-    if (lines.length > 2) {
-      fontSize = 134;
-      ctx.font = `${fontSize}px DM Serif Display`;
-      lines = getLines(ctx, title, 680);
-      while (lines.length > 3) {
-        fontSize -= 10;
-        ctx.font = `${fontSize}px DM Serif Display`;
-        lines = getLines(ctx, title, 680);
-      }
-    }
+  const startX = 64;
+  const startY = lines.length === 3 ? 160 : 200;
 
-    const startX = 64;
-    const startY = lines.length === 3 ? 160 : 200;
+  ctx.fillText(lines[0], startX, startY);
+  if (lines.length > 1) {
+    ctx.fillText(lines[1], startX, startY + fontSize);
+  }
+  if (lines.length > 2) {
+    ctx.fillText(lines[2], startX, startY + fontSize + fontSize);
+  }
+};
 
-    ctx.fillText(lines[0], startX, startY);
-    if (lines.length > 1) {
-      ctx.fillText(lines[1], startX, startY + fontSize);
-    }
-    if (lines.length > 2) {
-      ctx.fillText(lines[2], startX, startY + fontSize + fontSize);
-    }
-  };
+export default function LivePreviewNFT({ title }: LivePreviewNFTProps) {
+  const ref = useRef<HTMLCanvasElement>();
 
   useEffect(() => {
     const ctx = ref?.current?.getContext("2d");
-    ctx && generateImage(ctx);
-  }, [ref]);
+    ctx && generateImage(ctx, title);
+  }, [ref, title]);
 
   return (
     <div style={styles.wrapper}>

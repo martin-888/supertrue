@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { LoaderFunction, redirect } from "@remix-run/node";
+import type { LoaderFunction} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useNavigate, useParams } from "@remix-run/react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import {
@@ -111,7 +112,7 @@ export default function CreateArtist() {
     );
 
     return () => clearTimeout(timerId);
-  }, [data]);
+  }, [data, navigate, stopPolling]);
 
   const [createCollectionMutation] = useMutation(CREATE_COLLECTION_MUTATION, {
     onCompleted: async ({ CreateCollection: { tx } }) => {

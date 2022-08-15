@@ -58,6 +58,7 @@ export default function Logout() {
         fetcher.submit({}, { method: "post" });
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -1,6 +1,6 @@
-import type { LoaderFunction, ActionFunction } from "@remix-run/node";
+import type { LoaderFunction, ActionFunction , MetaFunction} from "@remix-run/node";
 import type { NavigateFunction } from "@remix-run/react";
-import { json, MetaFunction, redirect } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useFetcher, useNavigate, useParams } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import { parse as cookieParse } from "cookie";
@@ -172,9 +172,8 @@ Wallet address: ${address}
 
 Nonce: ${nonce}`;
 
-const ConnectButton = () => {
+const ConnectButton = ({ setError }) => {
   const [isSigning, setIsSigning] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const fetcher = useFetcher();
@@ -189,7 +188,7 @@ const ConnectButton = () => {
       disconnect();
       setIsSigning(false);
     }
-  }, [fetcher.data]);
+  }, [fetcher.data, disconnect, setError]);
 
   useEffect(() => {
     if (!address) {
@@ -200,7 +199,7 @@ const ConnectButton = () => {
       { _action: "createLogInNonce", address: address.toLowerCase() },
       { method: "post" }
     );
-  }, [address]);
+  }, [address, fetcher]);
 
   const { signMessage } = useSignMessage({
     onSuccess: (signature) => {
@@ -222,7 +221,7 @@ const ConnectButton = () => {
       setIsSigning(true);
       signMessage({ message: createSignMessage(address.toLowerCase(), nonce) });
     }
-  }, [isConnected, address, createSignMessage, signMessage, nonce, isSigning]);
+  }, [isConnected, address, signMessage, nonce, isSigning]);
 
   const buttonContent = "Log in with Web3 wallet";
 
@@ -341,11 +340,12 @@ export default function Login() {
   const [isLoggedInMagicUser, setIsLoggedInMagicUser] = useState(false);
   const { data, loading, error } = useQuery(ME_QUERY);
   const [dataLoading, setDataLoading] = useState(loading);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const logout = useCallback(async () => {
     if (isLoggedInMagicUser) await magic.user.logout();
     setIsLoggedInMagicUser(false);
-  }, [isLoggedInMagicUser]);
+  }, [isLoggedInMagicUser, magic?.user]);
 
   useEffect(() => {
     if (data?.me?.address && isLoggedInContext) {
@@ -358,6 +358,7 @@ export default function Login() {
       setIsLoggedInMagicUser(isLoggedIn);
       setDataLoading(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -366,7 +367,7 @@ export default function Login() {
 
   return (
     <Container maxWidth="sm" sx={{ my: 8 }}>
-      {error && (
+      {(error || loginError) && (
         <Box sx={styles.centerContainer}>
           <Typography variant="h2">
             An error happened getting your login info, please try again.
@@ -383,7 +384,7 @@ export default function Login() {
           <Box sx={styles.divider}>
             <Divider />
           </Box>
-          <ConnectButton />
+          <ConnectButton setError={setLoginError} />
         </Stack>
       </Paper>
     </Container>

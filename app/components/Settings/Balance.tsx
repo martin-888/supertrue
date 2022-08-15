@@ -64,7 +64,7 @@ export default function Balance({
       stopPolling();
       setWithdrawing(false);
     }
-  }, [user]);
+  }, [user, stopPolling]);
 
   const [withdrawMutation] = useMutation(WITHDRAW_MUTATION, {
     variables: { input: { account: withdrawAddress } },

@@ -1,5 +1,6 @@
 import React from "react";
-import { LoaderFunction, redirect } from "@remix-run/node";
+import type { LoaderFunction} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useNavigate } from "@remix-run/react";
 import { gql, useQuery } from "@apollo/client";
 import {

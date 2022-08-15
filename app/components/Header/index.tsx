@@ -116,7 +116,7 @@ const Header = ({ address }: HeaderProps) => {
         navigate("/account/logout");
       }
     });
-  }, [account?.address, address]);
+  }, [account?.address, address, isLoginLogoutPage, magic.user, navigate]);
 
   const renderMenu = () => {
     if (!isLoggedIn) {

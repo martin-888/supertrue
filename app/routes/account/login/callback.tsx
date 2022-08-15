@@ -101,7 +101,7 @@ export default function Callback() {
       .catch((e) => {
         console.log("loginWithCredential error", e);
       });
-  }, [setIsError, magic]);
+  }, [setIsError, magic, fetcher]);
 
   if (isError || fetcher.data?.error) {
     return (

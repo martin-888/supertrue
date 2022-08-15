@@ -9,13 +9,13 @@ const magic = !isBrowser
   ? {}
   : new Magic(ENV.MAGIC_KEY, { network: ENV.NETWORK });
 
-type AppContext = {
+type AppContextProps = {
   magic: MagicType;
   isLoggedIn: boolean;
 };
 
 // @ts-ignore
-const AppContext = createContext<AppContext>({ magic });
+const AppContext = createContext<AppContextProps>({ magic });
 
 type AppProviderProps = {
   isLoggedIn: boolean;

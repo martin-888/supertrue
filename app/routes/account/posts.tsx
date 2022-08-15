@@ -1,5 +1,6 @@
 import React from "react";
-import { LoaderFunction, redirect } from "@remix-run/node";
+import type { LoaderFunction} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { gql, useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
 
@@ -64,9 +65,8 @@ export default function ArtistPost() {
     }
 
     return data.me.collection.posts.map((p) => (
-      <Box mb={4}>
+      <Box key={p.id} mb={4}>
         <Post
-          key={p.id}
           post={p}
           artistName={data.me.collection.name}
           username={data.me.collection.username}

@@ -45,7 +45,7 @@ export default function PricingForm({
       stopPolling();
       setUpdating(false);
     }
-  }, [defaultPrice, price]);
+  }, [defaultPrice, price, stopPolling]);
 
   const [updatePricingMutation] = useMutation(UPDATE_PRICING_MUTATION, {
     variables: { input: { startPrice: Number(price) * 100 } },

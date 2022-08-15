@@ -24,7 +24,7 @@ const styles = {
   },
 };
 
-type DisabledMintSection = {
+type DisabledMintSectionProps = {
   igHandle: string;
   placeInLine?: number;
 };
@@ -32,7 +32,7 @@ type DisabledMintSection = {
 export default function DisabledMintSection({
   igHandle,
   placeInLine = 1,
-}: DisabledMintSection) {
+}: DisabledMintSectionProps) {
   return (
     <Grid container sx={styles.disabledContainer}>
       <Grid item md={6}>

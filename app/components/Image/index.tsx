@@ -12,6 +12,7 @@ export default function Image({ src, fallbackSrc, ...others }: ImageProps) {
     <img
       src={!error || !fallbackSrc ? src : fallbackSrc}
       onError={() => setError(true)}
+      alt={others.alt}
       {...others}
     />
   );

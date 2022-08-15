@@ -112,7 +112,7 @@ export default function ClaimPage() {
 
     const artistName = reservationData?.reservation?.collection?.name;
     if (artistName) navigate(`/${artistName}`);
-  }, [reservationData, reservationDataLoading, navigate]);
+  }, [reservationData, reservationDataLoading, navigate, instagram]);
 
   if (loading || reservationDataLoading) {
     return (
