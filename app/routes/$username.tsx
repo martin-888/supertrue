@@ -92,9 +92,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 export function CatchBoundary() {
   const caught = useCatch();
   return (
-    <div>
+    <Container maxWidth="md">
       <h1>{caught.status} - Artist Not Found :(</h1>
-    </div>
+    </Container>
   );
 }
 

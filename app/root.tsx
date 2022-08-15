@@ -61,6 +61,8 @@ export const meta: MetaFunction = () => ({
   "og:description": "Get rewarded for believing in and following creators early. Receive a dated and numbered NFT for any profile you mint.",
   "og:site_name": "Supertrue",
   "og:image": "/og.jpg",
+  "emotion-insertion-point": "emotion-insertion-point",
+  "theme-color": theme.palette.primary.main,
 });
 
 type LoaderData = {
@@ -110,8 +112,6 @@ const App = withEmotionCache((_, emotionCache) => {
     <html lang="en">
       <head>
         <Meta />
-        <meta name="theme-color" content={theme.palette.primary.main} />
-        <meta name="emotion-insertion-point" content="emotion-insertion-point" />
         <Links />
       </head>
       <body>
