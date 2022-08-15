@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { LoaderFunction} from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useNavigate, useParams } from "@remix-run/react";
 import { gql, useMutation, useQuery } from "@apollo/client";

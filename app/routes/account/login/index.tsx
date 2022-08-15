@@ -1,4 +1,8 @@
-import type { LoaderFunction, ActionFunction , MetaFunction} from "@remix-run/node";
+import type {
+  LoaderFunction,
+  ActionFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import type { NavigateFunction } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useNavigate, useParams } from "@remix-run/react";
