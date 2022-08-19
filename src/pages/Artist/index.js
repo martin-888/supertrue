@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Navigate } from "react-router-dom";
 import {
   Container,
+  Button,
   Box,
   CircularProgress,
   Grid,
   Typography,
   Paper,
 } from "@mui/material";
-import { Navigate } from "react-router-dom";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LoadingButton from "@mui/lab/LoadingButton";
+import copy from "copy-to-clipboard";
 
 import __ from "helpers/__";
 import useLogInWallet from "../../hooks/useLogInWallet";
@@ -185,20 +187,33 @@ export default function Artist() {
               Price goes up per each additional NFT created.
             </Typography>
           </Box>
-          <Box>
-            <LoadingButton
-              loading={minting}
-              size="large"
-              variant="contained"
-              onClick={() =>
-                (isLoggedIn || data?.me?.address) && mintNFTPaper()
-              }
-              href={
-                isLoggedIn || data?.me?.address ? undefined : "/account/login"
-              }
-            >
-              Mint Fan #{artist.minted + 1}
-            </LoadingButton>
+
+          <Box className="actions">
+            <Box mb={2}>
+              <LoadingButton
+                loading={minting}
+                size="large"
+                variant="contained"
+                onClick={() =>
+                  (isLoggedIn || data?.me?.address) && mintNFTPaper()
+                }
+                href={
+                  isLoggedIn || data?.me?.address ? undefined : "/account/login"
+                }
+              >
+                Mint Fan #{artist.minted + 1}
+              </LoadingButton>
+              </Box>
+              <Box mb={2}>
+              <Button
+                size="large"
+                variant="outlined"
+                startIcon={<ContentCopyIcon />}
+                onClick={() => copy(window.location.href)}
+              >
+                Copy artist link
+              </Button>
+            </Box>
           </Box>
         </Grid>
       </Grid>

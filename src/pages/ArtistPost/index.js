@@ -51,10 +51,6 @@ export default function ArtistPost() {
       );
     }
 
-    if (!data?.me?.collection?.posts?.length) {
-      return <Typography>No posts found</Typography>;
-    }
-
     return data.me.collection.posts.map((p) => (
       <Box mb={4}>
         <Post

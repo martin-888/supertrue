@@ -106,6 +106,14 @@ const styles = {
     justifyContent: "center",
     margin: "10em",
   },
+  appContainer: {
+    display: "flex",
+    minHeight: "100vh",
+    flexDirection: "column"
+  },
+  appContent: {
+    flex: 1,
+  }
 };
 
 export default function App() {
@@ -130,51 +138,53 @@ export default function App() {
 
   return (
     <Router>
-      <div className="app">
+      <Box sx={styles.appContainer}>
         <ThemeProvider theme={theme}>
           <AppProvider>
             <Header />
-            <SentryErrorBoundaryWithFallback>
-              <Routes>
-                <Route path="/s/:id" element={<Artist />} />
-                <Route path="/reserve" element={<Reserve />}/>
-                <Route path="/reserve/:handle" element={<Reserve />}/>
-                <Route path="/claim/:handle" element={<Claim />}/>
-                <Route path="/:username" element={<Artist />} />
-                <Route
-                  path="/account/posts"
-                  element={onlyLoggedInPage(ArtistPost)}
-                />
-                <Route
-                  path="/account/new"
-                  element={onlyLoggedInPage(CreateArtist)}
-                />
-                <Route
-                  path="/account/new/:handle"
-                  element={onlyLoggedInPage(CreateArtist)}
-                />
-                <Route path="/account/nfts" element={onlyLoggedInPage(NFTs)} />
-                <Route
-                  path="/account/settings"
-                  element={onlyLoggedInPage(Settings)}
-                />
-                <Route path="/" element={<Homepage />} />
-                <Route
-                  path="/account/login"
-                  element={<Login data={data} loading={loading} error={error} refetch={refetch} />}
-                />
-                <Route
-                  path="/account/login-callback"
-                  exact
-                  element={<Callback refetch={refetch} />}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SentryErrorBoundaryWithFallback>
+              <Box sx={styles.appContent}>
+                <SentryErrorBoundaryWithFallback>
+                  <Routes>
+                    <Route path="/s/:id" element={<Artist />} />
+                    <Route path="/reserve" element={<Reserve />}/>
+                    <Route path="/reserve/:handle" element={<Reserve />}/>
+                    <Route path="/claim/:handle" element={<Claim />}/>
+                    <Route path="/:username" element={<Artist />} />
+                    <Route
+                      path="/account/posts"
+                      element={onlyLoggedInPage(ArtistPost)}
+                    />
+                    <Route
+                      path="/account/new"
+                      element={onlyLoggedInPage(CreateArtist)}
+                    />
+                    <Route
+                      path="/account/new/:handle"
+                      element={onlyLoggedInPage(CreateArtist)}
+                    />
+                    <Route path="/account/nfts" element={onlyLoggedInPage(NFTs)} />
+                    <Route
+                      path="/account/settings"
+                      element={onlyLoggedInPage(Settings)}
+                    />
+                    <Route path="/" element={<Homepage />} />
+                    <Route
+                      path="/account/login"
+                      element={<Login data={data} loading={loading} error={error} refetch={refetch} />}
+                    />
+                    <Route
+                      path="/account/login-callback"
+                      exact
+                      element={<Callback refetch={refetch} />}
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </SentryErrorBoundaryWithFallback>
+              </Box>
             <Footer />
           </AppProvider>
         </ThemeProvider>
-      </div>
+      </Box>
     </Router>
   );
 }
