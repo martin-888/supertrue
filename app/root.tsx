@@ -82,14 +82,14 @@ export const loader: LoaderFunction = async ({ request }) => {
   const ENV = getEnv();
 
   const cookie = cookieParse(request.headers.get("Cookie") || "");
-  const token = cookie?.token;
+  const token = cookie?.token_api;
 
   const session = await getSession(request.headers.get("Cookie"));
 
   if (
-    session.has("token") &&
+    session.has("token_api") &&
     session.has("address") &&
-    session.get("token") === token
+    session.get("token_api") === token
   ) {
     return json({ address: session.get("address"), ENV });
   }

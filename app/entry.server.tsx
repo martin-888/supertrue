@@ -22,7 +22,7 @@ export default function handleRequest(
   remixContext: EntryContext
 ) {
   const cookie = cookieParse(request.headers.get("cookie") || "");
-  const token = cookie?.token;
+  const token = cookie?.token_api;
 
   const client = initApollo(token, true);
 

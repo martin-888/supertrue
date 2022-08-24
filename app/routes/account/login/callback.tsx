@@ -51,14 +51,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   const session = await getSession(request.headers.get("Cookie"));
 
-  session.set("token", data.token);
+  session.set("token_api", data.token);
   session.set("address", data.me.address);
 
   const headers = new Headers();
   headers.append("Set-Cookie", await commitSession(session));
   headers.append(
     "Set-Cookie",
-    `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
+    `token_api=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
   );
 
   // Login succeeded, send them to the home page.

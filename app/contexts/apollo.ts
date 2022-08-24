@@ -34,7 +34,7 @@ export function initApollo(token: string, ssrMode = true) {
 
 export function apolloClient(request: Request) {
   const cookie = cookieParse(request.headers.get("cookie") || "");
-  const token = cookie?.token;
+  const token = cookie?.token_api;
 
   return initApollo(token, true);
 }

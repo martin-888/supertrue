@@ -21,7 +21,7 @@ export const action: ActionFunction = async ({ request }) => {
   headers.append("Set-Cookie", await destroySession(session));
   headers.append(
     "Set-Cookie",
-    `token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax`
+    `token_api=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax`
   );
 
   return redirect("/account/login", {
@@ -50,7 +50,7 @@ export default function Logout() {
       }
 
       document.cookie =
-        "token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax";
+        "token_api=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; Secure; SameSite=Lax";
 
       if (loggedOut) {
         window.location.reload();

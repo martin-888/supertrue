@@ -11,7 +11,7 @@ initSentry();
 
 function hydrate() {
   const cookie = cookieParse(document.cookie);
-  const token = cookie?.token;
+  const token = cookie?.token_api;
 
   const client = initApollo(token, false);
 

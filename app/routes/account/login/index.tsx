@@ -96,7 +96,7 @@ const LOGIN_SIGNATURE_MUTATION = gql`
 export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie") || "");
 
-  if (session.has("token") && session.has("address")) {
+  if (session.has("token_api") && session.has("address")) {
     const url = new URL(request.url);
     const red = url.searchParams.get("redirect") || "";
     // to avoid redirection outside of our website
@@ -144,14 +144,14 @@ export const action: ActionFunction = async ({ request }) => {
 
       const session = await getSession(request.headers.get("Cookie"));
 
-      session.set("token", data.token);
+      session.set("token_api", data.token);
       session.set("address", data.me.address);
 
       const headers = new Headers();
       headers.append("Set-Cookie", await commitSession(session));
       headers.append(
         "Set-Cookie",
-        `token=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
+        `token_api=${data.token}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`
       );
 
       // Login succeeded, send them to the home page.
@@ -304,7 +304,7 @@ const EmailLogin = ({ magic, loading, navigate }: EmailLoginProps) => {
       });
       const intervalId = setInterval(() => {
         const cookie = cookieParse(document.cookie || "");
-        if (cookie?.token && cookie.token.length) {
+        if (cookie?.token_api?.length) {
           clearInterval(intervalId);
           navigate(0);
         }
