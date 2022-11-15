@@ -1,23 +1,24 @@
 import type { MetaFunction } from "@remix-run/node";
 import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, TextField } from "@mui/material";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { gql } from '~/__generated__/gql';
 
 import { sendToSentry } from "~/utils/sentry";
 import { isValidEmail } from "~/utils/validate";
 import DisabledMintSection from "~/components/DisabledMintSection";
 
-const RESERVE_COLLECTION_MUTATION = gql`
+const RESERVE_COLLECTION_MUTATION = gql(`
   mutation reserveArtist($input: ReserveCollectionInput!) {
     ReserveCollection(input: $input) {
       position
     }
   }
-`;
+`);
 
-const RESERVATION_QUERY = gql`
-  query getReservation($instagram: String!, $skipReservation: Boolean!) {
+const RESERVATION_QUERY = gql(`
+  query getReservationReserve($instagram: String!, $skipReservation: Boolean!) {
     me {
       id
       email
@@ -30,7 +31,7 @@ const RESERVATION_QUERY = gql`
       lineLength
     }
   }
-`;
+`);
 
 export const meta: MetaFunction = () => {
   return {

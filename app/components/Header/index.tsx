@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "@remix-run/react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { AccountCircle } from "@mui/icons-material";
 import { useAccount } from "wagmi";
 import {
@@ -16,12 +16,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import { useAppContext } from "~/contexts/app";
 import logo from "./logo.png";
 
-const ME_QUERY = gql`
-  query me {
+const ME_QUERY = gql(`
+  query meHeader {
     me {
       id
       address
@@ -33,7 +34,7 @@ const ME_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 const pages = [
   { name: "Posts", url: "/account/posts" },

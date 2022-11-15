@@ -1,7 +1,7 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import React, { useState } from "react";
 import { useCatch, useLoaderData } from "@remix-run/react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Box,
@@ -14,6 +14,8 @@ import {
   Paper,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+
+import { gql } from '~/__generated__/gql';
 
 import { apolloClient } from "~/contexts/apollo";
 import { sendToSentry } from "~/utils/sentry";
@@ -47,8 +49,8 @@ const styles = {
   },
 };
 
-const COLLECTION_QUERY = gql`
-  query getArtist($username: String!) {
+const COLLECTION_QUERY = gql(`
+  query getArtistUsername($username: String!) {
     me {
       address
     }
@@ -72,11 +74,11 @@ const COLLECTION_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { data } = await apolloClient(request).query({
-    variables: { username: params.username },
+    variables: { username: params.username || "" },
     query: COLLECTION_QUERY,
   });
 
@@ -173,13 +175,13 @@ function FAQ() {
   );
 }
 
-const CREATE_CHECKOUT_LINK_MUTATION = gql`
+const CREATE_CHECKOUT_LINK_MUTATION = gql(`
   mutation CreateCheckoutLink($input: CreateCheckoutLinkInput!) {
     CreateCheckoutLink(input: $input) {
       link
     }
   }
-`;
+`);
 
 const SHOW_CENTS_THRESHOLD = 10000;
 
@@ -199,6 +201,7 @@ export default function Artist() {
     CREATE_CHECKOUT_LINK_MUTATION,
     {
       variables: { input: { artistId: Number(artist.artistId) } },
+      // @ts-ignore
       onCompleted: ({ CreateCheckoutLink: { link } }) => {
         window.location.href = link;
       },
@@ -268,7 +271,7 @@ export default function Artist() {
                 (isLoggedIn || data?.me?.address) && mintNFTPaper()
               }
               href={
-                isLoggedIn || data?.me?.address ? undefined : "/account/login"
+                isLoggedIn || data?.me?.address ? "" : "/account/login"
               }
             >
               Mint Fan #{artist.minted + 1}

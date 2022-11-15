@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   Box,
   Grid,
@@ -13,11 +13,12 @@ import {
   CircularProgress,
   Paper,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 // TODO Add option for "All"
 const predefinedPostReaches = [10, 100, 1000];
 
-const CREATE_POST_MUTATION = gql`
+const CREATE_POST_MUTATION = gql(`
   mutation createPost($input: CreatePostInput!) {
     CreatePost(input: $input) {
       collection {
@@ -32,7 +33,7 @@ const CREATE_POST_MUTATION = gql`
       }
     }
   }
-`;
+`);
 
 const styles = {
   postBox: {
@@ -95,7 +96,7 @@ export default function CreatePost({ collection }: CreatePostProps) {
   const [content, setContent] = useState("");
   const [creating, setCreating] = useState(false);
   const [lastNftID, setLastNftID] = useState(predefinedPostReaches[1]);
-  const [createPostError, setCreatePostError] = useState(null);
+  const [createPostError, setCreatePostError] = useState<string | null>(null);
 
   const [createPostMutation] = useMutation(CREATE_POST_MUTATION, {
     variables: { input: { content, lastNftID } },

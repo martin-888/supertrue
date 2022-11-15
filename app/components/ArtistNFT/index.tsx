@@ -11,8 +11,7 @@ import { breakLongHandle } from "~/utils/breakLongHandle";
 type ArtistNFTProps = {
   artist: {
     id: number;
-    artistId: number;
-    instagram: string;
+    instagram?: string;
     minted: number;
     owner?: {
       username: string;

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as ethers from "ethers";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { gql } from '~/__generated__/gql';
 
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
 
@@ -15,7 +16,7 @@ const styles = {
   },
 };
 
-export const BALANCE_USER_FRAGMENT = gql`
+export const BALANCE_USER_FRAGMENT = gql(`
   fragment BalanceUserFragment on User {
     id
     address
@@ -25,15 +26,15 @@ export const BALANCE_USER_FRAGMENT = gql`
       minted
     }
   }
-`;
+`);
 
-const WITHDRAW_MUTATION = gql`
+const WITHDRAW_MUTATION = gql(`
   mutation withdraw($input: WithdrawInput!) {
     Withdraw(input: $input) {
       tx
     }
   }
-`;
+`);
 
 const minimumWithdraw = 100;
 

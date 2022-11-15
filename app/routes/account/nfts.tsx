@@ -2,7 +2,7 @@ import React from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useNavigate } from "@remix-run/react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   Typography,
@@ -10,9 +10,11 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import ArtistNFT from "~/components/ArtistNFT";
 import { getSession } from "~/sessions.server";
+import {Nft} from "~/__generated__/graphql";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -24,7 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return null;
 };
 
-const NFTS_QUERY = gql`
+const NFTS_QUERY = gql(`
   query myNfts {
     me {
       id
@@ -38,7 +40,7 @@ const NFTS_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 export default function NFTs() {
   const { data, loading } = useQuery(NFTS_QUERY);
@@ -92,13 +94,13 @@ export default function NFTs() {
   return (
     <Container maxWidth="md" sx={{ my: 8 }}>
       <Grid container spacing={4}>
-        {data.me.nfts.map((nft) => (
+        {data?.me?.nfts.map((nft: Nft) => (
           <Grid item key={nft.id} className="artist" xs={12} sm={6} md={4}>
             <ArtistNFT
               artist={{
                 id: nft.artistId,
                 minted: nft.tokenId,
-                owner: { username: nft.collection.username },
+                owner: { username: nft.collection.username as string },
               }}
             />
           </Grid>

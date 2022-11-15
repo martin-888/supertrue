@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Typography, Box, InputAdornment } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useProvider } from "wagmi";
+import { gql } from '~/__generated__/gql';
 
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
 import { sendToSentry } from "~/utils/sentry";
@@ -12,13 +13,13 @@ const styles = {
   input: { maxWidth: "180px", marginRight: 2 },
 };
 
-const UPDATE_PRICING_MUTATION = gql`
+const UPDATE_PRICING_MUTATION = gql(`
   mutation updatePricing($input: UpdatePricingInput!) {
     UpdatePricing(input: $input) {
       tx
     }
   }
-`;
+`);
 
 export type PricingFormProps = {
   loading: boolean;

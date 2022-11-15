@@ -2,7 +2,7 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import React, { useEffect, useState } from "react";
 import { useParams } from "@remix-run/react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Container,
@@ -15,6 +15,7 @@ import {
   Button,
   Paper,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import { sendToSentry } from "~/utils/sentry";
 import { isValidEmail } from "~/utils/validate";
@@ -34,16 +35,16 @@ export const meta: MetaFunction = ({ params, data }) => {
   };
 };
 
-const RESERVE_COLLECTION_MUTATION = gql`
+const RESERVE_COLLECTION_MUTATION = gql(`
   mutation reserveArtist($input: ReserveCollectionInput!) {
     ReserveCollection(input: $input) {
       position
     }
   }
-`;
+`);
 
-const RESERVATION_QUERY = gql`
-  query getReservation($instagram: String!) {
+const RESERVATION_QUERY = gql(`
+  query getReservationReserveHandle($instagram: String!) {
     me {
       id
       email
@@ -56,7 +57,7 @@ const RESERVATION_QUERY = gql`
       lineLength
     }
   }
-`;
+`);
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { data } = await apolloClient(request).query({
@@ -105,7 +106,7 @@ export default function ReserveHandle() {
 
   const reservation = data?.reservation;
   const user = data?.me;
-  const placeInLine = reservation?.lineLength + 1 || "";
+  const placeInLine = (reservation?.lineLength + 1).toString() || "";
 
   useEffect(() => {
     if (email === "" && data?.me?.email) {

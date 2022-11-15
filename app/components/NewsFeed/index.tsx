@@ -1,5 +1,6 @@
 import { Typography, Box, CircularProgress, Link } from "@mui/material";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { gql } from '~/__generated__/gql';
 
 import Post from "~/components/Post";
 import { ConditionalWrapper } from "~/utils/helperComponents";
@@ -31,7 +32,7 @@ const styles = {
   },
 };
 
-const NEWSFEED_QUERY = gql`
+const NEWSFEED_QUERY = gql(`
   query newsfeed {
     me {
       nfts {
@@ -56,7 +57,7 @@ const NEWSFEED_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 const getPostHeader = (tokenId: any, name: string) =>
   tokenId ? `You own Supertrue #${tokenId} for ${name}` : null;
@@ -80,10 +81,10 @@ export default function NewsFeed() {
         </Box>
       )}
 
-      {data?.posts.map((post, i: number) => {
+      {data?.posts?.map((post, i: number) => {
         const { author, content, lastNftID } = post;
-        const ownedArtistNftToken = data?.me?.nfts.find(
-          (nft) => nft.artistId === Number(author.artistId)
+        const ownedArtistNftToken = data?.me?.nfts!.find(
+          (nft) => nft!.artistId === Number(author.artistId)
         );
         return (
           <div key={i}>

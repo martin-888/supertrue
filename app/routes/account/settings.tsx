@@ -2,11 +2,12 @@ import React from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Container, Box } from "@mui/material";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { gql } from '~/__generated__/gql';
 
 import Bio from "~/components/Settings/Bio";
 import Pricing from "~/components/Settings/Pricing";
-import Balance, { BALANCE_USER_FRAGMENT } from "~/components/Settings/Balance";
+import Balance from "~/components/Settings/Balance";
 import Sharing from "~/components/Settings/Sharing";
 import { getSession } from "~/sessions.server";
 
@@ -20,9 +21,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   return null;
 };
 
-const ME_QUERY = gql`
-  ${BALANCE_USER_FRAGMENT}
-  query me {
+const ME_QUERY = gql(`
+  query meSettings {
     me {
       id
       collection {
@@ -35,7 +35,7 @@ const ME_QUERY = gql`
       ...BalanceUserFragment
     }
   }
-`;
+`);
 
 export default function Settings() {
   const { data, loading, startPolling, stopPolling } = useQuery(ME_QUERY);
@@ -67,7 +67,7 @@ export default function Settings() {
         stopPolling={stopPolling}
       />
       <Box mb={8} />
-      <Sharing artistId={me?.collection?.artistId} loading={loading} />
+      <Sharing artistId={me?.collection!.artistId} loading={loading} />
     </Container>
   );
 }

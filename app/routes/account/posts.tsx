@@ -1,8 +1,9 @@
 import React from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { CircularProgress, Container, Box, Typography } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import CreatePost from "~/components/CreatePost";
 import Post from "~/components/Post";
@@ -18,8 +19,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   return null;
 };
 
-const ME_QUERY = gql`
-  query me {
+const ME_QUERY = gql(`
+  query mePosts {
     me {
       id
       collection {
@@ -39,7 +40,7 @@ const ME_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 const styles = {
   loadingSpinner: {
@@ -64,14 +65,16 @@ export default function ArtistPost() {
       return <Typography>No posts found</Typography>;
     }
 
-    return data.me.collection.posts.map((p) => (
-      <Box key={p.id} mb={4}>
+    const collection = data.me.collection;
+
+    return collection!.posts!.map((p) => (
+      <Box key={p!.id} mb={4}>
         <Post
           post={p}
-          artistName={data.me.collection.name}
-          username={data.me.collection.username}
-          artistId={data.me.collection.artistId}
-          instagram={data.me.collection.instagram}
+          artistName={collection.name}
+          username={collection.username || ""}
+          artistId={collection.artistId}
+          instagram={collection.instagram}
           hasEditingRights={true}
         />
       </Box>
