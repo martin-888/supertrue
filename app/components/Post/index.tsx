@@ -161,15 +161,6 @@ type PostType = {
   hasEditingRights?: boolean;
 };
 
-type PostType = {
-  post: any;
-  artistName: string;
-  artistId: number;
-  username: string;
-  instagram: string;
-  hasEditingRights?: boolean;
-};
-
 export default function Post({
   post,
   artistName,

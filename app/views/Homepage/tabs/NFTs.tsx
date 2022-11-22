@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import ArtistNFT from "~/components/ArtistNFT";
 import { gql } from '~/__generated__/gql';
-import {Nft} from "~/__generated__/graphql";
+import { Nft } from "~/__generated__/graphql";
 
 const NFTS_QUERY = gql(`
   query myNfts {

@@ -1,8 +1,9 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
-import CreateArtist from "./index";
 import { getSession } from "~/sessions.server";
+
+import NewAccount from "~/views/Account/New";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -14,4 +15,4 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return null;
 };
 
-export default CreateArtist;
+export default NewAccount;
