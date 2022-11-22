@@ -1,9 +1,9 @@
 import type { ActionFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
-import { gql } from "@apollo/client";
 import { useNavigate, useFetcher } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { Box, Container, CircularProgress, Typography } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import { useAppContext } from "~/contexts/app";
 import { apolloClient } from "~/contexts/apollo";
@@ -15,17 +15,13 @@ const styles = {
   },
 };
 
-const LOGIN_MUTATION = gql`
+const LOGIN_MUTATION = gql(`
   mutation login($input: LogInMagicLinkInput!) {
     LogInMagicLink(input: $input) {
       token
-      me {
-        id
-        address
-      }
     }
   }
-`;
+`);
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -47,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json({ error });
   }
 
-  const data = res.data.LogInMagicLink;
+  const data = res?.data?.LogInMagicLink;
 
   const session = await getSession(request.headers.get("Cookie"));
 

@@ -54,7 +54,7 @@ export default function Index() {
           onChange={(e, val) => setTabValue(val)}
         >
           {tabContent.map(({ label }, i) => (
-            <Tab label={label} id={i} key={`tab-content-${i}`} />
+            <Tab label={label} id={i.toString()} key={`tab-content-${i}`} />
           ))}
         </Tabs>
       </Box>

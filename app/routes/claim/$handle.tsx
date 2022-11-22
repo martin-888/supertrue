@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "@remix-run/react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Container,
   Typography,
@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 export const meta: MetaFunction = ({ params }) => {
   return {
@@ -17,8 +18,8 @@ export const meta: MetaFunction = ({ params }) => {
   };
 };
 
-const ME_QUERY = gql`
-  query me {
+const ME_QUERY = gql(`
+  query meClaim {
     me {
       id
       collection {
@@ -29,10 +30,10 @@ const ME_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-const RESERVATION_QUERY = gql`
-  query getReservation($instagram: String!) {
+const RESERVATION_QUERY = gql(`
+  query getReservationHandle($instagram: String!) {
     reservation(instagram: $instagram) {
       instagram
       lineLength
@@ -41,7 +42,7 @@ const RESERVATION_QUERY = gql`
       }
     }
   }
-`;
+`);
 
 const styles = {
   center: {
@@ -107,7 +108,7 @@ export default function ClaimPage() {
 
   //check if reservation exists or already claimed
   useEffect(() => {
-    if (!reservationDataLoading && !reservationData.reservation)
+    if (!reservationDataLoading && !reservationData?.reservation)
       navigate(`/reserve/${instagram}`);
 
     const artistName = reservationData?.reservation?.collection?.name;

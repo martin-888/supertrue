@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { gql } from '~/__generated__/gql';
 
-const UPDATE_COLLECTION_MUTATION = gql`
+const UPDATE_COLLECTION_MUTATION = gql(`
   mutation update($input: UpdateCollectionInput!) {
     UpdateCollection(input: $input) {
       collection {
@@ -12,7 +13,7 @@ const UPDATE_COLLECTION_MUTATION = gql`
       }
     }
   }
-`;
+`);
 
 const styles = {
   description: { backgroundColor: "grey.100", marginBottom: 1 },

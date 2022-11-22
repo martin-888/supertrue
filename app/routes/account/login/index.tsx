@@ -6,7 +6,7 @@ import type {
 import type { NavigateFunction } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useNavigate, useParams } from "@remix-run/react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { parse as cookieParse } from "cookie";
 import { useEffect, useState, useCallback } from "react";
 import { useAccount, useSignMessage, useDisconnect } from "wagmi";
@@ -22,6 +22,7 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 
 import { isValidEmail } from "~/utils/validate";
 import { getSession, commitSession } from "~/sessions.server";
@@ -64,24 +65,24 @@ export const styles = {
   },
 };
 
-const ME_QUERY = gql`
-  query me {
+const ME_QUERY = gql(`
+  query meLogin {
     me {
       id
       address
     }
   }
-`;
+`);
 
-const CREATE_LOGIN_NONCE_MUTATION = gql`
-  mutation logInSignature($input: CreateLogInNonceInput!) {
+const CREATE_LOGIN_NONCE_MUTATION = gql(`
+  mutation logInSignatureCreate($input: CreateLogInNonceInput!) {
     CreateLogInNonce(input: $input) {
       nonce
     }
   }
-`;
+`);
 
-const LOGIN_SIGNATURE_MUTATION = gql`
+const LOGIN_SIGNATURE_MUTATION = gql(`
   mutation logInSignature($input: LogInSignatureInput!) {
     LogInSignature(input: $input) {
       token
@@ -91,9 +92,9 @@ const LOGIN_SIGNATURE_MUTATION = gql`
       }
     }
   }
-`;
+`);
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie") || "");
 
   if (session.has("token_api") && session.has("address")) {
@@ -119,7 +120,7 @@ export const action: ActionFunction = async ({ request }) => {
         mutation: CREATE_LOGIN_NONCE_MUTATION,
         variables: { input: { address } },
       });
-      return json(res.data.CreateLogInNonce);
+      return json(res.data?.CreateLogInNonce);
     }
     case "logInSignature": {
       const signature = form.get("signature");

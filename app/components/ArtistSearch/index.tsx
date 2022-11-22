@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   TextField,
   Typography,
@@ -8,11 +8,12 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
+import { gql } from '~/__generated__/gql';
 import ArtistNFT from "~/components/ArtistNFT";
 
 // TODO add search param to collections
-const COLLECTIONS_QUERY = gql`
-  {
+const COLLECTIONS_QUERY = gql(`
+  query collections {
     collections(first: 20) {
       id
       artistId
@@ -28,7 +29,7 @@ const COLLECTIONS_QUERY = gql`
       instagram
     }
   }
-`;
+`);
 
 const reserveCTAStyles = {
   container: {
@@ -87,8 +88,8 @@ export default function ArtistSearch() {
 
     const artistsCollection = data.collections.filter(
       (artist) =>
-        artist.name.toLowerCase().indexOf(search) !== -1 ||
-        artist.instagram.toLowerCase().indexOf(search) !== -1
+        artist?.name.toLowerCase().indexOf(search) !== -1 ||
+        artist?.instagram.toLowerCase().indexOf(search) !== -1
     );
 
     const artistsReservation = data.reservations.filter(
@@ -151,7 +152,7 @@ export default function ArtistSearch() {
         )}
 
         <Grid container spacing={4}>
-          {filteredArtists.map((artist, index) => (
+          {filteredArtists.map((artist) => (
             <Grid item key={artist.id} xs={12} sm={6} md={4}>
               <ArtistNFT artist={{ ...artist, id: artist.artistId }} />
             </Grid>

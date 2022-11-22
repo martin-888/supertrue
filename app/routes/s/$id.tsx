@@ -1,18 +1,18 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { gql } from "@apollo/client";
 import invariant from "tiny-invariant";
+import { gql } from '~/__generated__/gql';
 
 import { apolloClient } from "~/contexts/apollo";
 
-const ARTIST_QUERY = gql`
-  query getArtist($id: Int!) {
+const ARTIST_QUERY = gql(`
+  query getArtistId($id: Int!) {
     collection(artistId: $id) {
       id
       username
     }
   }
-`;
+`);
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(params.id, "params.id should be defined");

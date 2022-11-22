@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import humanizeDuration from "humanize-duration";
 import { loremIpsum } from "lorem-ipsum";
 import {
@@ -16,6 +16,7 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import LockIcon from "@mui/icons-material/Lock";
+import { gql } from '~/__generated__/gql';
 
 import { getArtistImage } from "~/utils/imageUrl";
 import { ConditionalWrapper } from "~/utils/helperComponents";
@@ -125,7 +126,7 @@ const styles = {
   },
 };
 
-const UPDATE_POST_MUTATION = gql`
+const UPDATE_POST_MUTATION = gql(`
   mutation updatePost($input: UpdatePostInput!) {
     UpdatePost(input: $input) {
       collection {
@@ -136,9 +137,9 @@ const UPDATE_POST_MUTATION = gql`
       }
     }
   }
-`;
+`);
 
-const DELETE_POST_MUTATION = gql`
+const DELETE_POST_MUTATION = gql(`
   mutation deletePost($input: DeletePostInput!) {
     DeletePost(input: $input) {
       collection {
@@ -149,7 +150,16 @@ const DELETE_POST_MUTATION = gql`
       }
     }
   }
-`;
+`);
+
+type PostType = {
+  post: any;
+  artistName: string;
+  artistId: number;
+  username: string;
+  instagram: string;
+  hasEditingRights?: boolean;
+};
 
 type PostType = {
   post: any;

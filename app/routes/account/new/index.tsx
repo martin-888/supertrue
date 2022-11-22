@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useNavigate, useParams } from "@remix-run/react";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
   Container,
@@ -15,6 +15,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useProvider } from "wagmi";
 import copy from "copy-to-clipboard";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { gql } from '~/__generated__/gql';
 
 import { sendToSentry } from "~/utils/sentry";
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
@@ -51,8 +52,8 @@ const styles = {
   },
 };
 
-const ME_QUERY = gql`
-  query me {
+const ME_QUERY = gql(`
+  query meNew {
     me {
       id
       address
@@ -68,15 +69,15 @@ const ME_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-const CREATE_COLLECTION_MUTATION = gql`
+const CREATE_COLLECTION_MUTATION = gql(`
   mutation createCollection($input: CreateCollectionInput!) {
     CreateCollection(input: $input) {
       tx
     }
   }
-`;
+`);
 
 export default function CreateArtist() {
   const { handle } = useParams();
@@ -220,7 +221,7 @@ export default function CreateArtist() {
           margin="normal"
           value={name}
           onChange={({ target: { value } }) => setName(value.slice(0, 30))}
-          disabled={me?.collection || creating}
+          disabled={!!me?.collection || creating}
         />
         <TextField
           fullWidth
@@ -229,7 +230,7 @@ export default function CreateArtist() {
           variant="standard"
           margin="normal"
           value={username}
-          disabled={me?.collection || creating}
+          disabled={!!me?.collection || creating}
           onChange={({ target: { value } }) =>
             setUsername(
               value.trim().toLowerCase().slice(0, 30).replace(" ", "")
@@ -259,7 +260,7 @@ export default function CreateArtist() {
             variant="standard"
             margin="normal"
             value={instagram}
-            disabled={(handle || "").length > 0 || me?.collection || creating}
+            disabled={(handle || "").length > 0 || !!me?.collection || creating}
             onChange={({ target: { value } }) =>
               setInstagram(value.trim().slice(0, 30))
             }
