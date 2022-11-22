@@ -16,7 +16,8 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import LockIcon from "@mui/icons-material/Lock";
-import { gql } from '~/__generated__/gql';
+import { gql } from "~/__generated__/gql";
+import { UpdatePostMutationVariables } from "~/__generated__/graphql";
 
 import { getArtistImage } from "~/utils/imageUrl";
 import { ConditionalWrapper } from "~/utils/helperComponents";
@@ -132,6 +133,7 @@ const UPDATE_POST_MUTATION = gql(`
       collection {
         id
         posts {
+          id
           content
         }
       }
@@ -161,14 +163,21 @@ type PostProps = {
   hasEditingRights?: boolean;
 };
 
-export default function Post({
+type PostWithoutMutationsProps = PostWithoutMutationsProps & {
+  updatePost: (options: { variables: UpdatePostMutationVariables }) => void;
+  deletePost: () => void;
+};
+
+export function PostWithoutMutations({
   post,
   artistName,
   artistId,
   username,
   instagram,
+  updatePost,
+  deletePost,
   hasEditingRights = false,
-}: PostProps) {
+}: PostWithoutMutationsProps) {
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -180,34 +189,6 @@ export default function Post({
     new Date().getTime() - Date.parse(post.createdAt),
     { largest: 1, maxDecimalPoints: 0 }
   );
-
-  const [updatePostMutation] = useMutation(UPDATE_POST_MUTATION, {
-    variables: {
-      input: { content, id: post.id.toString(), lastNftID: post.lastNftID },
-    },
-    onCompleted: () => {
-      setUpdating(false);
-      setIsEditing(false);
-    },
-    onError: (e) => {
-      console.log(e.message);
-      setUpdating(false);
-    },
-  });
-
-  const [deletePostMutation] = useMutation(DELETE_POST_MUTATION, {
-    variables: { input: { id: post.id.toString() } },
-    onCompleted: () => {
-      setUpdating(false);
-      setIsEditing(false);
-      setIsDeleting(false);
-    },
-    onError: (e) => {
-      console.log(e.message);
-      setUpdating(false);
-      setIsDeleting(false);
-    },
-  });
 
   return (
     <Paper
@@ -231,7 +212,7 @@ export default function Post({
           <Box sx={styles.hiddenLayerThird} />
         </>
       )}
-      <Box sx={post.content ? styles.postTop : styles.postTopBlur}>
+      <Box sx={!post.content ? styles.postTop : styles.postTopBlur}>
         <Box sx={styles.postHeader}>
           <Box sx={styles.authorBox}>
             <ConditionalWrapper
@@ -296,7 +277,15 @@ export default function Post({
                     size="small"
                     onClick={() => {
                       setUpdating(true);
-                      updatePostMutation();
+                      updatePost({
+                        variables: {
+                          input: {
+                            id: post.id,
+                            content,
+                            lastNftID: post.lastNftID,
+                          },
+                        },
+                      });
                     }}
                   >
                     Save
@@ -349,7 +338,7 @@ export default function Post({
                   disabled={updating}
                   onClick={() => {
                     setUpdating(true);
-                    deletePostMutation();
+                    deletePost();
                   }}
                 >
                   Delete
@@ -360,5 +349,30 @@ export default function Post({
         </>
       )}
     </Paper>
+  );
+}
+
+export default function Post({ post, ...others }: PostProps) {
+  const [updatePostMutation] = useMutation(UPDATE_POST_MUTATION, {
+    onError: (e) => {
+      console.log(e.message);
+    },
+  });
+
+  const [deletePostMutation] = useMutation(DELETE_POST_MUTATION, {
+    variables: { input: { id: post.id.toString() } },
+    onError: (e) => {
+      console.log(e.message);
+    },
+  });
+
+  return (
+    <PostWithoutMutations
+      key={post}
+      post={post}
+      deletePost={deletePostMutation}
+      updatePost={updatePostMutation}
+      {...others}
+    />
   );
 }

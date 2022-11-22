@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Box } from "@mui/material";
 
 import type { PricingFormProps } from "~/components/PricingForm";
-import PricingForm from "~/components/PricingForm";
+import PricingForm from "./components/PricingForm";
 
 type PricingProps = PricingFormProps;
 

@@ -33,7 +33,7 @@ export default function ArtistNFT({ artist }: ArtistNFTProps) {
         ) : (
           <Link to={`/reserve/${artist.instagram}`}>
             <Box sx={{ opacity: 0.8 }}>
-              <LivePreviewNFT title={"@" + breakLongHandle(artist.instagram)} />
+              <LivePreviewNFT title={"@" + breakLongHandle(artist.instagram || "")} />
             </Box>
           </Link>
         )}
