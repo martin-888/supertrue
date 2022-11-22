@@ -152,7 +152,7 @@ const DELETE_POST_MUTATION = gql(`
   }
 `);
 
-type PostType = {
+type PostProps = {
   post: any;
   artistName: string;
   artistId: number;
@@ -168,7 +168,7 @@ export default function Post({
   username,
   instagram,
   hasEditingRights = false,
-}: PostType) {
+}: PostProps) {
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
