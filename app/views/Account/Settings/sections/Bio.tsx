@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client";
 import { gql } from '~/__generated__/gql';
 
 const UPDATE_COLLECTION_MUTATION = gql(`
-  mutation update($input: UpdateCollectionInput!) {
+  mutation updateCollection($input: UpdateCollectionInput!) {
     UpdateCollection(input: $input) {
       collection {
         id

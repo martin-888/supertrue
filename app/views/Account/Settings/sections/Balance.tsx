@@ -3,7 +3,10 @@ import { Box, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as ethers from "ethers";
 import { useMutation } from "@apollo/client";
+
 import { gql } from '~/__generated__/gql';
+import { useFragment } from "~/__generated__";
+import type { FragmentType } from "~/__generated__";
 
 import waitForMintedTransaction from "~/utils/waitForMintedTransaction";
 
@@ -16,7 +19,7 @@ const styles = {
   },
 };
 
-export const BALANCE_USER_FRAGMENT = gql(`
+const BALANCE_USER_FRAGMENT = gql(`
   fragment BalanceUserFragment on User {
     id
     address
@@ -45,17 +48,19 @@ const provider = new ethers.providers.InfuraProvider(NETWORK, INFURA_KEY);
 
 export type BalanceProps = {
   loading: boolean;
-  user: any;
+  user: FragmentType<typeof BALANCE_USER_FRAGMENT>;
   startPolling: (ms: number) => void;
   stopPolling: () => void;
 };
 
 export default function Balance({
-  user,
   startPolling,
   stopPolling,
   loading,
+  ...props
 }: BalanceProps) {
+  const user = useFragment(BALANCE_USER_FRAGMENT, props.user);
+
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [withdrawAddress, setWithdrawAddress] = useState("");
@@ -97,7 +102,7 @@ export default function Balance({
   const EXCHANGE_RATE_MATIC_TO_USD = 0.61;
   const funds = !user?.collection?.pendingFunds
     ? 0
-    : Number(ethers.utils.formatEther(user.collection?.pendingFunds));
+    : Number(ethers.utils.formatEther(user.collection.pendingFunds));
 
   const hasMinimumFunds = funds > minimumWithdraw;
 
@@ -125,7 +130,7 @@ export default function Balance({
             <TextField
               fullWidth
               label="0x..."
-              placeholder={user?.address}
+              placeholder={user?.address || ""}
               variant="standard"
               margin="normal"
               value={withdrawAddress}

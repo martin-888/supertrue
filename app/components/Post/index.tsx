@@ -16,8 +16,11 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import LockIcon from "@mui/icons-material/Lock";
+
 import { gql } from "~/__generated__/gql";
-import { UpdatePostMutationVariables } from "~/__generated__/graphql";
+import { useFragment } from "~/__generated__";
+import type { FragmentType } from "~/__generated__";
+import type { UpdatePostMutationVariables } from "~/__generated__/graphql";
 
 import { getArtistImage } from "~/utils/imageUrl";
 import { ConditionalWrapper } from "~/utils/helperComponents";
@@ -127,6 +130,15 @@ const styles = {
   },
 };
 
+const POST_FRAGMENT = gql(`
+  fragment PostFragment on Post {
+    id
+    content
+    createdAt
+    lastNftID
+  }
+`);
+
 const UPDATE_POST_MUTATION = gql(`
   mutation updatePost($input: UpdatePostInput!) {
     UpdatePost(input: $input) {
@@ -155,7 +167,7 @@ const DELETE_POST_MUTATION = gql(`
 `);
 
 type PostProps = {
-  post: any;
+  post: FragmentType<typeof POST_FRAGMENT>;
   artistName: string;
   artistId: number;
   username: string;
@@ -163,13 +175,12 @@ type PostProps = {
   hasEditingRights?: boolean;
 };
 
-type PostWithoutMutationsProps = PostWithoutMutationsProps & {
+type PostWithoutMutationsProps = PostProps & {
   updatePost: (options: { variables: UpdatePostMutationVariables }) => void;
   deletePost: () => void;
 };
 
 export function PostWithoutMutations({
-  post,
   artistName,
   artistId,
   username,
@@ -177,7 +188,10 @@ export function PostWithoutMutations({
   updatePost,
   deletePost,
   hasEditingRights = false,
+  ...props
 }: PostWithoutMutationsProps) {
+  const post = useFragment(POST_FRAGMENT, props.post);
+
   const [content, setContent] = useState(post.content || loremIpsum());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

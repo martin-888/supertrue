@@ -44,6 +44,7 @@ const COLLECTION_QUERY = gql(`
         lastNftID
         content
         createdAt
+        ...PostFragment
       }
     }
   }

@@ -23,6 +23,7 @@ const ME_QUERY = gql(`
           lastNftID
           content
           createdAt
+          ...PostFragment
         }
       }
     }

@@ -55,6 +55,7 @@ const NEWSFEED_QUERY = gql(`
           username
         }
       }
+      ...PostFragment
     }
   }
 `);
