@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "@remix-run/react";
-import { useQuery } from "@apollo/client";
+import React, { useState } from "react";
+import { Link, useLocation } from "@remix-run/react";
 import { AccountCircle } from "@mui/icons-material";
-import { useAccount } from "wagmi";
 import {
   Box,
   Toolbar,
@@ -16,22 +14,23 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import type { SxProps } from "@mui/system";
+import type { Theme } from "@mui/material/styles";
 import { gql } from '~/__generated__/gql';
+import { useFragment } from "~/__generated__";
+import type { FragmentType } from "~/__generated__";
 
-import { useAppContext } from "~/contexts/app";
 import logo from "./logo.png";
 
-const ME_QUERY = gql(`
-  query meHeader {
-    me {
+const HEADER_FRAGMENT = gql(`
+  fragment HeaderFragment on User {
+    id
+    address
+    collection {
       id
-      address
-      collection {
-        id
-        name
-        artistId
-        username
-      }
+      name
+      artistId
+      username
     }
   }
 `);
@@ -43,10 +42,10 @@ const pages = [
 ];
 
 type MenuLinkItemPros = {
-  to: any;
-  onClick: any;
-  title: any;
-  sx?: any;
+  to: string;
+  onClick: Function;
+  title: string;
+  sx?: SxProps<Theme>;
 };
 
 const MenuLinkItem = ({ to, onClick, title, sx }: MenuLinkItemPros) => (
@@ -72,52 +71,21 @@ const MenuLinkItem = ({ to, onClick, title, sx }: MenuLinkItemPros) => (
 
 type HeaderProps = {
   address?: string;
+  user?: FragmentType<typeof HEADER_FRAGMENT>;
+  isLoggedIn: boolean
 };
 
-const Header = ({ address }: HeaderProps) => {
-  const { magic } = useAppContext();
+const Header = ({ address, user, isLoggedIn }: HeaderProps) => {
   const theme = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
-  const account = useAccount();
   const isMobile = useMediaQuery(theme.breakpoints.down(450));
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!address);
 
   const isLoginLogoutPage =
     location.pathname.indexOf("/account/login") !== -1 ||
     location.pathname.indexOf("/account/logout") !== -1;
 
-  const { data } = useQuery(ME_QUERY);
-  const me = data?.me;
-
-  useEffect(() => {
-    // logout when addresses don't match
-    magic.user.isLoggedIn().then(async (loggedIn) => {
-      if (loggedIn) {
-        const metadata = await magic.user.getMetadata();
-        setIsLoggedIn(address === metadata?.publicAddress?.toLowerCase());
-      } else {
-        setIsLoggedIn(
-          !!(address && address === account?.address?.toLowerCase())
-        );
-      }
-
-      if (isLoginLogoutPage) {
-        return;
-      }
-
-      if (loggedIn) {
-        const metadata = await magic.user.getMetadata();
-
-        if (address !== metadata?.publicAddress?.toLowerCase()) {
-          navigate("/account/logout");
-        }
-      } else if (account.address?.toLowerCase() !== address) {
-        navigate("/account/logout");
-      }
-    });
-  }, [account?.address, address, isLoginLogoutPage, magic.user, navigate]);
+  const me = useFragment(HEADER_FRAGMENT, user);
 
   const renderMenu = () => {
     if (!isLoggedIn) {

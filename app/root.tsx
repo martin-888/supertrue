@@ -26,8 +26,6 @@ import type { ENV } from "~/env.server";
 import { getEnv } from "~/env.server";
 import ApolloContext from "~/contexts/apollo";
 import { AppProvider } from "~/contexts/app";
-import Header from "~/components/Header";
-import Footer from "~/components/Footer";
 import { wagmiClient, chains } from "~/utils/rainbow";
 import { getSession } from "~/sessions.server";
 import theme from "~/theme";
@@ -35,6 +33,7 @@ import clientStyleContext from "~/contexts/clientStyleContext";
 
 import rainbowStylesUrl from "@rainbow-me/rainbowkit/styles.css";
 import appStylesUrl from "~/app.css";
+import Root from "~/views/Root";
 
 export const links: LinksFunction = () => {
   return [
@@ -58,7 +57,6 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = () => ({
-  charset: "utf-8",
   title: "Supertrue",
   viewport: "width=device-width,initial-scale=1",
   description: "Supertrue - Follow your favorite artists via NFTs",
@@ -120,46 +118,46 @@ const App = withEmotionCache((_, emotionCache) => {
 
   return (
     <html lang="en">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider
-            chains={chains}
-            theme={darkTheme({
-              accentColor: "#FFFFFF",
-              accentColorForeground: "#212121",
-              borderRadius: "small",
-              fontStack: "system",
-            })}
-          >
-            <AppProvider isLoggedIn={!!address}>
-              <ThemeProvider theme={theme}>
-                <Header address={address} />
-                <Outlet />
-                <Footer />
-              </ThemeProvider>
-            </AppProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV=${JSON.stringify(ENV)}`,
-          }}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.__INITIAL_STATE__=${JSON.stringify(
-              initialState
-            ).replace(/</g, "\\u003c")};`,
-          }}
-        />
-      </body>
+    <head>
+      <Meta />
+      <Links />
+    </head>
+    <body>
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider
+        chains={chains}
+        theme={darkTheme({
+          accentColor: "#FFFFFF",
+          accentColorForeground: "#212121",
+          borderRadius: "small",
+          fontStack: "system",
+        })}
+      >
+        <AppProvider isLoggedIn={!!address}>
+          <ThemeProvider theme={theme}>
+            <Root address={address}>
+              <Outlet />
+            </Root>
+          </ThemeProvider>
+        </AppProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
+    <ScrollRestoration />
+    <Scripts />
+    <LiveReload />
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `window.ENV=${JSON.stringify(ENV)}`,
+      }}
+    />
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `window.__INITIAL_STATE__=${JSON.stringify(
+          initialState
+        ).replace(/</g, "\\u003c")};`,
+      }}
+    />
+    </body>
     </html>
   );
 });
